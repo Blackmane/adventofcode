@@ -21,3 +21,14 @@ Then, from the day folder run
 ```
 
 Change DayXX with correponding day.
+
+
+## Informations
+
+Tested on 
+```
+Arch Linux x86_64, kernel 5.9.10-arch1-1 
+cmake version 3.19.1
+gcc version 10.2.0 (GCC) 
+```
+
