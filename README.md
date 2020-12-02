@@ -17,10 +17,10 @@ You need a input.txt file.
 Then, from the day folder run
 
 ``` bash
-./build/bin/DayXX input.txt 
+./build/bin/dayXX input.txt 
 ```
 
-Change DayXX with correponding day.
+Change dayXX with correponding day.
 
 
 ## Informations
