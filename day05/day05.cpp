@@ -40,19 +40,32 @@ I can do better.
 
 template<class T, class R>
 R parse(std::ifstream &stream, char delimiter, 
-        std::function <T(std::string)> foreach, 
+        std::function <T(std::string)> convert, 
         std::function <R(T, R)> foldl, R accumulatorValue) {
     
     R accumulator = accumulatorValue;
     std::string part;
     while (std::getline(stream, part, delimiter)) {
-        accumulator = foldl(foreach(part), accumulator);
+        accumulator = foldl(convert(part), accumulator);
     }
     return accumulator ;
 }
 
+template<class T, class R>
+void read(std::string inputFilename, char delimiter, 
+        std::function <T(std::string)> convert, 
+        std::function <void(T, R)> insert, R structure) {
+    
+    std::ifstream source;
+    source.open(inputFilename);
+    std::string part;
+    while (std::getline(source, part, delimiter)) {
+        insert(convert(part), structure);
+    }
+}
 
-auto foreach = [](std::string part) -> uint64_t { 
+
+auto map = [](std::string part) -> uint64_t { 
     uint64_t row = 0;
     uint64_t column = 0;
     for (int i = 0; i < 7; ++i) {
@@ -73,12 +86,10 @@ auto foldl = [](uint64_t seatId, uint64_t maxId) -> uint64_t {
 };
 
 
-auto foldl2 = [](uint64_t seatId, std::list<uint64_t>* list) -> std::list<uint64_t>* {
-    auto it = std::lower_bound(list->begin(), list->end(), seatId);
-    list->insert(it, seatId);
-    return list;
+auto order_insert = [](uint64_t value, std::list<uint64_t> * list) {
+    auto it = std::lower_bound(list->begin(), list->end(), value);
+    list->insert(it, value);
 };
-
 
 uint64_t findSolution(std::list<uint64_t> &list);
 
@@ -97,15 +108,13 @@ int main (int argc, char *argv[]) {
     std::cout << "Part1" << std::endl;
     std::ifstream source;
     source.open(inputFilename);
-    uint64_t result = day05::parse<uint64_t, uint64_t>(source, '\n', day05::foreach, day05::foldl, 0);
+    uint64_t result = day05::parse<uint64_t, uint64_t>(source, '\n', day05::map, day05::foldl, 0);
     std::cout << result << std::endl;
     
     // Part 2
     std::cout << "Part2" << std::endl;
-    std::ifstream source2;
-    source2.open(inputFilename);
     std::list<uint64_t> list;
-    day05::parse<uint64_t, std::list<uint64_t>*>(source2, '\n', day05::foreach, day05::foldl2, &list);
+    day05::read<uint64_t, std::list<uint64_t>*>(inputFilename, '\n', day05::map, day05::order_insert, &list);
     uint64_t result2 = day05::findSolution(list);
     std::cout << result2 << std::endl;
 
@@ -115,11 +124,11 @@ int main (int argc, char *argv[]) {
 
 // ===== ===== ===== Implementations ===== ===== ===== 
 
-uint64_t findSolution(std::list<uint64_t> &list) {
+uint64_t day05::findSolution(std::list<uint64_t> &list) {
     uint64_t prec = 0;
     for (auto it = list.begin(); it != list.end(); ++it) {
+        // Find the "hole"
         if (prec+2 == *it) {
-        std::cout << *it << std::endl;
             return prec+1;
         }
         prec = *it;
