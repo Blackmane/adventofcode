@@ -39,17 +39,20 @@ I can do better.
 */
 
 template<class T, class R>
-R parse(std::ifstream &stream, char delimiter, 
+R parse(std::string inputFilename, char delimiter, 
         std::function <T(std::string)> convert, 
         std::function <R(T, R)> foldl, R accumulatorValue) {
     
+    std::ifstream source;
+    source.open(inputFilename);
     R accumulator = accumulatorValue;
     std::string part;
-    while (std::getline(stream, part, delimiter)) {
+    while (std::getline(source, part, delimiter)) {
         accumulator = foldl(convert(part), accumulator);
     }
     return accumulator ;
 }
+
 
 template<class T, class R>
 void read(std::string inputFilename, char delimiter, 
@@ -64,6 +67,13 @@ void read(std::string inputFilename, char delimiter,
     }
 }
 
+uint64_t process1(std::string file);
+uint64_t process2(std::string file);
+
+uint64_t findSolution(std::list<uint64_t> &list);
+
+
+// ===== ===== ===== Lambdas ===== ===== ===== 
 
 auto map = [](std::string part) -> uint64_t { 
     uint64_t row = 0;
@@ -91,7 +101,6 @@ auto order_insert = [](uint64_t value, std::list<uint64_t> * list) {
     list->insert(it, value);
 };
 
-uint64_t findSolution(std::list<uint64_t> &list);
 
 } // namespace day05
 
@@ -106,23 +115,34 @@ int main (int argc, char *argv[]) {
 
     // Part 1
     std::cout << "Part1" << std::endl;
-    std::ifstream source;
-    source.open(inputFilename);
-    uint64_t result = day05::parse<uint64_t, uint64_t>(source, '\n', day05::map, day05::foldl, 0);
-    std::cout << result << std::endl;
+    std::cout << day05::process1(inputFilename) << std::endl;
     
     // Part 2
     std::cout << "Part2" << std::endl;
-    std::list<uint64_t> list;
-    day05::read<uint64_t, std::list<uint64_t>*>(inputFilename, '\n', day05::map, day05::order_insert, &list);
-    uint64_t result2 = day05::findSolution(list);
-    std::cout << result2 << std::endl;
+    std::cout << day05::process2(inputFilename) << std::endl;
 
 	return 0;
 }
 
 
 // ===== ===== ===== Implementations ===== ===== ===== 
+
+uint64_t day05::process1(std::string file) {
+    uint64_t result = day05::parse<uint64_t, uint64_t>(file, '\n', 
+                            day05::map, 
+                            day05::foldl, 0);
+    return result;
+}
+
+uint64_t day05::process2(std::string file) {
+    std::list<uint64_t> list;
+    day05::read<uint64_t, std::list<uint64_t>*>(file, '\n', 
+                day05::map, 
+                day05::order_insert, &list);
+
+    uint64_t result = day05::findSolution(list);
+    return result;
+}
 
 uint64_t day05::findSolution(std::list<uint64_t> &list) {
     uint64_t prec = 0;
