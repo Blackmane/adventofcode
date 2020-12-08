@@ -4,7 +4,7 @@
  * @project advent of code 2020
  * 
  * @author  Niccolò Pieretti
- * @date    05 Dec 2020
+ * @date    06 Dec 2020
  * @bug     
  * @todo    
  * 
