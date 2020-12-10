@@ -111,8 +111,6 @@ bool day02::checkPasswordConstraints(std::string password, char constraint, int 
 
 bool day02::checkPasswordConstraints2(std::string password, char constraint, int min, int max) {
     if ( (password[min -1] == constraint) != (password[max -1] == constraint) ) {
-        //std::cout << password << ": " << constraint << " " << min << "-" << max << std::endl;
-        std::cout << constraint << password[min -1] << password[max -1] << std::endl;
         return true;
     }
     return false;
