@@ -56,11 +56,11 @@ uint64_t process1(std::string file);
 uint64_t process2(std::string file);
 
 uint64_t findSolution(WaitingArea &vector, uint64_t rule, 
-                                        std::function <uint64_t(WaitingArea, size_t, size_t)> near);
+                                        std::function <uint64_t(WaitingArea &, size_t, size_t)> near);
 std::pair<WaitingArea, uint64_t> calcNewWaitingArea(WaitingArea &waitingArea, uint64_t rule,
-                                        std::function <uint64_t(WaitingArea, size_t, size_t)> near);
-uint64_t near(WaitingArea area, size_t r, size_t c);
-uint64_t seen(WaitingArea area, size_t r, size_t c);
+                                        std::function <uint64_t(WaitingArea &, size_t, size_t)> near);
+uint64_t near(WaitingArea & area, size_t r, size_t c);
+uint64_t seen(WaitingArea & area, size_t r, size_t c);
 
 
 
@@ -133,7 +133,7 @@ uint64_t day11::process2(std::string file) {
 
 // ===== ===== ===== Implementations ===== ===== ===== 
 
-uint64_t day11::findSolution(WaitingArea &waitingArea, uint64_t rule, std::function <uint64_t(WaitingArea, size_t, size_t)> near) {
+uint64_t day11::findSolution(WaitingArea &waitingArea, uint64_t rule, std::function <uint64_t(WaitingArea&, size_t, size_t)> near) {
     bool satisfied = false;
     auto newarea = calcNewWaitingArea(waitingArea, rule, near);
     uint64_t occupied = newarea.second;
@@ -147,7 +147,7 @@ uint64_t day11::findSolution(WaitingArea &waitingArea, uint64_t rule, std::funct
     return occupied;
 }
 
-std::pair<day11::WaitingArea, uint64_t> day11::calcNewWaitingArea(WaitingArea &waitingArea, uint64_t rule, std::function <uint64_t(WaitingArea, size_t, size_t)> near) {
+std::pair<day11::WaitingArea, uint64_t> day11::calcNewWaitingArea(WaitingArea &waitingArea, uint64_t rule, std::function <uint64_t(WaitingArea&, size_t, size_t)> near) {
     // Apply rules on waiting area and get new area
     WaitingArea newArea(waitingArea);
     uint64_t people = 0;
@@ -182,7 +182,7 @@ std::pair<day11::WaitingArea, uint64_t> day11::calcNewWaitingArea(WaitingArea &w
     return std::make_pair(newArea, people);
 }
 
-uint64_t day11::near(WaitingArea area, size_t r, size_t c) {
+uint64_t day11::near(WaitingArea &area, size_t r, size_t c) {
     uint64_t near = 0;
     int64_t maxr = area.size();
     int64_t maxc = area[0].size();
@@ -202,7 +202,7 @@ uint64_t day11::near(WaitingArea area, size_t r, size_t c) {
     return near;
 }
 
-uint64_t day11::seen(WaitingArea area, size_t r, size_t c) {
+uint64_t day11::seen(WaitingArea &area, size_t r, size_t c) {
     uint64_t near = 0;
     size_t maxr = area.size();
     size_t maxc = area[0].size();
