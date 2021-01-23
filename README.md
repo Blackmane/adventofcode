@@ -13,7 +13,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build
 
 ## How to run
 
-You need a input.txt file.
+You need a input.txt file (not all days).
 Then, from the day folder run
 
 ``` bash
