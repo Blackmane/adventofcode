@@ -24,10 +24,6 @@
 #include <vector>
 
 
-#define println(SOMETHING) std::cout << SOMETHING << std::endl;
-#define print(SOMETHING) std::cout << SOMETHING;
-
-
 namespace day20 {
 
 const size_t SIDE = 12;
@@ -56,6 +52,7 @@ struct Tile {
     void flipRightLeft();
     void getImage(Image * image);
 };
+
 /*===== ===== ===== =====
 /           0
 /          ____
@@ -65,7 +62,6 @@ struct Tile {
 /
 /           2
 ===== ===== ===== =====*/
-
 
 void readTiles(std::string inputFilename, std::vector<Tile *>* listTile);
 void combineNearby(std::vector<Tile *>* listTile);
@@ -80,12 +76,6 @@ std::vector<std::string> flipVertical(std::vector<std::string> from);
 
 uint64_t process1(std::string file);
 uint64_t process2(std::string file);
-
-
-// ===== ===== ===== Lambdas ===== ===== ===== 
-
-
-
 
 } // namespace day20
 
@@ -170,6 +160,7 @@ void day20::Tile::flipUpDown() {
     nearby[2] = tmp;
     isFlipUpDown = !isFlipUpDown;
 }
+
 
 void day20::Tile::flipRightLeft() {
     Tile * tmp = nearby[1];
@@ -290,6 +281,7 @@ void day20::combineNearby(std::vector<Tile *>* listTile) {
     }
 }
 
+
 uint64_t day20::foundCorners(std::vector<Tile *>* listTile) {
     uint64_t mul = 1;
     for (auto tile : (*listTile)) {
@@ -395,6 +387,7 @@ uint64_t day20::createMap(std::vector<Tile *>* listTile) {
     return countLockness(&matrixImage);
 }
 
+
 uint64_t day20::countLockness (Image *matrixImage) {
 
     // Construct all patterns
@@ -473,7 +466,6 @@ uint64_t day20::countLockness (Image *matrixImage) {
 }
 
 
-
 std::vector<std::string> day20::rotate(std::vector<std::string> from) {
     std::vector<std::string> tmp;
     size_t maxRow = from.size();
@@ -493,6 +485,7 @@ std::vector<std::string> day20::rotate(std::vector<std::string> from) {
     }
     return tmp;
 }
+
 
 std::vector<std::string> day20::flipVertical(std::vector<std::string> from) {
     std::vector<std::string> tmp;
