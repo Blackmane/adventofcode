@@ -32,3 +32,7 @@ cmake version 3.19.1
 gcc version 10.2.0 (GCC) 
 ```
 
+
+## What i've learn
+
+[AoC 2020](2020/aoc_learn.md) (in Italian).
