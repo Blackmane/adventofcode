@@ -1,10 +1,10 @@
 /**
- * @file    day15.cpp
+ * @file    day16.cpp
  * @brief   
  * @project advent of code 2020
  * 
  * @author  Niccolò Pieretti
- * @date    15 Dec 2020
+ * @date    16 Dec 2020
  * @bug     
  * @todo    
  * 
@@ -26,7 +26,7 @@
 #include <vector>
 
 
-namespace day15 {
+namespace day16 {
 
 typedef std::vector<uint64_t> Ticket;
 
@@ -56,7 +56,7 @@ private:
     std::vector<Ticket> nearbyTickets;
 };
 
-} // namespace day15
+} // namespace day16
 
 
 // ===== ===== ===== Main ===== ===== ===== 
@@ -67,7 +67,7 @@ int main (int argc, char *argv[]) {
     }
 	std::string inputFilename(argv[1]);
 
-    day15::Tickets tickets(inputFilename);
+    day16::Tickets tickets(inputFilename);
     // Part 1
     std::cout << "Part1" << std::endl;
     std::cout << tickets.getSolution() << std::endl;
@@ -82,7 +82,7 @@ int main (int argc, char *argv[]) {
 
 // ===== ===== ===== Implementations ===== ===== ===== 
 
-day15::Tickets::Tickets(std::string inputFilename) {
+day16::Tickets::Tickets(std::string inputFilename) {
     std::ifstream source;
     source.open(inputFilename);
     std::string part;
@@ -115,7 +115,7 @@ day15::Tickets::Tickets(std::string inputFilename) {
 }
 
 
-void day15::Tickets::readConstrait(std::string line) {
+void day16::Tickets::readConstrait(std::string line) {
     uint64_t pos = 0;
     uint64_t stop = line.find(": ", pos);
     std::string type = line.substr(pos, stop-pos);
@@ -132,12 +132,11 @@ void day15::Tickets::readConstrait(std::string line) {
     pos = stop+1;
     stop = line.length();
     cons.range2.to = std::stol(line.substr(pos, stop-pos));
-// println(type << ": " << cons.range1.from << "-" << cons.range1.to << " or " << cons.range2.from << "-" << cons.range2.to)
     constraints.push_back(cons);
 }
 
 
-void day15::Tickets::toTicket(std::string line, Ticket* ticket) {
+void day16::Tickets::toTicket(std::string line, Ticket* ticket) {
     uint64_t pos = 0;
     uint64_t stop = line.find(",", pos);
     while (stop != std::string::npos) {
@@ -151,19 +150,19 @@ void day15::Tickets::toTicket(std::string line, Ticket* ticket) {
 }
 
 
-void day15::Tickets::readMyTicket(std::string line) {
+void day16::Tickets::readMyTicket(std::string line) {
     toTicket(line, &myTicket);
 }
 
 
-void day15::Tickets::readNearbyTicket(std::string line) {
+void day16::Tickets::readNearbyTicket(std::string line) {
     Ticket ticket;
     toTicket(line, &ticket);
     nearbyTickets.push_back(ticket);
 }
 
 
-uint64_t day15::Tickets::getSolution() {
+uint64_t day16::Tickets::getSolution() {
     uint64_t sum = 0;
     for(auto nTicket : nearbyTickets) {
         for(auto value : nTicket) {
@@ -182,7 +181,7 @@ uint64_t day15::Tickets::getSolution() {
 }
 
 
-uint64_t day15::Tickets::getSolution2() {
+uint64_t day16::Tickets::getSolution2() {
     // Support
     size_t maxCons = constraints.size();
     size_t maxCol = nearbyTickets[0].size();
@@ -251,7 +250,7 @@ uint64_t day15::Tickets::getSolution2() {
 
     bool allDone = false;
     while (!allDone) {
-        uint64_t colToDelete;
+        uint64_t colToDelete = 0;
         // Found possible with list size ==1
         for (auto possible : possibleColumns) {
             if (possible.second->size() <= 1) {
