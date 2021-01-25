@@ -108,8 +108,6 @@ Ragionare mi ha portato a scrivere codice funzionante sin da subito, al contrari
 
 ## Day 21 - 21 dicembre
 
-~~~BREAK~~~
-
 Sono costretto ad interrompere.
 
 
