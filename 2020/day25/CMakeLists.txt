@@ -33,8 +33,5 @@ project(aoc2020_day25
 
 # ===== ===== ===== Code ===== ===== ===== 
 
-# ServiceCam_test
 add_executable (day25 day25.cpp )
-#target_include_directories(ServiceCam_test PRIVATE ../facilities/include/)
 target_compile_features(day25 PRIVATE cxx_std_11)
-#target_link_libraries (day25 PRIVATE ${} )

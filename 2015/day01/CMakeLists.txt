@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.11)
 
 # Project name and a few useful settings. Other commands can pick up the results
-project(aoc2020_day01
+project(aoc2015_day01
     VERSION 1.0
     DESCRIPTION "Advent of code: day01"
     )
@@ -33,8 +33,5 @@ project(aoc2020_day01
 
 # ===== ===== ===== Code ===== ===== ===== 
 
-# ServiceCam_test
 add_executable (day01 day01.cpp )
-#target_include_directories(ServiceCam_test PRIVATE ../facilities/include/)
 target_compile_features(day01 PRIVATE cxx_std_11)
-#target_link_libraries (day01 PRIVATE ${} )
