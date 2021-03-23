@@ -1,6 +1,6 @@
-# adventofcode2020
+# adventofcode
 
-My solution to Advent of Code 2020
+My solution to Advent of Code
 https://adventofcode.com/
 
 
