@@ -32,6 +32,28 @@ cmake version 3.19.1
 gcc version 10.2.0 (GCC) 
 ```
 
+## How to use daygen
+
+Daygen create a new directory NAME in PATH. Create NAME.cpp and CMakeLists, ready to start coding.
+
+Run with
+``` bash
+python daygen.py PATH NAME
+```
+example
+``` bash
+python daygen.py 2015 day06
+
+Create 2015/day06 ? (Y)
+>y
+continue
+Create dir
+Create: 2015/day06/day06.cpp
+Create: 2015/day06/CMakeLists.txt
+Create: 2015/day06/input.txt
+done
+```
+
 
 ## What i've learn
 
