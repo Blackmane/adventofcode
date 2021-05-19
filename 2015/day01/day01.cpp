@@ -1,7 +1,7 @@
 /**
  * @file    day01.cpp
  * @brief   
- * @project advent of code 2020
+ * @project advent of code 2015
  * 
  * @author  Niccolò Pieretti
  * @date    07 Dec 2020
