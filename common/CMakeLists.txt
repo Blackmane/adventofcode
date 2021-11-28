@@ -1,4 +1,5 @@
 # ===== ===== ===== Build Library ===== ===== =====
+add_library(COMMON_objs OBJECT common.h common.cpp)
 
 if (ENABLE_TESTING)
     # ===== ===== ===== Main Obj ===== ===== =====
