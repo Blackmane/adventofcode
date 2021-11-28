@@ -3,135 +3,10 @@
 import sys
 import os
 from datetime import date
+from string import Template
 
 
-def write_cpp(file, name):
-    today = date.today()
-    file.write("/**\n")
-    file.write(" * @file    %s.cpp\n" % name)
-    file.write(" * @project advent of code\n")
-    file.write(" * \n")
-    file.write(" * @author  Niccolò Pieretti\n")
-    file.write(" * @date    %s\n" % today.strftime("%d %b %Y"))
-    file.write(" * \n")
-    file.write(" ****************************************************************************\n")
-    file.write(" *                                              \n")
-    file.write(" *             _  _   o   __  __   __    _  o   _   ,_    _  \n")
-    file.write(" *            / |/ |  |  /   /    /  \_|/ \_|  |/  /  |  |/  \n")
-    file.write(" *              |  |_/|_/\__/\___/\__/ |__/ |_/|__/   |_/|__/\n")
-    file.write(" *                                    /|                     \n")
-    file.write(" *                                    \|     \n")
-    file.write(" ****************************************************************************/\n")
-    file.write("\n")
-    file.write("#include <fstream>\n")
-    file.write("#include <iostream>\n")
-    file.write("#include <string>\n")
-    file.write("#include <functional>\n")
-    file.write("\n")
-    file.write("namespace %s {\n" % name)
-    file.write("\n")
-    file.write("template<class T, class R>\n")
-    file.write("R parse(std::string inputFilename, char delimiter, \n")
-    file.write("        std::function <T(std::string)> convert, \n")
-    file.write("        std::function <R(T, R)> foldl, R accumulatorValue) {\n")
-    file.write("    \n")
-    file.write("    std::ifstream source;\n")
-    file.write("    source.open(inputFilename);\n")
-    file.write("    R accumulator = accumulatorValue;\n")
-    file.write("    std::string part;\n")
-    file.write("    while (std::getline(source, part, delimiter)) {\n")
-    file.write("        accumulator = foldl(convert(part), accumulator);\n")
-    file.write("    }\n")
-    file.write("    return accumulator ;\n")
-    file.write("}\n")
-    file.write("\n")
-    file.write("\n")
-    file.write("template<class T, class R>\n")
-    file.write("void read(std::string inputFilename, char delimiter, \n")
-    file.write("        std::function <T(std::string)> convert, \n")
-    file.write("        std::function <void(T, R)> insert, R structure) {\n")
-    file.write("    \n")
-    file.write("    std::ifstream source;\n")
-    file.write("    source.open(inputFilename);\n")
-    file.write("    std::string part;\n")
-    file.write("    while (std::getline(source, part, delimiter)) {\n")
-    file.write("        insert(convert(part), structure);\n")
-    file.write("    }\n")
-    file.write("}\n")
-    file.write("\n")
-    file.write("uint64_t process1(std::string file);\n")
-    file.write("uint64_t process2(std::string file);\n")
-    file.write("\n")
-    file.write("uint64_t findSolution();\n")
-    file.write("\n")
-    file.write("\n")
-    file.write("// ===== ===== ===== Lambdas ===== ===== ===== \n")
-    file.write("\n")
-    file.write("auto map = [](std::string part) -> uint64_t { \n")
-    file.write("    uint64_t seatId = 0;\n")
-    file.write("    return seatId;\n")
-    file.write("};\n")
-    file.write("\n")
-    file.write("\n")
-    file.write("auto foldl = [](uint64_t seatId, uint64_t maxId) -> uint64_t { \n")
-    file.write("    return maxId >= seatId ? maxId : seatId; \n")
-    file.write("};\n")
-    file.write("\n")
-    file.write("\n")
-    file.write("auto order_insert = [](uint64_t value, std::list<uint64_t> * list) {\n")
-    file.write("    auto it = std::lower_bound(list->begin(), list->end(), value);\n")
-    file.write("    list->insert(it, value);\n")
-    file.write("};\n")
-    file.write("\n")
-    file.write("\n")
-    file.write("} // namespace %s\n" % name)
-    file.write("\n")
-    file.write("\n")
-    file.write("// ===== ===== ===== Main ===== ===== ===== \n")
-    file.write("int main (int argc, char *argv[]) {\n")
-    file.write("    if (argc < 2) {\n")
-    file.write("        std::cout << \"No input file\" << std::endl;\n")
-    file.write("        return 1;\n")
-    file.write("    }\n")
-    file.write("	std::string inputFilename(argv[1]);\n")
-    file.write("\n")
-    file.write("    // Part 1\n")
-    file.write("    std::cout << \"Part1\" << std::endl;\n")
-    file.write("    std::cout << %s::process1(inputFilename) << std::endl;\n" % name)
-    file.write("    \n")
-    file.write("    // Part 2\n")
-    file.write("    std::cout << \"Part2\" << std::endl;\n")
-    file.write("    std::cout << %s::process2(inputFilename) << std::endl;\n" % name)
-    file.write("\n")
-    file.write("	return 0;\n")
-    file.write("}\n")
-    file.write("\n")
-    file.write("\n")
-    file.write("// ===== ===== ===== Implementations ===== ===== ===== \n")
-    file.write("\n")
-    file.write("uint64_t %s::process1(std::string file) {\n" % name)
-    file.write("    uint64_t result = %s::parse<uint64_t, uint64_t>(file, '\\n', \n" % name)
-    file.write("                            %s::map, \n" % name)
-    file.write("                            %s::foldl, 0);\n" % name)
-    file.write("    return result;\n")
-    file.write("}\n")
-    file.write("\n")
-    file.write("uint64_t %s::process2(std::string file) {\n" % name)
-    file.write("    std::list<uint64_t> list;\n")
-    file.write("    %s::read<uint64_t, std::list<uint64_t>*>(file, '\\n', \n" % name)
-    file.write("                %s::map, \n" % name)
-    file.write("                %s::order_insert, &list);\n" % name)
-    file.write("\n")
-    file.write("    uint64_t result = %s::findSolution(list);\n" % name)
-    file.write("    return result;\n")
-    file.write("}\n")
-    file.write("\n")
-    file.write("uint64_t %s::findSolution() {\n" % name)
-    file.write("    return 0;\n")
-    file.write("}\n")
-
-
-def init(path, name):
+def init(path, name, template_path):
     fullpath = os.path.join(path, name)
 
     response = input("Create %s ? (Y)\n>" % fullpath)
@@ -150,25 +25,39 @@ def init(path, name):
     except FileExistsError:
         print("Already exists, continue")
 
-    print ("Create: " + fullpath + "/" + name + ".cpp")
-    filecpp = open(fullpath + "/" + name + ".cpp", "w")
-    write_cpp(filecpp, name)
+    today = date.today()
 
-    print ("Create: " + fullpath + "/CMakeLists.txt")
+    subs = {
+        'DAY': name,
+        'TEST': 'test_' + name,
+        'TESTCOMMAND': name + '_test',
+        'TODAY': today.strftime("%d %b %Y")
+    }
 
-    filecmake = open(fullpath + "/CMakeLists.txt", "w")
+    files = [
+        ['CMakeLists.txt', 'CMakeLists.txt'],
+        ['dayXX.cpp', name + '.cpp'],
+        ['dayXX.h', name + '.h'],
+        ['main.cpp', 'main.cpp'],
+        ['test.cpp', 'test.cpp'],
+        ['input.txt', 'input.txt'],
+        ['test1.txt', 'test1.txt']
+    ]
 
-    filecmake.write("add_executable (%s %s.cpp )\n" % (name, name))
-    # filecmake.write("target_compile_features(%s PRIVATE cxx_std_11)" % NAME)
-
-    print ("Create: " + fullpath + "/input.txt")
-
-    # filecmake = open(fullpath + "/input.txt", "w")
-    open(fullpath + "/input.txt", "w")
-
-    print("done")
+    for file in files:
+        file_from = file[0]
+        file_to = file[1]
+        print("Open: " + template_path + '/' + file_from)
+        with open(template_path + '/' + file_from, 'r') as f:
+            src = Template(f.read())
+            result = src.substitute(subs)
+            print("Creation: " + fullpath + "/" + file_to)
+            filecpp = open(fullpath + "/" + file_to, "w")
+            filecpp.write(result)
+            print("Created")
 
 
 def fromCurrentDir(path, name):
-    cur_path = os.path.join(os.path.abspath(os.getcwd()), path)
-    init(cur_path, name)
+    current_directory = os.path.abspath(os.getcwd())
+    cur_path = os.path.join(current_directory, path)
+    init(cur_path, name, current_directory + '/template')
