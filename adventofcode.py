@@ -27,21 +27,26 @@ def main():
     # Init the directory
     if args.init:
         scripts.init.fromCurrentDir(args.year, args.day)
-        pass
+        return
 
-    # TODO: if test build with test e run test
+    # Cmake
+    if args.test:
+        subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day, '-DENABLE_TESTING=on'])
+    else:
+        subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day])
 
     # Build
-    subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day])
     subprocess.check_call(['cmake', '--build', build_dir])
 
-    # Test
+    sub_path =  '%s/%s' % (args.year, args.day)
+
+    # Run test
     if args.test:
-        subprocess.check_call(['cmake', '--build', build_dir, '--target', 'test'])
+        subprocess.check_call(['./%s/%s/bin/test_%s' % (build_dir, sub_path, args.day)])
 
     # Run
     if not args.no_run:
-        subprocess.check_call(['./%s/%s/%s/bin/%s' % (build_dir, args.year, args.day, args.day)])
+        subprocess.check_call(['./%s/%s/bin/%s' % (build_dir, sub_path, args.day), '%s/input.txt' % (sub_path)])
 
 
 if __name__ == "__main__":
