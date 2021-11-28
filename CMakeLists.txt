@@ -31,7 +31,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 # Let's nicely support folders in IDE's
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-
 # ===== ===== ===== Config ===== ===== =====
 
 set(YEAR "" CACHE STRING "AoC year")
@@ -41,6 +40,13 @@ if ( NOT DEFINED YEAR OR NOT DEFINED DAY )
     message("INVALID YEAR ${YEAR} or DAY ${DAY}")
     return()
 endif()
+
+# Adding an option to switch on or off compilation of tests
+option (ENABLE_TESTING "Set to ON to perform unit tests" OFF)
+
+if (ENABLE_TESTING)
+    enable_testing()
+endif ()
 
 # ===== ===== ===== Library ===== ===== =====
 
