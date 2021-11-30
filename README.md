@@ -3,57 +3,46 @@
 My solution to Advent of Code
 https://adventofcode.com/
 
+## adventofcode.py script
 
-## How to compile
+All the operation are centralized by `adventofcode.py` script.
 
-Go to the corresponding day folder and run
-``` bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build
+```bash
+usage: adventofcode.py [-h] [-i] [-b] [-t] YEAR DAY
+
+Advent of Code utility application
+
+positional arguments:
+  YEAR                  current year of the AoC, is a directory name
+  DAY                   current day of the AoC, is a directory name, subdirectory of YEAR
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i, --init            init the current day directory
+  -b, --build, --no-run
+                        just build the current day
+  -t, --test            run the tests of the current day
 ```
 
-## How to run
+## Generate a day
 
-You need a input.txt file (not all days).
-Then, from the day folder run
+With this code `python3 adventofcode.py -i 2021 day01` you can generate the 2021/day01 directory and init it from the
+template.
 
-``` bash
-./build/bin/dayXX input.txt 
-```
+## How to run test and code
 
-Change dayXX with correponding day.
-
+You can run test with `-t` flag: `python3 adventofcode.py -t 2021 day01`. This command run the solution too. You can add
+the flag `-b` to build only without run the code.
 
 ## Informations
 
-Tested on 
+Tested on
+
 ```
 Arch Linux x86_64, kernel 5.9.10-arch1-1 
 cmake version 3.19.1
 gcc version 10.2.0 (GCC) 
 ```
-
-## How to use daygen
-
-Daygen create a new directory NAME in PATH. Create NAME.cpp and CMakeLists, ready to start coding.
-
-Run with
-``` bash
-python daygen.py PATH NAME
-```
-example
-``` bash
-python daygen.py 2015 day06
-
-Create 2015/day06 ? (Y)
->y
-continue
-Create dir
-Create: 2015/day06/day06.cpp
-Create: 2015/day06/CMakeLists.txt
-Create: 2015/day06/input.txt
-done
-```
-
 
 ## What i've learn
 
