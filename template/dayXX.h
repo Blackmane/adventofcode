@@ -1,17 +1,17 @@
 /**
  * @file    $DAY.h
  * @project advent of code
- * 
+ *
  * @author  Niccolò Pieretti
  * @date    $TODAY
- * 
+ *
  ****************************************************************************
- *                                              
- *             _  _   o   __  __   __    _  o   _   ,_    _  
- *            / |/ |  |  /   /    /  \_|/ \_|  |/  /  |  |/  
+ *
+ *             _  _   o   __  __   __    _  o   _   ,_    _
+ *            / |/ |  |  /   /    /  \_|/ \_|  |/  /  |  |/
  *              |  |_/|_/\__/\___/\__/ |__/ |_/|__/   |_/|__/
- *                                    /|                     
- *                                    \|     
+ *                                    /|
+ *                                    \|
  ****************************************************************************/
 
 #include <stdint.h>
@@ -22,11 +22,11 @@
  * @param file input file
  * @return result
  */
-uint64_t process1(std::string file);
+std::string process1(std::string file);
 
 /**
  * Run the second problem
  * @param file input file
  * @return result
  */
-uint64_t process2(std::string file);
+std::string process2(std::string file);

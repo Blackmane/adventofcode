@@ -28,6 +28,7 @@ def init(path, name, template_path):
     today = date.today()
 
     subs = {
+        'YEAR': path,
         'DAY': name,
         'TEST': 'test_' + name,
         'TESTCOMMAND': name + '_test',
