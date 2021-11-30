@@ -2,8 +2,11 @@
 CMakeFiles
 bin
 .vscode
+.idea
 build/
 lib/
+venv
+*/__pycache__/
 
 # Files
 Makefile

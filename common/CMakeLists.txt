@@ -1,0 +1,8 @@
+# ===== ===== ===== Build Library ===== ===== =====
+add_library(COMMON_objs OBJECT common.h common.cpp)
+
+if (ENABLE_TESTING)
+    # ===== ===== ===== Main Obj ===== ===== =====
+    add_library(MAIN_objs OBJECT main_catch.cpp)
+    # target_compile_features(MAIN_objs PUBLIC cxx_std_11)
+endif ()
