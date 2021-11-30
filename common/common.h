@@ -28,20 +28,23 @@ namespace parse {
 
     template<class L, class S>
     void read(std::string inputFilename, char delimiter,
-              std::function <void(S, L)> insert, S structure) {
+              std::function<void(S, L)> insert, S structure) {
         std::ifstream source;
-        source.open(inputFilename);
+        source.open(inputFilename, std::ifstream::in);
         std::string part;
         while (std::getline(source, part, delimiter)) {
-            std::cout << "OK";
             insert(structure, part);
         }
     }
 
-    static auto push_back = [](std::vector<std::string> * list, std::string part) -> void {
-        list->push_back(part);
-    };
+    void push_back(std::vector <std::string> *list, std::string part);
 
+    /**
+     * Read the entire file as is and store it in a vector of strings
+     * @param inputFilename the path to the file
+     * @param list the structure where to save the file
+     */
+    void read_all(std::string inputFilename, std::vector <std::string> *list);
 }
 
 /**
