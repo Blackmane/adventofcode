@@ -6,8 +6,8 @@ from datetime import date
 from string import Template
 
 
-def init(path, name, template_path):
-    fullpath = os.path.join(path, name)
+def init(path, year, day, template_path):
+    fullpath = os.path.join(path, day)
 
     response = input("Create %s ? (Y)\n>" % fullpath)
     if len(response) > 0 and response[0] != 'y' and response[0] != 'Y':
@@ -28,17 +28,17 @@ def init(path, name, template_path):
     today = date.today()
 
     subs = {
-        'YEAR': path,
-        'DAY': name,
-        'TEST': 'test_' + name,
-        'TESTCOMMAND': name + '_test',
+        'YEAR': year,
+        'DAY': day,
+        'TEST': 'test_' + day,
+        'TESTCOMMAND': day + '_test',
         'TODAY': today.strftime("%d %b %Y")
     }
 
     files = [
         ['CMakeLists.txt', 'CMakeLists.txt'],
-        ['dayXX.cpp', name + '.cpp'],
-        ['dayXX.h', name + '.h'],
+        ['dayXX.cpp', day + '.cpp'],
+        ['dayXX.h', day + '.h'],
         ['main.cpp', 'main.cpp'],
         ['test.cpp', 'test.cpp'],
         ['input.txt', 'input.txt'],
@@ -58,7 +58,7 @@ def init(path, name, template_path):
             print("Created")
 
 
-def fromCurrentDir(path, name):
+def fromCurrentDir(year, day):
     current_directory = os.path.abspath(os.getcwd())
-    cur_path = os.path.join(current_directory, path)
-    init(cur_path, name, current_directory + '/template')
+    cur_path = os.path.join(current_directory, year)
+    init(cur_path, year, day, current_directory + '/template')

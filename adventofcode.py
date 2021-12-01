@@ -22,7 +22,6 @@ def parse():
 
 
 def main():
-
     args = parse()
     # Init the directory
     if args.init:
@@ -31,14 +30,15 @@ def main():
 
     # Cmake
     if args.test:
-        subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day, '-DENABLE_TESTING=on'])
+        subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day,
+                               '-DENABLE_TESTING=on'])
     else:
         subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day])
 
     # Build
     subprocess.check_call(['cmake', '--build', build_dir])
 
-    sub_path =  '%s/%s' % (args.year, args.day)
+    sub_path = '%s/%s' % (args.year, args.day)
 
     # Run test
     if args.test:
@@ -46,7 +46,7 @@ def main():
 
     # Run
     if not args.no_run:
-        subprocess.check_call(['./%s/%s/bin/%s' % (build_dir, sub_path, args.day), '%s/input.txt' % (sub_path)])
+        subprocess.check_call(['./%s/%s/bin/%s' % (build_dir, sub_path, args.day), '%s/input.txt' % sub_path])
 
 
 if __name__ == "__main__":

@@ -21,23 +21,23 @@
 
 // @formatter:off
 
+void tester(std::string inputFile, std::function<std::string(std::string)> process, std::string expected) {
+    auto result = process(inputFile);
+    CHECK_THAT( result, Catch::Matchers::Equals( expected ) );
+}
+
+
 TEST_CASE( "Test $DAY", "[$DAY]" ) {
 
     SECTION ("Problem 1") {
         SECTION ("Test 1") {
-            std::string inputFile("$YEAR/$DAY/test1.txt");
-            std::string expected = "0";
-            auto result = process1(inputFile);
-            CHECK(expected.compare(result) ==  0);
+            tester("2021/day01/test1.txt", process1, "0");
         }
     }
 
     SECTION ("Problem 2") {
         SECTION ("Test 1") {
-            std::string inputFile("$YEAR/$DAY/test1.txt");
-            std::string expected = "5DB3";
-            auto result = process2(inputFile);
-            CHECK(expected.compare(result) ==  0);
+            tester("2021/day01/test1.txt", process2, "0");
         }
     }
 
