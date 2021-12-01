@@ -76,15 +76,24 @@ namespace parse {
     void push_back(std::vector <std::string> *list, std::string part);
 
     /**
+     * Apply the push back of a string to the vector of integer
+     * @param list
+     * @param part string to convert to integer and push back
+     */
+    void push_back_integer(std::vector <uint64_t> *list, std::string part);
+
+    /**
      * Read the entire file as is and store it in a vector of strings
      * @param inputFilename the path to the file
      * @param list the structure where to save the file
      */
     void read_all(std::string inputFilename, std::vector <std::string> *list);
-}
 
-/**
- * Just a Test
- */
-void test_output();
+    /**
+     * Read the entire file as there are integers
+     * @param inputFilename
+     * @param list
+     */
+    void read_all_integers(std::string inputFilename, std::vector <uint64_t> *list);
+}
 
