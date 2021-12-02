@@ -31,13 +31,13 @@ TEST_CASE( "Test $DAY", "[$DAY]" ) {
 
     SECTION ("Problem 1") {
         SECTION ("Test 1") {
-            tester("2021/day01/test1.txt", process1, "0");
+            tester("$YEAR/$DAY/test1.txt", process1, "0");
         }
     }
 
     SECTION ("Problem 2") {
         SECTION ("Test 1") {
-            tester("2021/day01/test1.txt", process2, "0");
+            tester("$YEAR/$DAY/test1.txt", process2, "0");
         }
     }
 
