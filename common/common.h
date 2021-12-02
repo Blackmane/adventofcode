@@ -95,5 +95,12 @@ namespace parse {
      * @param list
      */
     void read_all_integers(std::string inputFilename, std::vector <uint64_t> *list);
+
+    /**
+     * Get the first integer of the line
+     * @param line a string
+     * @return the first integer
+     */
+    uint64_t getInteger(std::string line);
 }
 

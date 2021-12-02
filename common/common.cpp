@@ -15,6 +15,7 @@
  ****************************************************************************/
 
 #include "common.h"
+#include <regex>
 
 namespace parse {
 
@@ -32,6 +33,17 @@ namespace parse {
 
     void read_all_integers(std::string inputFilename, std::vector <uint64_t> *list) {
         read<std::string, std::vector < uint64_t> * > (inputFilename, '\n', push_back_integer, list);
+    }
+
+    uint64_t getInteger(std::string line) {
+        uint64_t res = 0;
+        const std::regex base_regex("(\\d+)");
+        std::smatch base_match;
+        if (std::regex_search(line, base_match, base_regex)) {
+            std::string value = base_match[0].str();
+            res = std::stoull(value);
+        }
+        return res;
     }
 
 }
