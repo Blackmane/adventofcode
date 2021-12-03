@@ -15,12 +15,11 @@
  ****************************************************************************/
 
 #include <fstream>
-#include <iostream>
-#include <string>
 #include <functional>
+#include <iostream>
+#include <set>
+#include <string>
 #include <vector>
-//#include <set>
-
 
 // TODO: add tests for common lib
 
@@ -37,7 +36,8 @@ namespace parse {
      */
     template<class L, class S>
     void read(std::string inputFilename, char delimiter,
-              std::function<void(S, L)> insert, S structure) {
+            std::function<void(S, L)> insert, S structure)
+    {
         std::ifstream source;
         source.open(inputFilename, std::ifstream::in);
         std::string part;
@@ -58,8 +58,9 @@ namespace parse {
      */
     template<class T, class R>
     void read(std::string inputFilename, char delimiter,
-              std::function<T(std::string)> convert,
-              std::function<void(T, R)> insert, R structure) {
+            std::function<T(std::string)> convert,
+            std::function<void(T, R)> insert, R structure)
+    {
         std::ifstream source;
         source.open(inputFilename, std::ifstream::in);
         std::string part;
@@ -73,36 +74,44 @@ namespace parse {
      * @param list
      * @param part string to push back
      */
-    void push_back(std::vector <std::string> *list, std::string part);
+    void push_back(std::vector<std::string> *list, std::string part);
 
     /**
      * Apply the push back of a string to the vector of integer
      * @param list
      * @param part string to convert to integer and push back
      */
-    void push_back_integer(std::vector <uint64_t> *list, std::string part);
+    void push_back_integer(std::vector<uint64_t> *list, std::string part);
 
     /**
      * Read the entire file as is and store it in a vector of strings
      * @param inputFilename the path to the file
      * @param list the structure where to save the file
      */
-    void read_all(std::string& inputFilename, std::vector <std::string> *list);
+    void read_all(std::string &inputFilename, std::vector<std::string> *list);
+
+    /**
+     * Read the entire file as is and store it in a set of strings
+     * @param inputFilename the path to the file
+     * @param set the structure where to save the file
+     */
+    void read_all_ordered(std::string &inputFilename, std::set<std::string> *set);
 
     /**
      * Read the entire file as there are integers
      * @param inputFilename
      * @param list
      */
-    void read_all_integers(std::string& inputFilename, std::vector <uint64_t> *list);
+    void read_all_integers(std::string &inputFilename, std::vector<uint64_t> *list);
 
     /**
      * Get the first integer of the line
      * @param line a string
      * @return the first integer
      */
-    uint64_t getInteger(std::string& line);
-}
+    uint64_t getInteger(std::string &line);
+
+} // namespace parse
 
 namespace convert {
 
@@ -111,6 +120,6 @@ namespace convert {
      * Example: from 101110 get 46
      * @param binary a reference to a string
      */
-    uint64_t fromBinary(std::string& binary);
+    uint64_t fromBinary(std::string &binary);
 
-}
+} // namespace convert

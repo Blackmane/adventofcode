@@ -31,6 +31,14 @@ namespace parse {
         read<std::string, std::vector < std::string> * > (inputFilename, '\n', push_back, list);
     }
 
+    void emplace(std::set <std::string> *set, std::string part) {
+        set->emplace(part);
+    }
+
+    void read_all_ordered(std::string& inputFilename, std::set <std::string> *set) {
+        read<std::string, std::set < std::string> * > (inputFilename, '\n', emplace, set);
+    }
+
     void read_all_integers(std::string& inputFilename, std::vector <uint64_t> *list) {
         read<std::string, std::vector < uint64_t> * > (inputFilename, '\n', push_back_integer, list);
     }
