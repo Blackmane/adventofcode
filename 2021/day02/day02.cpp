@@ -18,10 +18,11 @@
 #include "common.h"
 #include <iostream>
 
-std::string findSolution1(std::vector <std::string> *values) {
+std::string findSolution1(std::vector<std::string> *values)
+{
     uint64_t horizontal = 0;
-    uint64_t depth = 0;
-    for (auto &value: *values) {
+    uint64_t depth      = 0;
+    for (auto &value : *values) {
         uint64_t move = parse::getInteger(value);
         switch (value[0]) {
             case 'f':
@@ -40,11 +41,12 @@ std::string findSolution1(std::vector <std::string> *values) {
     return std::to_string(horizontal * depth);
 }
 
-std::string findSolution2(std::vector <std::string> *values) {
+std::string findSolution2(std::vector<std::string> *values)
+{
     uint64_t horizontal = 0;
-    uint64_t depth = 0;
-    uint64_t aim = 0;
-    for (auto &value: *values) {
+    uint64_t depth      = 0;
+    uint64_t aim        = 0;
+    for (auto &value : *values) {
         uint64_t move = parse::getInteger(value);
         switch (value[0]) {
             case 'f':
@@ -64,20 +66,20 @@ std::string findSolution2(std::vector <std::string> *values) {
     return std::to_string(horizontal * depth);
 }
 
-std::string process1(std::string file) {
-    std::vector <std::string> valueList;
+std::string process1(std::string file)
+{
+    std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
 
     std::string result = findSolution1(&valueList);
     return result;
 }
 
-
-std::string process2(std::string file) {
-    std::vector <std::string> valueList;
+std::string process2(std::string file)
+{
+    std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
 
     std::string result = findSolution2(&valueList);
     return result;
 }
-

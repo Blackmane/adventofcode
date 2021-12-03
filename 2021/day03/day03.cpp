@@ -18,11 +18,12 @@
 #include "common.h"
 #include <algorithm>
 
-std::string findSolution1(std::vector <std::string> *values) {
+std::string findSolution1(std::vector<std::string> *values)
+{
     auto len = values->at(0).size();
     std::vector<uint64_t> countOnes(len, 0);
-    
-    for (auto &value: *values) {
+
+    for (auto &value : *values) {
         for (size_t i = 0; i < len; ++i) {
             if (value[i] == '1') {
                 countOnes[i]++;
@@ -31,7 +32,7 @@ std::string findSolution1(std::vector <std::string> *values) {
     }
     uint64_t n = values->size();
 
-    uint64_t gammaRate = 0;
+    uint64_t gammaRate   = 0;
     uint64_t epsilonRate = 0;
     for (size_t i = 0; i < len; ++i) {
         gammaRate *= 2;
@@ -46,11 +47,12 @@ std::string findSolution1(std::vector <std::string> *values) {
     return std::to_string(gammaRate * epsilonRate);
 }
 
-std::vector<uint64_t> mostCommon(std::vector <std::string> *values) {
+std::vector<uint64_t> mostCommon(std::vector<std::string> *values)
+{
     auto len = values->at(0).size();
     std::vector<uint64_t> countOnes(len, 0);
-    
-    for (auto &value: *values) {
+
+    for (auto &value : *values) {
         for (size_t i = 0; i < len; ++i) {
             if (value[i] == '1') {
                 countOnes[i]++;
@@ -72,27 +74,28 @@ std::vector<uint64_t> mostCommon(std::vector <std::string> *values) {
     return countOnes;
 }
 
-std::string findSolution2(std::vector <std::string> *values) {
+std::string findSolution2(std::vector<std::string> *values)
+{
     // Is ordered
-    auto len = values->at(0).size();
+    auto len    = values->at(0).size();
     size_t from = 0;
-    size_t to = values->size() - 1;
+    size_t to   = values->size() - 1;
     for (size_t j = 0; j < len; ++j) {
-        auto diff = to - from + 1;
-        auto half = diff / 2 ;
-        int isPair = diff % 2;
-        char chalf = values->at(from + half - 1).at(j);
+        auto diff     = to - from + 1;
+        auto half     = diff / 2;
+        int isPair    = diff % 2;
+        char chalf    = values->at(from + half - 1).at(j);
         char chalfone = values->at(from + half).at(j);
-        if ( (isPair == 0 && chalf != chalfone) || chalfone == '1') {
+        if ((isPair == 0 && chalf != chalfone) || chalfone == '1') {
             // Pair or more 1 => 1
             do {
                 from++;
-            } while (values->at(from).at(j) == '0' && from < to );
+            } while (values->at(from).at(j) == '0' && from < to);
         } else {
             // More 0 => 0
             do {
                 to--;
-            } while (values->at(to).at(j) == '1' && from < to );
+            } while (values->at(to).at(j) == '1' && from < to);
         }
         if (from == to) {
             // Found
@@ -101,27 +104,26 @@ std::string findSolution2(std::vector <std::string> *values) {
     }
     uint64_t oxigenRate = convert::fromBinary(values->at(from));
 
-
     from = 0;
-    to = values->size() - 1;
+    to   = values->size() - 1;
     for (size_t j = 0; j < len; ++j) {
-        auto diff = to - from + 1;
-        auto half = diff / 2 ;
-        int isPair = diff % 2;
-        char chalf = values->at(from + half - 1).at(j);
+        auto diff     = to - from + 1;
+        auto half     = diff / 2;
+        int isPair    = diff % 2;
+        char chalf    = values->at(from + half - 1).at(j);
         char chalfone = values->at(from + half).at(j);
-        if ( (isPair == 0 && chalf != chalfone) || chalfone == '1') {
+        if ((isPair == 0 && chalf != chalfone) || chalfone == '1') {
             // Pair or more 1 => 0
             // So decrease 'to'
             do {
                 to--;
-            } while (values->at(to).at(j) == '1' && from < to );
+            } while (values->at(to).at(j) == '1' && from < to);
         } else {
             // More 0 => 1
             // So increase 'from'
             do {
                 from++;
-            } while (values->at(from).at(j) == '0' && from < to );
+            } while (values->at(from).at(j) == '0' && from < to);
         }
         if (from == to) {
             // Found
@@ -133,21 +135,21 @@ std::string findSolution2(std::vector <std::string> *values) {
     return std::to_string(oxigenRate * co2Rate);
 }
 
-std::string process1(std::string file) {
-    std::vector <std::string> valueList;
+std::string process1(std::string file)
+{
+    std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
 
     std::string result = findSolution1(&valueList);
     return result;
 }
 
-
-std::string process2(std::string file) {
-    std::vector <std::string> valueList;
+std::string process2(std::string file)
+{
+    std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
-    std::sort (valueList.begin(), valueList.end());
+    std::sort(valueList.begin(), valueList.end());
 
     std::string result = findSolution2(&valueList);
     return result;
 }
-

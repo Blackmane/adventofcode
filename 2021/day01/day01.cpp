@@ -17,10 +17,11 @@
 #include "day01.h"
 #include "common.h"
 
-std::string findSolution1(std::vector <uint64_t> *values) {
+std::string findSolution1(std::vector<uint64_t> *values)
+{
     uint64_t prev = UINT64_MAX;
-    int count = 0;
-    for (auto &value: *values) {
+    int count     = 0;
+    for (auto &value : *values) {
         if (prev < value) {
             count++;
         }
@@ -29,9 +30,10 @@ std::string findSolution1(std::vector <uint64_t> *values) {
     return std::to_string(count);
 }
 
-std::string findSolution2(std::vector <uint64_t> *values) {
+std::string findSolution2(std::vector<uint64_t> *values)
+{
     uint64_t prev = UINT64_MAX;
-    int count = 0;
+    int count     = 0;
     for (size_t j = 2, n = values->size(); j < n; j++) {
         auto sum = values->at(j - 2) + values->at(j - 1) + values->at(j);
         if (prev < sum) {
@@ -42,21 +44,20 @@ std::string findSolution2(std::vector <uint64_t> *values) {
     return std::to_string(count);
 }
 
-
-std::string process1(std::string file) {
-    std::vector <uint64_t> valueList;
+std::string process1(std::string file)
+{
+    std::vector<uint64_t> valueList;
     parse::read_all_integers(file, &valueList);
 
     std::string result = findSolution1(&valueList);
     return result;
 }
 
-
-std::string process2(std::string file) {
-    std::vector <uint64_t> valueList;
+std::string process2(std::string file)
+{
+    std::vector<uint64_t> valueList;
     parse::read_all_integers(file, &valueList);
 
     std::string result = findSolution2(&valueList);
     return result;
 }
-
