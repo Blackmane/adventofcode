@@ -78,27 +78,18 @@ std::string findSolution2(std::vector <std::string> *values) {
     size_t from = 0;
     size_t to = values->size() - 1;
     for (size_t j = 0; j < len; ++j) {
-        size_t countZero = 0;
-        for (size_t i = from; i <= to; ++i) {
-            if (values->at(i).at(j) == '0') {
-                countZero++;
-            } else {
-                // Is ordered, so when found a '1' is finished
-                break;
-            }
-        }
-        auto half = (to - from + 1) / 2 ;
-        std::cout << "Count 0 are : " << countZero << " of " << half << std::endl;
-        if (countZero <= half) {
-            // Oxigen: most common or 1 if equal
-            // 1
-            // So increase from
+        auto diff = to - from + 1;
+        auto half = diff / 2 ;
+        int isPair = diff % 2;
+        char chalf = values->at(from + half - 1).at(j);
+        char chalfone = values->at(from + half).at(j);
+        if ( (isPair == 0 && chalf != chalfone) || chalfone == '1') {
+            // Pair or more 1 => 1
             do {
                 from++;
             } while (values->at(from).at(j) == '0' && from < to );
         } else {
-            //0
-            // So decrease to
+            // More 0 => 0
             do {
                 to--;
             } while (values->at(to).at(j) == '1' && from < to );
@@ -108,55 +99,36 @@ std::string findSolution2(std::vector <std::string> *values) {
             break;
         }
     }
-    uint64_t oxigenRate = 0;
-    for (size_t i = 0; i < len; ++i) {
-        oxigenRate *= 2;
-        if (values->at(from).at(i) == '1') {
-            oxigenRate++;
-        }
-    }
+    uint64_t oxigenRate = convert::fromBinary(values->at(from));
 
 
     from = 0;
     to = values->size() - 1;
     for (size_t j = 0; j < len; ++j) {
-        size_t countZero = 0;
-        for (size_t i = from; i <= to; ++i) {
-            if (values->at(i).at(j) == '0') {
-                countZero++;
-            } else {
-                // Is ordered, so when found a '1' is finished
-                break;
-            }
-        }
-        auto half = (to - from + 1) / 2 ;
-        if (countZero <= half) {
-            // Co2: less common or 0 if equal
-            // 0
+        auto diff = to - from + 1;
+        auto half = diff / 2 ;
+        int isPair = diff % 2;
+        char chalf = values->at(from + half - 1).at(j);
+        char chalfone = values->at(from + half).at(j);
+        if ( (isPair == 0 && chalf != chalfone) || chalfone == '1') {
+            // Pair or more 1 => 0
             // So decrease 'to'
             do {
                 to--;
             } while (values->at(to).at(j) == '1' && from < to );
         } else {
-            //1
+            // More 0 => 1
             // So increase 'from'
             do {
                 from++;
             } while (values->at(from).at(j) == '0' && from < to );
-
         }
         if (from == to) {
             // Found
             break;
         }
     }
-    uint64_t co2Rate = 0;
-    for (size_t i = 0; i < len; ++i) {
-        co2Rate *= 2;
-        if (values->at(from).at(i) == '1') {
-            co2Rate++;
-        }
-    }
+    uint64_t co2Rate = convert::fromBinary(values->at(from));
 
     return std::to_string(oxigenRate * co2Rate);
 }

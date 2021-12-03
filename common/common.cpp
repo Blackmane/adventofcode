@@ -27,15 +27,15 @@ namespace parse {
         list->push_back(std::stoi(part));
     };
 
-    void read_all(std::string inputFilename, std::vector <std::string> *list) {
+    void read_all(std::string& inputFilename, std::vector <std::string> *list) {
         read<std::string, std::vector < std::string> * > (inputFilename, '\n', push_back, list);
     }
 
-    void read_all_integers(std::string inputFilename, std::vector <uint64_t> *list) {
+    void read_all_integers(std::string& inputFilename, std::vector <uint64_t> *list) {
         read<std::string, std::vector < uint64_t> * > (inputFilename, '\n', push_back_integer, list);
     }
 
-    uint64_t getInteger(std::string line) {
+    uint64_t getInteger(std::string& line) {
         uint64_t res = 0;
         const std::regex base_regex("(\\d+)");
         std::smatch base_match;
@@ -46,4 +46,19 @@ namespace parse {
         return res;
     }
 
+}
+
+namespace convert {
+
+    uint64_t fromBinary(std::string& binary) {
+        uint64_t value = 0;
+        auto len = binary.size();
+        for (size_t i = 0; i < len; ++i) {
+            value *= 2;
+            if (binary[i] == '1') {
+                value++;
+            }
+        }
+        return value;
+    }
 }

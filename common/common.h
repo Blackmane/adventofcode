@@ -87,20 +87,30 @@ namespace parse {
      * @param inputFilename the path to the file
      * @param list the structure where to save the file
      */
-    void read_all(std::string inputFilename, std::vector <std::string> *list);
+    void read_all(std::string& inputFilename, std::vector <std::string> *list);
 
     /**
      * Read the entire file as there are integers
      * @param inputFilename
      * @param list
      */
-    void read_all_integers(std::string inputFilename, std::vector <uint64_t> *list);
+    void read_all_integers(std::string& inputFilename, std::vector <uint64_t> *list);
 
     /**
      * Get the first integer of the line
      * @param line a string
      * @return the first integer
      */
-    uint64_t getInteger(std::string line);
+    uint64_t getInteger(std::string& line);
 }
 
+namespace convert {
+
+    /**
+     * Convert a string of binary to a integer.
+     * Example: from 101110 get 46
+     * @param binary a reference to a string
+     */
+    uint64_t fromBinary(std::string& binary);
+
+}
