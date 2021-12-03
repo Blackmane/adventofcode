@@ -31,9 +31,10 @@ def main():
     # Cmake
     if args.test:
         subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day,
-                               '-DENABLE_TESTING=on'])
+                                '-DENABLE_TESTING=on', '-DCMAKE_BUILD_TYPE=Release'])
     else:
-        subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day])
+        subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day, 
+                                '-DCMAKE_BUILD_TYPE=Release'])
 
     # Build
     subprocess.check_call(['cmake', '--build', build_dir])
