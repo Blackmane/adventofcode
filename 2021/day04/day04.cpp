@@ -19,18 +19,15 @@
 #include "common.h"
 
 #include <assert.h>
+#include <list>
 
 struct board {
-    std::array<std::array<uint64_t, 5>, 5> numbers = { { { 0, 0, 0, 0, 0 },
-                                                         { 0, 0, 0, 0, 0 },
-                                                         { 0, 0, 0, 0, 0 },
-                                                         { 0, 0, 0, 0, 0 },
-                                                         { 0, 0, 0, 0, 0 } } };
-    std::array<std::array<bool, 5>, 5> picked      = { { { 0, 0, 0, 0, 0 },
-                                                    { 0, 0, 0, 0, 0 },
-                                                    { 0, 0, 0, 0, 0 },
-                                                    { 0, 0, 0, 0, 0 },
-                                                    { 0, 0, 0, 0, 0 } } };
+    std::array<std::array<uint64_t, 5>, 5> numbers = {
+        { { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 } }
+    };
+    std::array<std::array<bool, 5>, 5> picked = {
+        { { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 } }
+    };
     bool isSolved()
     {
         for (size_t i = 0; i < 5; i++) {
@@ -72,8 +69,7 @@ struct board {
     }
 };
 
-void populateBoards(std::vector<std::string> *values,
-                    std::vector<board> *boards)
+void populateBoards(std::vector<std::string> *values, std::vector<board> *boards)
 {
     auto len          = values->size();
     size_t boardIndex = 0;
@@ -91,8 +87,7 @@ void populateBoards(std::vector<std::string> *values,
     }
 }
 
-std::string findSolution1(std::vector<std::string> *numbers,
-                          std::vector<board> *boards)
+std::string findSolution1(std::vector<std::string> *numbers, std::vector<board> *boards)
 {
     size_t boardIndex = 0;
     for (auto &num : *numbers) {
@@ -106,8 +101,7 @@ std::string findSolution1(std::vector<std::string> *numbers,
                 }
             }
             if (boards->at(boardIndex).isSolved()) {
-                return std::to_string(boards->at(boardIndex).sumNotCalled() *
-                                      number);
+                return std::to_string(boards->at(boardIndex).sumNotCalled() * number);
             }
         }
     }
@@ -115,40 +109,46 @@ std::string findSolution1(std::vector<std::string> *numbers,
     return std::to_string(0);
 }
 
-std::string findSolution2(std::vector<std::string> *numbers,
-                          std::vector<board> *boards)
+void populateBoardsAsList(std::vector<std::string> *values, std::list<board> *boards)
 {
-    std::set<uint64_t> remaining;
-    auto len          = boards->size();
+    auto len          = values->size();
     size_t boardIndex = 0;
-    for (boardIndex = 0; boardIndex < len; ++boardIndex) {
-        remaining.emplace(boardIndex);
-    }
-    assert(remaining.size() == len);
-    for (auto &num : *numbers) {
-        uint64_t number = std::stoull(num);
-        for (boardIndex = 0; boardIndex < len; ++boardIndex) {
-            for (size_t i = 0; i < 5; i++) {
-                for (size_t j = 0; j < 5; j++) {
-                    if (boards->at(boardIndex).numbers[i][j] == number) {
-                        boards->at(boardIndex).picked[i][j] = true;
-                    }
-                }
+    for (size_t i = 2; i < len; i += 6) {
+        board b;
+        for (size_t j = 0; j < 5; j++) {
+            auto numberLine = parse::getIntegers(values->at(i + j));
+            for (size_t n = 0; n < 5; n++) {
+                b.numbers[j][n] = numberLine[n];
+                b.picked[j][n]  = false;
             }
         }
-        if (remaining.size() > 1) {
-            for (boardIndex = 0; boardIndex < len; ++boardIndex) {
-                if (boards->at(boardIndex).isSolved()) {
-                    auto it = remaining.find(boardIndex);
-                    if (it != remaining.end()) {
-                        remaining.erase(it);
+        boardIndex++;
+        boards->push_back(b);
+    }
+}
+
+std::string findSolution2(std::vector<std::string> *numbers, std::list<board> *boards)
+{
+    auto len = boards->size();
+    for (auto &num : *numbers) {
+        uint64_t number = std::stoull(num);
+        for (auto board = boards->begin(); board != boards->end();) {
+            for (size_t i = 0; i < 5; i++) {
+                for (size_t j = 0; j < 5; j++) {
+                    if (board->numbers[i][j] == number) {
+                        board->picked[i][j] = true;
                     }
                 }
             }
-        } else {
-            if (boards->at(*remaining.begin()).isSolved()) {
-                return std::to_string(
-                    boards->at(*remaining.begin()).sumNotCalled() * number);
+            if (board->isSolved()) {
+                if (len == 1) {
+                    // Is the last one
+                    return std::to_string(board->sumNotCalled() * number);
+                }
+                boards->erase(board++);
+                len--;
+            } else {
+                board++;
             }
         }
     }
@@ -173,8 +173,8 @@ std::string process2(std::string file)
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
     auto numbers = parse::split(valueList[0], ',');
-    std::vector<board> boards;
-    populateBoards(&valueList, &boards);
+    std::list<board> boards;
+    populateBoardsAsList(&valueList, &boards);
 
     std::string result = findSolution2(&numbers, &boards);
     return result;
