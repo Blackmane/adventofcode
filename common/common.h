@@ -111,6 +111,21 @@ namespace parse {
      */
     uint64_t getInteger(std::string &line);
 
+    /**
+     * Get all the integers of the line
+     * @param line a string
+     * @return an ordered array of integers
+     */
+    std::vector<uint64_t> getIntegers(std::string &line);
+
+    /**
+     * Split a string input by a char separator
+     * @param input string to split
+     * @param separator
+     * @return an vector of string separated from input
+     */
+    std::vector<std::string> split(std::string input, char separator);
+
 } // namespace parse
 
 namespace convert {
