@@ -21,6 +21,9 @@
 #include <string>
 #include <vector>
 
+#define print(SOMETHING) std::cout << SOMETHING;
+#define println(SOMETHING) std::cout << SOMETHING << std::endl;
+
 // TODO: add tests for common lib
 
 namespace parse {
