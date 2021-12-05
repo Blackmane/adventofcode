@@ -24,15 +24,9 @@
 
 typedef std::map<std::pair<uint64_t, uint64_t>, uint64_t> VentMap;
 
-void set(VentMap *map, uint64_t x, uint64_t y)
+constexpr int direction(uint64_t a, uint64_t b)
 {
-    auto point = std::pair<int64_t, int64_t>(x, y);
-    auto it    = map->find(point);
-    if (it != map->end()) {
-        it->second++;
-    } else {
-        map->emplace(point, 1);
-    }
+    return a < b ? 1 : a > b ? -1 : 0;
 }
 
 std::string findSolution1(std::vector<std::string> *coordinates)
@@ -42,16 +36,13 @@ std::string findSolution1(std::vector<std::string> *coordinates)
         std::replace(coordinate.begin(), coordinate.end(), ',', ' ');
         auto values = parse::getIntegers(coordinate);
         assert(values.size() == 4);
-
-        if (values[0] == values[2]) {
-            uint64_t maxi = std::max(values[1], values[3]);
-            for (uint64_t i = std::min(values[1], values[3]); i <= maxi; ++i) {
-                set(&ventMap, values[0], i);
-            }
-        } else if (values[1] == values[3]) {
-            uint64_t maxi = std::max(values[0], values[2]);
-            for (uint64_t i = std::min(values[0], values[2]); i <= maxi; ++i) {
-                set(&ventMap, i, values[1]);
+        if ((values[0] == values[2]) || (values[1] == values[3])) {
+            const int x_direction = direction(values[0], values[2]);
+            const int y_direction = direction(values[1], values[3]);
+            const int steps = std::max(std::abs((int64_t)values[2] - (int64_t)values[0]),
+                                       std::abs((int64_t)values[3] - (int64_t)values[1]));
+            for (int i = 0, x = values[0], y = values[1]; i <= steps; ++i, x += x_direction, y += y_direction) {
+                ventMap[std::make_pair(x, y)]++;
             }
         }
     }
@@ -72,29 +63,14 @@ std::string findSolution2(std::vector<std::string> *coordinates)
         std::replace(coordinate.begin(), coordinate.end(), ',', ' ');
         auto values = parse::getIntegers(coordinate);
         assert(values.size() == 4);
-
-        if (values[0] == values[2]) {
-            uint64_t maxi = std::max(values[1], values[3]);
-            for (uint64_t i = std::min(values[1], values[3]); i <= maxi; ++i) {
-                set(&ventMap, values[0], i);
-            }
-        } else if (values[1] == values[3]) {
-            uint64_t maxi = std::max(values[0], values[2]);
-            for (uint64_t i = std::min(values[0], values[2]); i <= maxi; ++i) {
-                set(&ventMap, i, values[1]);
-            }
-        } else if (std::abs((int64_t)values[0] - (int64_t)values[2]) ==
-                   std::abs((int64_t)values[1] - (int64_t)values[3])) {
-            auto steps = std::abs((int64_t)values[0] - (int64_t)values[2]);
-            bool straight =
-                (values[0] < values[2] && values[1] < values[3]) || (values[0] > values[2] && values[1] > values[3]);
-            auto xmin = std::min(values[0], values[2]);
-            auto ymin = std::min(values[1], values[3]);
-            auto ymax = std::max(values[1], values[3]);
-            for (auto i = 0; i <= steps; ++i) {
-                uint64_t x = xmin + i;
-                uint64_t y = straight ? ymin + i : ymax - i;
-                set(&ventMap, x, y);
+        if ((values[0] == values[2]) || (values[1] == values[3]) ||
+            (std::abs((int64_t)values[0] - (int64_t)values[2]) == std::abs((int64_t)values[1] - (int64_t)values[3]))) {
+            auto x_direction = direction(values[0], values[2]);
+            auto y_direction = direction(values[1], values[3]);
+            uint64_t steps = std::max(std::abs((int64_t)values[2] - (int64_t)values[0]),
+                                  std::abs((int64_t)values[3] - (int64_t)values[1]));
+            for (uint64_t i = 0, x = values[0], y = values[1]; i <= steps; ++i, x += x_direction, y += y_direction) {
+                ventMap[std::make_pair(x, y)]++;
             }
         }
     }
