@@ -25,12 +25,12 @@ namespace parse
     void push_back(std::vector<std::string> *list, std::string part)
     {
         list->push_back(part);
-    };
+    }
 
     void push_back_integer(std::vector<uint64_t> *list, std::string part)
     {
         list->push_back(std::stoi(part));
-    };
+    }
 
     void read_all(std::string &inputFilename, std::vector<std::string> *list)
     {
