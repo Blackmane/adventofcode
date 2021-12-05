@@ -41,7 +41,7 @@ def init(path, year, day, template_path):
         ['dayXX.h', day + '.h'],
         ['main.cpp', 'main.cpp'],
         ['test.cpp', 'test.cpp'],
-        ['input.txt', 'input.txt'],
+        ['input_temp.txt', 'input.txt'],
         ['test1.txt', 'test1.txt']
     ]
 
