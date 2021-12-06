@@ -18,7 +18,7 @@ BreakBeforeBraces: Linux
 BreakBeforeInheritanceComma: 'true'
 BreakBeforeTernaryOperators: 'true'
 BreakConstructorInitializers: AfterColon
-ColumnLimit: '80'
+ColumnLimit: '120'
 Cpp11BracedListStyle: 'false'
 FixNamespaceComments: 'true'
 IncludeBlocks: Regroup
