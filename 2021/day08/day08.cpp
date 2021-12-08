@@ -20,16 +20,6 @@
 
 #include <bitset>
 
-/**
- *  aaaa
- * b    c
- * b    c
- *  dddd
- * e    f
- * e    f
- *  gggg
- */
-
 constexpr size_t SEGMENTS_SIZE = 7;
 typedef std::bitset<SEGMENTS_SIZE> Segment;
 constexpr size_t DIGITS_SIZE = 10;
@@ -53,7 +43,7 @@ void populate(std::vector<std::string> *input, std::vector<Entry> *entries)
         for (size_t i = 0; i < SECOND_SIZE; i++) {
             entry.second[i] = secondPart[i + 1];
         }
-        entries->push_back(entry);
+        entries->emplace_back(entry);
     }
 }
 
@@ -83,16 +73,6 @@ Segment combine(std::string input)
 uint64_t analyze2(Entry *entry)
 {
     // i : [0-6] => possiblesMapping[i] is the possible letters assigned to i^ segment
-    /**
-     * possiblesMapping: init
-     * a: abcdefg
-     * b: abcdefg
-     * c: abcdefg
-     * d: abcdefg
-     * e: abcdefg
-     * f: abcdefg
-     * g: abcdefg
-     */
     std::array<Segment, SEGMENTS_SIZE> possiblesMapping;
     for (size_t i = 0; i < SEGMENTS_SIZE; i++) {
         possiblesMapping[i] = ~possiblesMapping[i];
@@ -127,45 +107,19 @@ uint64_t analyze2(Entry *entry)
         }
     }
 
-    /**
-     * possiblesMapping: populated
-     * a: abc
-     * b: abde
-     * c: ab
-     * d: abde
-     * e: abcdefg
-     * f: ab
-     * g: abcdefg
-     */
-
     // Apply rules
     for (size_t i = 0; i < SEGMENTS_SIZE; ++i) {
         // Rule: number 1 can remove his segment from othes
         if (i != 2 && i != 5) {
             possiblesMapping[i] &= ~(possiblesMapping[2]);
         }
-        // Rule: number 7 can remove his segment from othes
-        if (i != 0 && i != 2 && i != 5) {
-            possiblesMapping[i] &= ~(possiblesMapping[0]);
-            // Vale solo con i = 4 e 6
-        }
-        // Rule: number 4 can remove his segment from othes
-        if (i != 1 && i != 2 && i != 3 && i != 5) {
-            possiblesMapping[i] &= ~(possiblesMapping[3]);
-            // Vale solo con i = 4 e 6
-        }
     }
-
-    /**
-     * possiblesMapping: filtered
-     * a: c
-     * b: de
-     * c: ab
-     * d: de
-     * e: fg
-     * f: ab
-     * g: fg
-     */
+    // Rule: number 7 can remove his segment from othes
+    possiblesMapping[4] &= ~(possiblesMapping[0]);
+    possiblesMapping[6] &= ~(possiblesMapping[0]);
+    // Rule: number 4 can remove his segment from othes
+    possiblesMapping[4] &= ~(possiblesMapping[3]);
+    possiblesMapping[6] &= ~(possiblesMapping[3]);
 
     // Find 6 and 3
     for (size_t i = 0; i < DIGITS_SIZE; i++) {
