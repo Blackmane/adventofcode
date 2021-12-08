@@ -64,10 +64,53 @@ Segment combine(std::string input)
 {
     Segment res;
     for (auto c : input) {
-        int pos = c - 'a';
-        res.set(pos, 1);
+        res.set(c - 'a', 1);
     }
     return res;
+}
+
+uint64_t converts(std::array<Segment, SEGMENTS_SIZE> &possiblesMapping, Entry *entry)
+{
+    /* 0: 012 456   */
+    /* 1:   2  5    */
+    /* 2: 0 234 6   */
+    /* 3: 0 23 56   */
+    /* 4:  123 5    */
+    /* 5: 01 3 56   */
+    /* 6: 01 3456   */
+    /* 7: 0 2  5    */
+    /* 8: 0123456   */
+    /* 9: 0123 56    */
+    std::array<Segment, DIGITS_SIZE> converter = {
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[4] | possiblesMapping[5] |
+            possiblesMapping[6],
+        possiblesMapping[2] | possiblesMapping[5],
+        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[4] | possiblesMapping[6],
+        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5] | possiblesMapping[6],
+        possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5],
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[3] | possiblesMapping[5] | possiblesMapping[6],
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[3] | possiblesMapping[4] | possiblesMapping[5] |
+            possiblesMapping[6],
+        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[5],
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[4] |
+            possiblesMapping[5] | possiblesMapping[6],
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5] |
+            possiblesMapping[6],
+    };
+
+    uint64_t result = 0;
+    // All solutions done, return the 4 number value
+    for (size_t i = 0; i < SECOND_SIZE; i++) {
+        result *= 10;
+        auto segment = combine(entry->second[i]);
+        for (size_t j = 0; j < DIGITS_SIZE; j++) {
+            if (segment == converter[j]) {
+                result += j;
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 uint64_t analyze2(Entry *entry)
@@ -182,47 +225,7 @@ uint64_t analyze2(Entry *entry)
         }
     }
 
-    /* 0: 012 456   */
-    /* 1:   2  5    */
-    /* 2: 0 234 6   */
-    /* 3: 0 23 56   */
-    /* 4:  123 5    */
-    /* 5: 01 3 56   */
-    /* 6: 01 3456   */
-    /* 7: 0 2  5    */
-    /* 8: 0123456   */
-    /* 9: 0123 56    */
-
-    std::array<Segment, DIGITS_SIZE> converter = {
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[4] | possiblesMapping[5] |
-            possiblesMapping[6],
-        possiblesMapping[2] | possiblesMapping[5],
-        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[4] | possiblesMapping[6],
-        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5] | possiblesMapping[6],
-        possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5],
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[3] | possiblesMapping[5] | possiblesMapping[6],
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[3] | possiblesMapping[4] | possiblesMapping[5] |
-            possiblesMapping[6],
-        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[5],
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[4] |
-            possiblesMapping[5] | possiblesMapping[6],
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5] |
-            possiblesMapping[6],
-    };
-
-    uint64_t result = 0;
-    // All solutions done, return the 4 number value
-    for (size_t i = 0; i < SECOND_SIZE; i++) {
-        result *= 10;
-        auto segment = combine(entry->second[i]);
-        for (size_t j = 0; j < DIGITS_SIZE; j++) {
-            if (segment == converter[j]) {
-                result += j;
-                break;
-            }
-        }
-    }
-    return result;
+    return converts(possiblesMapping, entry);
 }
 
 uint64_t analyze2bis(Entry *entry)
@@ -287,36 +290,7 @@ uint64_t analyze2bis(Entry *entry)
         }
     }
 
-    std::array<Segment, DIGITS_SIZE> converter = {
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[4] | possiblesMapping[5] |
-            possiblesMapping[6],
-        possiblesMapping[2] | possiblesMapping[5],
-        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[4] | possiblesMapping[6],
-        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5] | possiblesMapping[6],
-        possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5],
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[3] | possiblesMapping[5] | possiblesMapping[6],
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[3] | possiblesMapping[4] | possiblesMapping[5] |
-            possiblesMapping[6],
-        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[5],
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[4] |
-            possiblesMapping[5] | possiblesMapping[6],
-        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5] |
-            possiblesMapping[6],
-    };
-
-    uint64_t result = 0;
-    // All solutions done, return the 4 number value
-    for (size_t i = 0; i < SECOND_SIZE; i++) {
-        result *= 10;
-        auto segment = combine(entry->second[i]);
-        for (size_t j = 0; j < DIGITS_SIZE; j++) {
-            if (segment == converter[j]) {
-                result += j;
-                break;
-            }
-        }
-    }
-    return result;
+    return converts(possiblesMapping, entry);
 }
 
 std::string findSolution1(std::vector<Entry> *entries)
@@ -332,31 +306,11 @@ std::string findSolution2(std::vector<Entry> *entries)
 {
     uint64_t sum = 0;
     for (auto &entry : *entries) {
-        // auto temp = analyze2(&entry);
-        auto temp = analyze2bis(&entry);
-        sum += temp;
+        // sum += analyze2(&entry);
+        sum += analyze2bis(&entry);
     }
     return std::to_string(sum);
 }
-/**
- *   0:      1:      2:      3:      4:
- *  aaaa    ....    aaaa    aaaa    ....
- * b    c  .    c  .    c  .    c  b    c
- * b    c  .    c  .    c  .    c  b    c
- *  ....    ....    dddd    dddd    dddd
- * e    f  .    f  e    .  .    f  .    f
- * e    f  .    f  e    .  .    f  .    f
- *  gggg    ....    gggg    gggg    ....
- *
- *   5:      6:      7:      8:      9:
- *  aaaa    aaaa    aaaa    aaaa    aaaa
- * b    .  b    .  .    c  b    c  b    c
- * b    .  b    .  .    c  b    c  b    c
- *  dddd    dddd    ....    dddd    dddd
- * .    f  e    f  .    f  e    f  .    f
- * .    f  e    f  .    f  e    f  .    f
- *  gggg    gggg    ....    gggg    gggg
- */
 
 std::string process1(std::string file)
 {
