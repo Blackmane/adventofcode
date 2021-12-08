@@ -30,23 +30,6 @@ struct Entry {
     std::array<std::string, SECOND_SIZE> second;
 };
 
-void populate(std::vector<std::string> *input, std::vector<Entry> *entries)
-{
-    for (auto &line : *input) {
-        auto parts = parse::split(line, '|');
-        Entry entry;
-        auto firstPart = parse::split(parts[0], ' ');
-        for (size_t i = 0; i < DIGITS_SIZE; i++) {
-            entry.first[i] = firstPart[i];
-        }
-        auto secondPart = parse::split(parts[1], ' ');
-        for (size_t i = 0; i < SECOND_SIZE; i++) {
-            entry.second[i] = secondPart[i + 1];
-        }
-        entries->emplace_back(entry);
-    }
-}
-
 uint64_t analyze1(Entry *entry)
 {
     uint64_t count = 0;
@@ -60,10 +43,10 @@ uint64_t analyze1(Entry *entry)
     return count;
 }
 
-Segment combine(std::string input)
+Segment combine(std::string &input)
 {
     Segment res;
-    for (auto c : input) {
+    for (auto& c : input) {
         res.set(c - 'a', 1);
     }
     return res;
@@ -293,43 +276,48 @@ uint64_t analyze2bis(Entry *entry)
     return converts(possiblesMapping, entry);
 }
 
-std::string findSolution1(std::vector<Entry> *entries)
+void populateEntry(std::string &line, Entry *entry)
 {
-    uint64_t sum = 0;
-    for (auto &entry : *entries) {
-        sum += analyze1(&entry);
+    auto parts = parse::split(line, '|');
+    auto firstPart = parse::split(parts[0], ' ');
+    for (size_t i = 0; i < DIGITS_SIZE; i++) {
+        entry->first[i] = firstPart[i];
     }
-    return std::to_string(sum);
+    auto secondPart = parse::split(parts[1], ' ');
+    for (size_t i = 0; i < SECOND_SIZE; i++) {
+        entry->second[i] = secondPart[i + 1];
+    }
 }
 
-std::string findSolution2(std::vector<Entry> *entries)
+uint64_t convertInput1(std::string line)
 {
-    uint64_t sum = 0;
-    for (auto &entry : *entries) {
-        // sum += analyze2(&entry);
-        sum += analyze2bis(&entry);
-    }
-    return std::to_string(sum);
+    Entry entry;
+    populateEntry(line, &entry);
+    return analyze1(&entry);
+}
+
+uint64_t convertInput2(std::string line)
+{
+    Entry entry;
+    populateEntry(line, &entry);
+    return analyze2bis(&entry);
+}
+
+void sum(uint64_t value, uint64_t *total)
+{
+    *total = value + *total;
 }
 
 std::string process1(std::string file)
 {
-    std::vector<std::string> valueList;
-    parse::read_all(file, &valueList);
-    std::vector<Entry> entries;
-    populate(&valueList, &entries);
-
-    std::string result = findSolution1(&entries);
-    return result;
+    uint64_t value = 0;
+    parse::read<uint64_t, uint64_t *>(file, '\n', convertInput1, sum, &value);
+    return std::to_string(value);
 }
 
 std::string process2(std::string file)
 {
-    std::vector<std::string> valueList;
-    parse::read_all(file, &valueList);
-    std::vector<Entry> entries;
-    populate(&valueList, &entries);
-
-    std::string result = findSolution2(&entries);
-    return result;
+    uint64_t value = 0;
+    parse::read<uint64_t, uint64_t *>(file, '\n', convertInput2, sum, &value);
+    return std::to_string(value);
 }
