@@ -225,6 +225,100 @@ uint64_t analyze2(Entry *entry)
     return result;
 }
 
+uint64_t analyze2bis(Entry *entry)
+{
+    std::string four;
+    std::array<int, SEGMENTS_SIZE> segment_frequency = { 0, 0, 0, 0, 0, 0, 0 };
+    for (size_t i = 0; i < DIGITS_SIZE; i++) {
+        for (auto c : entry->first[i]) {
+            segment_frequency[c - 'a']++;
+        }
+        if (entry->first[i].size() == 4) {
+            four = entry->first[i];
+        }
+    }
+
+    std::array<Segment, SEGMENTS_SIZE> possiblesMapping;
+
+    /*
+    a: 02356789     8
+    b: 045689       6
+    c: 01346789     8
+    d: 2345689      7
+    e: 0268         4
+    f: 013456789    9
+    g: 0235689      7
+    */
+
+    for (size_t i = 0; i < SEGMENTS_SIZE; i++) {
+        switch (segment_frequency[i]) {
+            case 9:
+                // 'a' + i is f
+                possiblesMapping[5].set(i);
+                break;
+            case 8:
+                // 'a' + i is a or c
+                if (four.find('a' + i) != std::string::npos) {
+                    // is c
+                    possiblesMapping[2].set(i);
+                } else {
+                    // is a
+                    possiblesMapping[0].set(i);
+                }
+                break;
+            case 7:
+                // 'a' + i is d or g
+                if (four.find('a' + i) != std::string::npos) {
+                    // is d
+                    possiblesMapping[3].set(i);
+                } else {
+                    // is g
+                    possiblesMapping[6].set(i);
+                }
+                break;
+            case 6:
+                // 'a' + i is b
+                possiblesMapping[1].set(i);
+                break;
+            case 4:
+                // 'a' + i is e
+                possiblesMapping[4].set(i);
+                break;
+        }
+    }
+
+    std::array<Segment, DIGITS_SIZE> converter = {
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[4] | possiblesMapping[5] |
+            possiblesMapping[6],
+        possiblesMapping[2] | possiblesMapping[5],
+        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[4] | possiblesMapping[6],
+        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5] | possiblesMapping[6],
+        possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5],
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[3] | possiblesMapping[5] | possiblesMapping[6],
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[3] | possiblesMapping[4] | possiblesMapping[5] |
+            possiblesMapping[6],
+        possiblesMapping[0] | possiblesMapping[2] | possiblesMapping[5],
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[4] |
+            possiblesMapping[5] | possiblesMapping[6],
+        possiblesMapping[0] | possiblesMapping[1] | possiblesMapping[2] | possiblesMapping[3] | possiblesMapping[5] |
+            possiblesMapping[6],
+    };
+
+    uint64_t result = 0;
+    // All solutions done, return the 4 number value
+    for (size_t i = 0; i < SECOND_SIZE; i++) {
+        result *= 10;
+        auto segment = combine(entry->second[i]);
+        for (size_t j = 0; j < DIGITS_SIZE; j++) {
+            if (segment == converter[j]) {
+                result += j;
+                break;
+            }
+        }
+    }
+    return result;
+}
+
 std::string findSolution1(std::vector<Entry> *entries)
 {
     uint64_t sum = 0;
@@ -238,7 +332,8 @@ std::string findSolution2(std::vector<Entry> *entries)
 {
     uint64_t sum = 0;
     for (auto &entry : *entries) {
-        auto temp = analyze2(&entry);
+        // auto temp = analyze2(&entry);
+        auto temp = analyze2bis(&entry);
         sum += temp;
     }
     return std::to_string(sum);
