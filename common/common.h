@@ -30,16 +30,15 @@ namespace parse {
 
     /**
      * Read a file
-     * @tparam L type of
      * @tparam S structure where to save the file
      * @param inputFilename
      * @param delimiter
      * @param insert
      * @param structure
      */
-    template<class L, class S>
+    template<class S>
     void read(std::string inputFilename, char delimiter,
-            std::function<void(S, L)> insert, S structure)
+            std::function<void(S, std::string)> insert, S structure)
     {
         std::ifstream source;
         source.open(inputFilename, std::ifstream::in);
