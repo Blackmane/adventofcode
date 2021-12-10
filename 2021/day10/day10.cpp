@@ -109,10 +109,9 @@ uint64_t convertInput2(std::string line)
     }
 
     uint64_t res = 0;
-    size_t n = stack.size();
-    for (size_t i = n; i > 0 ; --i) {
+    while (!stack.empty()) {
         res *= 5;
-        switch (stack[i-1]) {
+        switch (stack.back()) {
             case '(':
                 res += 1;
                 break;
@@ -126,6 +125,7 @@ uint64_t convertInput2(std::string line)
                 res += 4;
                 break;
         }
+        stack.pop_back();
     }
 
     return res;
