@@ -81,6 +81,24 @@ uint64_t findSolution1(Input *input)
     return input->dots.size();
 }
 
+void printDots(Input *input, const uint64_t xMax, const uint64_t yMax)
+{
+    std::vector<char> matrix(xMax * yMax, ' ');
+    for (auto dot : input->dots) {
+        matrix[dot.second * xMax + dot.first] = '#';
+    }
+    for (size_t j = 0; j < yMax; ++j) {
+        for (size_t i = 0; i < xMax; ++i) {
+            if (matrix[j * xMax + i] == '#') {
+                print("█");
+            } else {
+                print(" ");
+            }
+        }
+        println("");
+    }
+}
+
 std::string findSolution2(Input *input)
 {
     for (auto instr : input->instructions) {
@@ -113,23 +131,18 @@ std::string findSolution2(Input *input)
             }
         }
     }
-    constexpr size_t LINE_NUM = 6;
-    constexpr size_t LINE_LEN = 8*5;
-
-    std::array<char, LINE_LEN * LINE_NUM> matrix;
+    uint64_t xMax = 0;
+    uint64_t yMax = 0;
     for (auto dot : input->dots) {
-        matrix[dot.second * LINE_LEN + dot.first] = '#';
-    }
-    for (size_t j = 0; j < LINE_NUM; ++j) {
-        for (size_t i = 0; i < LINE_LEN; ++i) {
-            if (matrix[j * LINE_LEN + i] == '#') {
-                print("██");
-            } else {
-                print("  ");
-            }
+        if (dot.first > xMax) {
+            xMax = dot.first;
         }
-        println("");
+        if (dot.second > yMax) {
+            yMax = dot.second;
+        }
     }
+
+    printDots(input, xMax + 1, yMax + 1);
 
     return "";
 }
