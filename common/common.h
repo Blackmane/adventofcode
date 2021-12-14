@@ -17,6 +17,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <set>
 #include <string>
 #include <vector>
@@ -140,3 +141,24 @@ namespace convert {
     uint64_t fromBinary(std::string &binary);
 
 } // namespace convert
+
+namespace op {
+    /**
+     * @brief Increase the current key of quantity value if it exists, else insert
+     *
+     * @tparam M map type
+     * @tparam K key type
+     * @tparam V value type
+     * @param key key to modify
+     * @param quantity value to increment
+     */
+    template<class K, class V> void increaseOrInsert(std::map<K, V> *map, K key, V quantity)
+    {
+        auto it = map->find(key);
+        if (it == map->end()) {
+            map->insert(std::make_pair(key, quantity));
+        } else {
+            it->second += quantity;
+        }
+    }
+} // namespace op
