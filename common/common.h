@@ -27,8 +27,8 @@
 
 // TODO: add tests for common lib
 
-namespace parse {
-
+namespace parse
+{
     /**
      * Read a file
      * @tparam S structure where to save the file
@@ -131,8 +131,8 @@ namespace parse {
 
 } // namespace parse
 
-namespace convert {
-
+namespace convert
+{
     /**
      * Convert a string of binary to a integer.
      * Example: from 101110 get 46
@@ -142,7 +142,8 @@ namespace convert {
 
 } // namespace convert
 
-namespace op {
+namespace op
+{
     /**
      * @brief Increase the current key of quantity value if it exists, else insert
      *
@@ -162,3 +163,18 @@ namespace op {
         }
     }
 } // namespace op
+
+namespace matrix
+{
+    /**
+     * @brief return the list of orthogonal neighbours
+     *
+     * @param i current vertical position
+     * @param j current horizontal position
+     * @param height vertical length
+     * @param width horizontal length
+     * @return std::vector<std::pair<size_t, size_t>> the list of neighbours
+     */
+    std::vector<std::pair<size_t, size_t>> neighbours4(size_t i, size_t j, size_t height, size_t width);
+
+} // namespace matrix

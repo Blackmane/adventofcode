@@ -21,7 +21,6 @@
 
 namespace parse
 {
-
     void push_back(std::vector<std::string> *list, std::string part)
     {
         list->push_back(part);
@@ -96,7 +95,6 @@ namespace parse
 
 namespace convert
 {
-
     uint64_t fromBinary(std::string &binary)
     {
         uint64_t value = 0;
@@ -111,3 +109,26 @@ namespace convert
     }
 
 } // namespace convert
+
+namespace matrix
+{
+    std::vector<std::pair<size_t, size_t>> neighbours4(size_t i, size_t j, size_t height, size_t width)
+    {
+        std::vector<std::pair<size_t, size_t>> n;
+        if (i > 0) {
+            n.push_back(std::make_pair(i - 1, j));
+        }
+        if (i < height - 1) {
+            n.push_back(std::make_pair(i + 1, j));
+        }
+        if (j > 0) {
+            n.push_back(std::make_pair(i, j - 1));
+        }
+        if (j < width - 1) {
+            n.push_back(std::make_pair(i, j + 1));
+        }
+
+        return n;
+    }
+
+} // namespace matrix
