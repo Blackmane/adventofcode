@@ -62,6 +62,16 @@ void convertLine(TargetArea *area, std::string line)
     area->yMax = std::stoll(values[2].substr(dotPos + 2, values[2].size() - 1));
 }
 
+int64_t foundMinVelX(int64_t threshold)
+{
+    for (int64_t n = 1; n < threshold / 2; ++n) {
+        if (n * (n + 1) / 2 >= threshold && (n - 1) * n / 2 < threshold) {
+            return n;
+        }
+    }
+    return 0;
+}
+
 int64_t track(int64_t velX, int64_t velY, TargetArea *area)
 {
     int64_t max = 0;
@@ -79,10 +89,15 @@ int64_t track(int64_t velX, int64_t velY, TargetArea *area)
 
 int64_t findSolution1(TargetArea *area)
 {
+    int64_t maxVelX = area->xMax / 2;
+    int64_t minVelX = foundMinVelX(area->xMin);
+    int64_t maxVelY = -(area->yMin + 1);
+    int64_t minVelY = area->yMin / 2 + 1;
+
     int64_t maxHeight = 0;
-    for (int64_t velX = 0; velX <= area->xMax + 1; velX++) {
-        for (int64_t velY = 0; velY <= velX; velY++) {
-            auto max = track(velX - velY, velY, area);
+    for (int64_t velX = minVelX - 1; velX <= maxVelX + 1; velX++) {
+        for (int64_t velY = minVelY - 1; velY <= maxVelY + 1; velY++) {
+            auto max = track(velX, velY, area);
             if (max > maxHeight) {
                 maxHeight = max;
             }
@@ -104,20 +119,20 @@ int64_t reachable(int64_t velX, int64_t velY, TargetArea *area)
 
 int64_t findSolution2(TargetArea *area)
 {
-    int64_t count = 0;
+    int64_t maxVelX = area->xMax / 2;
+    int64_t minVelX = foundMinVelX(area->xMin);
+    int64_t maxVelY = -(area->yMin + 1);
+    int64_t minVelY = area->yMin / 2 + 1;
 
-    int64_t bound =
-        std::max(std::abs(area->xMax), std::abs(area->xMin)) + std::max(std::abs(area->yMax), std::abs(area->yMin));
-    for (int64_t velX = 0; velX <= bound; velX++) {
-        for (int64_t velY = 0; velY <= velX; velY++) {
-            if (reachable(velX - velY, velY, area)) {
-                count++;
-            }
-            if (velY != 0 && reachable(velX - velY, -1 * velY, area)) {
+    int64_t count = 0;
+    for (int64_t velX = minVelX - 1; velX <= maxVelX + 1; velX++) {
+        for (int64_t velY = minVelY - 1; velY <= maxVelY + 1; velY++) {
+            if (reachable(velX, velY, area)) {
                 count++;
             }
         }
     }
+    count += (area->xMax - area->xMin + 1) * (std::abs(area->yMin - area->yMax) + 1);
     return count;
 }
 
