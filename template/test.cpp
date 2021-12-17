@@ -26,19 +26,16 @@ void tester(std::string inputFile, std::function<std::string(std::string)> proce
     CHECK_THAT( result, Catch::Matchers::Equals( expected ) );
 }
 
+#define TESTING(ID, PROCESS, RESULT) SECTION ("Test "#ID) {tester("$YEAR/$DAY/test"#ID".txt", PROCESS, RESULT);}
 
 TEST_CASE( "Test $DAY", "[$DAY]" ) {
 
     SECTION ("Problem 1") {
-        SECTION ("Test 1") {
-            tester("$YEAR/$DAY/test1.txt", process1, "0");
-        }
+        TESTING(1, process1, "0")
     }
 
     SECTION ("Problem 2") {
-        SECTION ("Test 1") {
-            tester("$YEAR/$DAY/test1.txt", process2, "0");
-        }
+        TESTING(1, process2, "0")
     }
 
 }
