@@ -48,101 +48,68 @@ void convertInput(FloorMap *floorMap, std::string line)
     }
 }
 
-void addNearest(Positions *pixels, Pos pos)
+uint64_t findSolution(FloorMap *floorMap, int64_t n)
 {
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            pixels->insert(std::make_pair(pos.first + i - 1, pos.second + j - 1));
-        }
-    }
-}
-
-uint64_t getValue(Positions *pixels, Pos pos)
-{
-    uint64_t value = 0;
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            value *= 2;
-            if (pixels->find(std::make_pair(pos.first + i - 1, pos.second + j - 1)) != pixels->end()) {
-                value++;
+    for (int64_t step = 1; step <= n; step++) {
+        int64_t minI = floorMap->lightPixels.begin()->first;
+        int64_t maxI = floorMap->lightPixels.begin()->first;
+        int64_t minJ = floorMap->lightPixels.begin()->second;
+        int64_t maxJ = floorMap->lightPixels.begin()->second;
+        for (auto p : floorMap->lightPixels) {
+            if (p.first < minI) {
+                minI = p.first;
+            }
+            if (p.first > maxI) {
+                maxI = p.first;
+            }
+            if (p.second < minJ) {
+                minJ = p.second;
+            }
+            if (p.second > maxJ) {
+                maxJ = p.second;
             }
         }
-    }
-    return value;
-}
 
-uint64_t findSolution1(FloorMap *floorMap, int64_t n)
-{
-    int64_t minI = floorMap->lightPixels.begin()->first;
-    int64_t maxI = floorMap->lightPixels.begin()->first;
-    int64_t minJ = floorMap->lightPixels.begin()->second;
-    int64_t maxJ = floorMap->lightPixels.begin()->second;
-    for (auto p : floorMap->lightPixels) {
-        if (p.first < minI) {
-            minI = p.first;
-        }
-        if (p.first > maxI) {
-            maxI = p.first;
-        }
-        if (p.second < minJ) {
-            minJ = p.second;
-        }
-        if (p.second > maxJ) {
-            maxJ = p.second;
-        }
-    }
-
-    int64_t border = 10;
-    for (int64_t step = 0; step < n; step++) {
         Positions newValues;
-        for (int64_t i = minI - border; i <= maxI + border; ++i) {
-            for (int64_t j = minJ - border; j <= maxJ + border; ++j) {
-                if (floorMap->enhancement[getValue(&floorMap->lightPixels, std::make_pair(i, j))] == '#') {
+        for (int64_t i = minI - 1; i <= maxI + 1; ++i) {
+            for (int64_t j = minJ - 1; j <= maxJ + 1; ++j) {
+                size_t index = 0;
+                for (int nearI = i - 1; nearI <= i + 1; nearI++) {
+                    for (int nearJ = j - 1; nearJ <= j + 1; nearJ++) {
+                        index *= 2;
+                        bool isBorder = nearI < minI || nearI > maxI || nearJ < minJ || nearJ > maxJ;
+                        if (isBorder && step % 2 == 0 && floorMap->enhancement[0] == '#') {
+                            index++;
+                        }
+                        if (!isBorder &&
+                            floorMap->lightPixels.find(std::make_pair(nearI, nearJ)) != floorMap->lightPixels.end()) {
+                            index++;
+                        }
+                    }
+                }
+                if (floorMap->enhancement[index] == '#') {
                     newValues.insert(std::make_pair(i, j));
-                    // print("(" << i << "," << j << ")")
-                    //     floorMap->lightPixels.insert(p);
-                    //     print("(" << p.first << "," << p.second << ")")
-                    // } else {
-                    //     auto it = floorMap->lightPixels.find(p);
-                    //     if (it != floorMap->lightPixels.end()) {
-                    //         floorMap->lightPixels.erase(it);
-                    //     }
                 }
             }
         }
-        // println("")
-
-        floorMap->lightPixels.clear();
-        for (auto p : newValues) {
-            floorMap->lightPixels.insert(p);
-        }
+        floorMap->lightPixels = newValues;
     }
 
-        //border--;
-    uint64_t count = 0;
-    for (auto &p : floorMap->lightPixels) {
-        if (p.first > minI - border && p.first < maxI + border && p.second > minJ - border &&
-            p.second < maxJ + border) {
-            count++;
-        }
-    }
-
-    return count;
+    return floorMap->lightPixels.size();
 }
 
 std::string process1(std::string file)
 {
     FloorMap floor;
     parse::read<FloorMap *>(file, '\n', convertInput, &floor);
-    auto res = findSolution1(&floor, 2);
+    auto res = findSolution(&floor, 2);
     return std::to_string(res);
-    // 692 too low
-    // 5686 too low
-    // 5765
-    // 5813 too high
 }
 
 std::string process2(std::string file)
 {
-    return "0";
+    FloorMap floor;
+    parse::read<FloorMap *>(file, '\n', convertInput, &floor);
+    auto res = findSolution(&floor, 50);
+    return std::to_string(res);
 }

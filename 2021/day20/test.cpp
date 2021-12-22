@@ -32,10 +32,6 @@ TEST_CASE( "Test day20", "[day20]" ) {
 
     SECTION ("Problem 1") {
         TESTING(1, process1, "35")
-        SECTION ("Test X") {
-            auto result = process1("2021/day20/input.txt");
-            REQUIRE_THAT( result, Catch::Matchers::Equals( "5765" ) );
-        }
     }
 
     SECTION ("Problem 2") {
