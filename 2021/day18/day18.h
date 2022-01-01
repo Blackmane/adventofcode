@@ -46,6 +46,9 @@ struct Node {
     Node (Node * parentPtr = nullptr);
     uint64_t magnitude();
     void explodeLeft();
+    void explodeRight();
+    void split(Node * cur);
+    void printNode();
 };
 
 std::unique_ptr<Node> makeLeaf(int value, Node *parent = nullptr);
@@ -59,6 +62,7 @@ struct Tree {
     void reduce();
     bool explode();
     bool split();
+    void printer();
 };
 
 typedef std::vector<std::unique_ptr<Tree>> TreeList;

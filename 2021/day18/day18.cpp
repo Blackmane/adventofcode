@@ -18,6 +18,8 @@
 
 #include <queue>
 
+constexpr uint64_t ExplodeDepth = 4;
+
 Node::Node(Node *parentPtr)
 {
     parent = parentPtr;
@@ -31,6 +33,83 @@ uint64_t Node::magnitude()
     } else {
         return 3 * left->magnitude() + 2 * right->magnitude();
     }
+}
+void Node::explodeLeft()
+{
+    if (!(!isALeaf && left->isALeaf && right->isALeaf && depth >= ExplodeDepth)) {
+        println("ERROR EXPLODE LEFT");
+        return;
+    }
+    auto val = left->value;
+    auto current = left.get();
+    auto curParent = current->parent;
+    while (curParent && curParent->left.get() == current) {
+        current = curParent;
+        curParent = current->parent;
+    }
+    // CHECK root
+    if (curParent) {
+        current = curParent->left.get();
+        while (current && !current->isALeaf) {
+            if (current->right.get()) {
+                current = current->right.get();
+            } else {
+                current = current->left.get();
+            }
+        }
+        if (current) {
+            current->value += val;
+        }
+    }
+}
+
+void Node::explodeRight()
+{
+    if (!(!isALeaf && left->isALeaf && right->isALeaf && depth >= ExplodeDepth)) {
+        println("ERROR EXPLODE RIGHT");
+        return;
+    }
+    auto val = right->value;
+    auto current = right.get();
+    auto curParent = current->parent;
+    while (curParent && curParent->right.get() == current) {
+        current = curParent;
+        curParent = current->parent;
+    }
+    // CHECK root
+    if (curParent) {
+        current = curParent->right.get();
+        while (current && !current->isALeaf) {
+            if (current->left.get()) {
+                current = current->left.get();
+            } else {
+                current = current->right.get();
+            }
+        }
+        if (current) {
+            current->value += val;
+        }
+    }
+}
+
+void Node::split(Node *cur)
+{
+    if (!(isALeaf && value >= 10)) {
+        println("ERROR SPLIT");
+        return;
+    }
+    isALeaf = false;
+    left = makeLeaf(value / 2, cur);
+    right = makeLeaf((value + 1) / 2, cur);
+    value = -1;
+}
+
+std::unique_ptr<Node> makeLeaf(int value, Node *parent)
+{
+    std::unique_ptr<Node> node = std::make_unique<Node>(parent);
+    node->isALeaf = true;
+    node->value = value;
+    return node;
 }
 
 Tree::Tree()
@@ -52,7 +131,7 @@ void Tree::updateDepths()
         current = visit.front();
         visit.pop_front();
         current->depth = (current->parent == nullptr) ? 0 : current->parent->depth + 1;
-        if (!current->isALeaf) {
+        {
             if (current->left.get() != nullptr) {
                 visit.push_back(current->left.get());
             }
@@ -63,19 +142,38 @@ void Tree::updateDepths()
     }
 }
 
-void Node::explodeLeft() {
-    if (!(isALeaf && left->isALeaf && right->isALeaf && depth >= 4)) {
-        println("ERROR EXPLODE LEFT");
-        return;
+bool Tree::explode()
+{
+    Node *current = root.get();
+    std::deque<Node *> visit;
+    visit.push_front(current);
+    while (!visit.empty()) {
+        current = visit.front();
+        visit.pop_front();
+        if (current == nullptr) {
+            // Leaf's right and left
+            continue;
+        }
+        if (!current->isALeaf && current->left->isALeaf && current->right->isALeaf && current->depth >= ExplodeDepth) {
+            current->explodeLeft();
+            current->explodeRight();
+            auto parent = current->parent;
+            if (current == parent->left.get()) {
+                parent->left = makeLeaf(0, parent);
+            }
+            if (current == parent->right.get()) {
+                parent->right = makeLeaf(0, parent);
+            }
+            return true;
+        }
+        visit.push_front(current->right.get());
+        visit.push_front(current->left.get());
     }
-    auto value = left->value;
-    auto current = left.get();
-    auto curParent = current->parent;
-    while (parent) 
-
+    return false;
 }
 
-bool Tree::explode() {
+bool Tree::split()
+{
     Node *current = root.get();
     std::deque<Node *> visit;
     visit.push_front(current);
@@ -85,94 +183,44 @@ bool Tree::explode() {
         if (current == nullptr) {
             continue;
         }
-/* 
-    [
-        [
-            [
-                [
-                parent
-                    [
-                        5,
-                        5
-                    ],
-                    4
-                ],
-                3
-            ],
-            2
-        ],
-        1
-    ]
-*/
 
-        if (!current->isALeaf && current->left->isALeaf && current->right->isALeaf && current->depth >= 4) {
-                // EXPLODE
-                auto parent = current->parent;
-                if (current == parent->left.get()) {
-                    // Explode to left
-                    current.explodeLeft();
-
-                    // Explode to right
-                    Node* pointer = parent->right.get();
-                    while (pointer->isALeaf()) {
-                        pointer = pointer->left.get();
-                    }
-                    pointer->value += current->right->value;
-
-                    parent->left = makeLeaf(0, parent);
-                }
-                if (current == parent->right.get()) {
-
-                }
-                return true;
-            
+        if (current->isALeaf && current->value >= 10) {
+            current->split(current);
+            return true;
         }
-        visit.push_front(current->left.get());
         visit.push_front(current->right.get());
+        visit.push_front(current->left.get());
     }
     return false;
 }
 
-bool Tree::split() {
-    return false;
+void Tree::reduce()
+{
+    bool done = false;
+    while (!done) {
+        if (explode()) {
+            continue;
+        }
+        if (split()) {
+            continue;
+        }
+        done = true;
+    }
 }
 
-void Tree::reduce() {
-
-}
-
-void Tree::operator+(Tree *right) {
+void Tree::operator+(Tree *right)
+{
     auto newRoot = std::make_unique<Node>();
+    newRoot->depth = 0;
+    newRoot->isALeaf = false;
+    newRoot->parent = nullptr;
+    root->parent = newRoot.get();
     newRoot->left = std::move(root);
+    right->root->parent = newRoot.get();
     newRoot->right = std::move(right->root);
     root = std::move(newRoot);
     updateDepths();
     reduce();
-} 
-/*
-This snailfish homework is about addition.
-To add two snailfish numbers, form a pair from the left and right parameters of the addition operator. 
-For example,
-[1,2] + [[3,4],5] becomes [[1,2],[[3,4],5]].
-
-There's only one problem: snailfish numbers must always be reduced, 
-and the process of adding two snailfish numbers can result in snailfish numbers that need to be reduced.
-
-To reduce a snailfish number, you must repeatedly do the first action in this list 
-that applies to the snailfish number:
-
-    If any pair is nested inside four pairs, the leftmost such pair explodes.
-    If any regular number is 10 or greater, the leftmost such regular number splits.
-
-
-*/
-
-std::unique_ptr<Node> makeLeaf(int value, Node *parent)
-{
-    std::unique_ptr<Node> node = std::make_unique<Node>(parent);
-    node->isALeaf = true;
-    node->value = value;
-    return node;
 }
 
 void convertLine(TreeList *treeList, std::string line)
@@ -183,7 +231,6 @@ void convertLine(TreeList *treeList, std::string line)
     bool isLeft = true;
     // Skip first '['
     for (auto c : line.substr(1, line.size())) {
-        println(">" << c);
         if (c >= '0' && c <= '9') {
             if (isLeft) {
                 current->left = makeLeaf(c - '0', current);
@@ -215,21 +262,37 @@ void convertLine(TreeList *treeList, std::string line)
         }
     }
     treeList->push_back(std::move(tree));
-
-    /*
-    [1,2]
-    [[1,2],3]
-    [9,[8,7]]
-    [[1,9],[8,5]]
-    [[[[1,2],[3,4]],[[5,6],[7,8]]],9]
-    [[[9,[3,8]],[[0,9],6]],[[[3,7],[4,9]],3]]
-    [[[[1,3],[5,3]],[[1,3],[8,7]]],[[[4,9],[6,9]],[[8,2],[7,3]]]]
-    */
 }
 
 uint64_t findSolution1(TreeList *treeList)
 {
-    return 0;
+    Tree *sum = treeList->at(0).get();
+    for (size_t i = 1, n = treeList->size(); i < n; ++i) {
+        *sum + treeList->at(i).get();
+    }
+    return sum->magnitude();
+}
+
+uint64_t findSolution2(std::vector<std::string> *input)
+{
+    uint64_t maxValue = 0;
+    for (size_t i = 0, n = input->size(); i < n; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+            if (i != j) {
+                auto iTree = std::make_unique<TreeList>();
+                convertLine(iTree.get(), input->at(i));
+                auto jTree = std::make_unique<TreeList>();
+                convertLine(jTree.get(), input->at(j));
+                Tree *sum = iTree->at(0).get();
+                *sum + jTree->at(0).get();
+                auto magnitude = sum->magnitude();
+                if (magnitude > maxValue) {
+                    maxValue = magnitude;
+                }
+            }
+        }
+    }
+    return maxValue;
 }
 
 std::string process1(std::string file)
@@ -242,5 +305,8 @@ std::string process1(std::string file)
 
 std::string process2(std::string file)
 {
-    return "0";
+    std::vector<std::string> input;
+    parse::read_all(file, &input);
+    auto res = findSolution2(&input);
+    return std::to_string(res);
 }
