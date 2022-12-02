@@ -18,7 +18,6 @@
 
 #include "common.h"
 
-
 struct Cube {
     int64_t min_x;
     int64_t max_x;
@@ -27,6 +26,26 @@ struct Cube {
     int64_t min_z;
     int64_t max_z;
     bool add;
+
+    Cube intersect(Cube& c) {
+        Cube result;
+        result.add = !c.add;
+        result.min_x = std::max(min_x, c.min_x);
+        result.max_x = std::min(max_x, c.max_x);
+        result.min_y = std::max(min_y, c.min_y);
+        result.max_y = std::min(max_y, c.max_y);
+        result.min_z = std::max(min_z, c.min_z);
+        result.max_z = std::min(max_z, c.max_z);
+        return result;
+    }
+
+    bool isEmpty() {
+        return min_x > max_x || min_y > max_y || min_z > max_z;
+    }
+
+    uint64_t cardinality () {
+        return (max_x - min_x + 1) * (max_y - min_y + 1) * (max_z - min_z + 1);
+    }
 };
 
 void convertLine1(std::vector<Cube> *cubes, std::string line)
@@ -60,10 +79,21 @@ void convertLine2(std::vector<Cube> *cubes, std::string line)
     cube.min_z = std::stoll(parts[3].substr(0, parts[3].find('.')));
     cube.max_z = std::stoll(parts[3].substr(parts[3].find('.') + 2, parts[3].size()));
 
-    cubes->push_back(cube);
+    std::vector<Cube> toAdd;
+    for (auto &&c : *cubes) {
+        auto intersection = cube.intersect(c);
+        if (!intersection.isEmpty()) {
+            toAdd.push_back(intersection);
+        }
+    }
+    cubes->insert(cubes->end(), toAdd.begin(), toAdd.end());
+
+    if (cube.add) {
+        cubes->push_back(cube);
+    }
 }
 
-uint64_t findSolution(std::vector<Cube> *cubes)
+uint64_t findSolution1(std::vector<Cube> *cubes)
 {
     uint64_t count = 0;
     int64_t min_x = cubes->at(0).min_x;
@@ -102,16 +132,29 @@ uint64_t findSolution(std::vector<Cube> *cubes)
     return count;
 }
 
+uint64_t findSolution2(std::vector<Cube> *cubes)
+{
+    uint64_t count = 0;
+    for (auto&&cube : *cubes) {
+        if (cube.add) {
+            count += cube.cardinality();
+        } else {
+            count -= cube.cardinality();
+        }
+    }
+    return count;
+}
+
 std::string process1(std::string file)
 {
     std::vector<Cube> cubes;
     parse::read<std::vector<Cube> *>(file, '\n', convertLine1, &cubes);
-    return std::to_string(findSolution(&cubes));
+    return std::to_string(findSolution1(&cubes));
 }
 
 std::string process2(std::string file)
 {
     std::vector<Cube> cubes;
     parse::read<std::vector<Cube> *>(file, '\n', convertLine2, &cubes);
-    return std::to_string(findSolution(&cubes));
+    return std::to_string(findSolution2(&cubes));
 }
