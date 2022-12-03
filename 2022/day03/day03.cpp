@@ -15,80 +15,78 @@
  ****************************************************************************/
 
 #include "day03.h"
+
 #include "common.h"
 
 #include <algorithm>
+#include <bitset>
 
-uint64_t priorityOf (char item) {
+uint64_t positionOf(char item)
+{
     if (item >= 'a' && item <= 'z') {
-        return item - 'a' + 1;
+        return item - 'a';
     }
-    return item - 'A' + 27;
+    return item - 'A' + 26;
 }
 
-uint64_t getPriority (std::string line) {
+uint64_t getPriority(const std::string &line)
+{
     auto n = line.size();
     auto half = n / 2;
 
+    std::bitset<52> firstPart;
     for (size_t i = 0; i < half; ++i) {
-        for (size_t j = half; j < n; ++j) {
-            if (line[i] == line[j]) {
-
-                return priorityOf(line[i]);
-            }
-        }
+        firstPart.set(positionOf(line[i]));
     }
-    return 0;
+    std::bitset<52> secondPart;
+    for (size_t j = half; j < n; ++j) {
+        secondPart.set(positionOf(line[j]));
+    }
+    auto common = firstPart & secondPart;
+    return common._Find_first() + 1;
+
 }
 
-bool contains(std::string s, char c) {
-    for (int i = 0, n = s.size(); i < n; i++) {
-        if (s[i] == c) {
-            return true;
-        }
-        if (s[i] > c) {
-            return false;
-        }
-    }
-    return false;
+void add(uint64_t value, uint64_t *sum)
+{
+    *sum += value;
 }
 
-char getCommont(std::string& a, std::string& b, std::string& c) {
-    for (int i = 0, n = a.size(); i < n; i++) {
-        if (contains(b, a[i]) && contains(c, a[i])) {
-            return a[i];
-        }
-    }
-    return 'a';
+std::string process1(std::string file)
+{
+    uint64_t count = 0;
+    parse::read<uint64_t, uint64_t *>(file, '\n', &getPriority, &add, &count);
+    return std::to_string(count);
 }
 
-uint64_t getBadges (std::vector<std::string> *list) {
+std::bitset<52> strToBitset(const std::string &line)
+{
+    std::bitset<52> contains;
+    for (auto c : line) {
+        contains.set(positionOf(c));
+    }
+    return contains;
+}
+
+void insertBitset(std::vector<std::bitset<52>> *list, const std::string &line)
+{
+    list->push_back(strToBitset(line));
+}
+
+uint64_t getBadges(std::vector<std::bitset<52>> *list)
+{
     uint64_t count = 0;
     for (int i = 0, n = list->size(); i < n - 2; i = i + 3) {
-        auto common = getCommont(list->at(i), list->at(i + 1), list->at(i + 2));
-        count += priorityOf(common);
+        auto common = list->at(i) & list->at(i + 1) & list->at(i + 2);
+        count += common._Find_first() + 1;
     }
     return count;
 }
 
-void add(uint64_t value, uint64_t* sum) {
-    *sum += value;
-}
-
-std::string process1(std::string file) {
-    uint64_t count = 0;
-    parse::read<uint64_t, uint64_t*>(file, '\n', &getPriority, &add, &count);
-    return std::to_string(count);
-}
-
-void insert(std::vector<std::string>* list, std::string line) {
-    std::sort(line.begin(), line.end());
-    list->push_back(line);
-}
-
-std::string process2(std::string file) {
-    std::vector<std::string> list;
-    parse::read<std::vector<std::string> *>(file, '\n', &insert, &list);
+std::string process2(std::string file)
+{
+    std::vector<std::bitset<52>> list;
+    parse::read<std::vector<std::bitset<52>> *>(file, '\n', &insertBitset, &list);
     auto result = getBadges(&list);
     return std::to_string(result);
 }
