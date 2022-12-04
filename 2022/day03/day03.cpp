@@ -30,13 +30,13 @@ uint64_t getPriority(const std::string &line)
     for (size_t i = 0; i < half; ++i) {
         firstPart.set(convert::positionOf(line[i], true));
     }
-    std::bitset<52> secondPart;
     for (size_t j = half; j < n; ++j) {
-        secondPart.set(convert::positionOf(line[j], true));
+        auto pos = convert::positionOf(line[j], true);
+        if (firstPart.test(pos)) {
+            return pos + 1;
+        }
     }
-    auto common = firstPart & secondPart;
-    return common._Find_first() + 1;
-
+    return 0;
 }
 
 void add(uint64_t value, uint64_t *sum)
