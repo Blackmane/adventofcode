@@ -14,6 +14,7 @@
  *                                    \|
  ****************************************************************************/
 
+#include <bitset>
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -38,8 +39,8 @@ namespace parse
      * @param structure
      */
     template<class S>
-    void read(std::string inputFilename, char delimiter,
-            std::function<void(S, std::string)> insert, S structure)
+    void read(std::string inputFilename, char delimiter, std::function<void(S, const std::string &)> insert,
+              S structure)
     {
         std::ifstream source;
         source.open(inputFilename, std::ifstream::in);
@@ -60,9 +61,8 @@ namespace parse
      * @param structure
      */
     template<class T, class R>
-    void read(std::string inputFilename, char delimiter,
-            std::function<T(std::string)> convert,
-            std::function<void(T, R)> insert, R structure)
+    void read(std::string inputFilename, char delimiter, std::function<T(const std::string &)> convert,
+              std::function<void(T, R)> insert, R structure)
     {
         std::ifstream source;
         source.open(inputFilename, std::ifstream::in);
@@ -139,6 +139,33 @@ namespace convert
      * @param binary a reference to a string
      */
     uint64_t fromBinary(std::string &binary);
+
+    /**
+     * @brief get the position of a char inside the bitset.
+     *
+     * @param c the char
+     * @param dist if true distinguishes between uppercase and lowercase.
+     * @return uint64_t the position
+     */
+    uint64_t positionOf(char c, bool dist);
+
+    /**
+     * @brief set the presence of the chars of the string 's'.
+     * Distinguishes between uppercase and lowercase.
+     *
+     * @param s a reference to a string
+     * @return std::bitset<52> every single bit is on if the char of his position is present.
+     */
+    std::bitset<52> strToBitsetAll(const std::string &s);
+
+    /**
+     * @brief set the presence of the chars of the string 's'.
+     * NO Distinguishes between uppercase and lowercase.
+     *
+     * @param s a reference to a string
+     * @return std::bitset<26> every single bit is on if the char of his position is present.
+     */
+    std::bitset<26> strToBitset(const std::string &s);
 
 } // namespace convert
 

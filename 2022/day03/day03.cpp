@@ -21,14 +21,6 @@
 #include <algorithm>
 #include <bitset>
 
-uint64_t positionOf(char item)
-{
-    if (item >= 'a' && item <= 'z') {
-        return item - 'a';
-    }
-    return item - 'A' + 26;
-}
-
 uint64_t getPriority(const std::string &line)
 {
     auto n = line.size();
@@ -36,11 +28,11 @@ uint64_t getPriority(const std::string &line)
 
     std::bitset<52> firstPart;
     for (size_t i = 0; i < half; ++i) {
-        firstPart.set(positionOf(line[i]));
+        firstPart.set(convert::positionOf(line[i], true));
     }
     std::bitset<52> secondPart;
     for (size_t j = half; j < n; ++j) {
-        secondPart.set(positionOf(line[j]));
+        secondPart.set(convert::positionOf(line[j], true));
     }
     auto common = firstPart & secondPart;
     return common._Find_first() + 1;
@@ -59,18 +51,10 @@ std::string process1(std::string file)
     return std::to_string(count);
 }
 
-std::bitset<52> strToBitset(const std::string &line)
-{
-    std::bitset<52> contains;
-    for (auto c : line) {
-        contains.set(positionOf(c));
-    }
-    return contains;
-}
-
 void insertBitset(std::vector<std::bitset<52>> *list, const std::string &line)
 {
-    list->push_back(strToBitset(line));
+    auto presence = convert::strToBitsetAll(line);
+    list->push_back(presence);
 }
 
 uint64_t getBadges(std::vector<std::bitset<52>> *list)

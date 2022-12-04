@@ -108,6 +108,36 @@ namespace convert
         return value;
     }
 
+    uint64_t positionOf(char c, bool dist)
+    {
+        if (c >= 'a' && c <= 'z') {
+            return c - 'a';
+        }
+        if (dist) {
+            return c - 'A' + 26;
+        } else {
+            return c - 'A';
+        }
+    }
+
+    std::bitset<52> strToBitsetAll(const std::string &s)
+    {
+        std::bitset<52> contains;
+        for (auto c : s) {
+            contains.set(positionOf(c, true));
+        }
+        return contains;
+    }
+
+    std::bitset<26> strToBitset(const std::string &s)
+    {
+        std::bitset<26> contains;
+        for (auto c : s) {
+            contains.set(positionOf(c, false));
+        }
+        return contains;
+    }
+
 } // namespace convert
 
 namespace matrix
