@@ -20,12 +20,6 @@
 
 #include <unordered_set>
 
-bool check(const std::string &letters)
-{
-    return letters[0] != letters[1] && letters[0] != letters[2] && letters[0] != letters[3] &&
-           letters[1] != letters[2] && letters[1] != letters[3] && letters[2] != letters[3];
-}
-
 bool check2(const std::string &letters)
 {
     std::unordered_set<char> presence;
@@ -38,39 +32,14 @@ bool check2(const std::string &letters)
     return true;
 }
 
-std::string process1(std::string file)
+std::string execute(std::string file, uint64_t windowSize)
 {
     std::ifstream source;
     source.open(file, std::ifstream::in);
     std::string letters;
     char c;
-    int i = 0;
-    while (i < 4) {
-        source.get(c);
-        letters.push_back(c);
-        i++;
-    }
-    if (check(letters)) {
-        return std::to_string(i);
-    }
-    while (source.get(c)) {
-        letters[i % 4] = c;
-        i++;
-        if (check(letters)) {
-            return std::to_string(i);
-        }
-    }
-    return "0";
-}
-
-std::string process2(std::string file)
-{
-    std::ifstream source;
-    source.open(file, std::ifstream::in);
-    std::string letters;
-    char c;
-    int i = 0;
-    while (i < 14) {
+    uint64_t i = 0;
+    while (i < windowSize) {
         source.get(c);
         letters.push_back(c);
         i++;
@@ -79,11 +48,21 @@ std::string process2(std::string file)
         return std::to_string(i);
     }
     while (source.get(c)) {
-        letters[i % 14] = c;
+        letters[i % windowSize] = c;
         i++;
         if (check2(letters)) {
             return std::to_string(i);
         }
     }
     return "0";
+}
+
+std::string process1(std::string file)
+{
+    return execute(file, 4);
+}
+
+std::string process2(std::string file)
+{
+    return execute(file, 14);
 }
