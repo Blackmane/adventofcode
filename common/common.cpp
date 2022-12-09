@@ -63,7 +63,7 @@ namespace parse
         return res;
     }
 
-    std::vector<uint64_t> getIntegers(std::string &line)
+    std::vector<uint64_t> getIntegers(const std::string &line)
     {
         std::vector<uint64_t> res;
         std::stringstream ss(line);
@@ -139,6 +139,20 @@ namespace convert
     }
 
 } // namespace convert
+
+namespace op
+{
+    int normalizeDirection(int64_t direction)
+    {
+        if (direction == 0) {
+            return direction;
+        }
+        if (direction < 0) {
+            return -1 * (direction / direction);
+        }
+        return direction / direction;
+    }
+} // namespace op
 
 namespace matrix
 {

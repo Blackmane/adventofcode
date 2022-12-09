@@ -119,7 +119,7 @@ namespace parse
      * @param line a string
      * @return an ordered array of integers
      */
-    std::vector<uint64_t> getIntegers(std::string &line);
+    std::vector<uint64_t> getIntegers(const std::string &line);
 
     /**
      * Split a string input by a char separator
@@ -189,6 +189,18 @@ namespace op
             it->second += quantity;
         }
     }
+
+    /**
+     * @brief Transforms a value to its unit direction.
+     * Examples:
+     *  given -9 returns -1
+     *  given 9 returns 1
+     *  given 0 returns 0
+     * @param direction value to transform
+     * @return int normalized direction
+     */
+    int normalizeDirection(int64_t direction);
+
 } // namespace op
 
 namespace matrix
