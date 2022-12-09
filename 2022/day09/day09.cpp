@@ -20,60 +20,12 @@
 
 typedef std::pair<int64_t, int64_t> Pos;
 
-uint64_t execute(std::vector<std::string> &list)
-{
-    Pos head(0, 0);
-    Pos tail(0, 0);
-    std::set<Pos> tailVisited;
-    tailVisited.insert(tail);
-
-    for (auto &&instruction : list) {
-        auto move = std::stoll(instruction.substr(2, instruction.size() - 2));
-        int i = 0, j = 0, ki = 0, kj = 0;
-        switch (instruction[0]) {
-            case 'U':
-                i = 1;
-                kj = head.second - tail.second;
-                break;
-            case 'D':
-                i = -1;
-                kj = head.second - tail.second;
-                break;
-            case 'R':
-                j = 1;
-                ki = head.first - tail.first;
-                break;
-            case 'L':
-                j = -1;
-                ki = head.first - tail.first;
-                break;
-        }
-        for (int m = 0; m < move; ++m) {
-            Pos newHead(head.first + i, head.second + j);
-            if (tail != head) {
-                if (std::max(std::abs(newHead.first - tail.first), std::abs(newHead.second - tail.second)) > 1) {
-                    // Follow
-                    Pos newTail(tail.first + i + ki, tail.second + j + kj);
-                    ki = 0;
-                    kj = 0;
-                    tail = newTail;
-                }
-                // else still near
-            }
-            // else do nothing
-            head = newHead;
-            tailVisited.insert(tail);
-        }
-    }
-    return tailVisited.size();
-}
-
-uint64_t executeTen(std::vector<std::string> &list)
+uint64_t execute(std::vector<std::string> &list, int64_t len)
 {
     Pos zero(0, 0);
-    std::vector<Pos> rope(10, zero);
+    std::vector<Pos> rope(len, zero);
     std::set<Pos> tailVisited;
-    tailVisited.insert(rope[9]);
+    tailVisited.insert(rope[len - 1]);
 
     for (auto &&instruction : list) {
         auto move = std::stoll(instruction.substr(2, instruction.size() - 2));
@@ -101,13 +53,11 @@ uint64_t executeTen(std::vector<std::string> &list)
                     continue;
                 }
 
-                int ki = 0;
-                int kj = 0;
-                kj = op::normalizeDirection(dj);
-                ki = op::normalizeDirection(di);
+                int ki = op::normalizeDirection(di);
+                int kj = op::normalizeDirection(dj);
                 rope[r] = Pos(rope[r].first + ki, rope[r].second + kj);
             }
-            tailVisited.insert(rope[9]);
+            tailVisited.insert(rope[len - 1]);
         }
     }
     return tailVisited.size();
@@ -117,7 +67,7 @@ std::string process1(std::string file)
 {
     std::vector<std::string> list;
     parse::read_all(file, &list);
-    auto result = execute(list);
+    auto result = execute(list, 2);
     return std::to_string(result);
 }
 
@@ -125,6 +75,6 @@ std::string process2(std::string file)
 {
     std::vector<std::string> list;
     parse::read_all(file, &list);
-    auto result = executeTen(list);
+    auto result = execute(list, 10);
     return std::to_string(result);
 }
