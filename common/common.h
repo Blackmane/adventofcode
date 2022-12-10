@@ -14,6 +14,7 @@
  *                                    \|
  ****************************************************************************/
 
+#include <algorithm>
 #include <bitset>
 #include <fstream>
 #include <functional>
@@ -21,6 +22,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #define print(SOMETHING) std::cout << SOMETHING;
@@ -200,6 +202,37 @@ namespace op
      * @return int normalized direction
      */
     int normalizeDirection(int64_t direction);
+
+    class OCR
+    {
+      public:
+        /**
+         * @brief Init the internal struct for letter mapping
+         */
+        OCR();
+
+        /**
+         * @brief Transform a image to a string.
+         * Every letter is 4 char wide and 6 char height.
+         * @param image the image to convert
+         * @param on rappresentation of on "bit"
+         * @param off rappresentation of off "bit"
+         * @return std::string the string read
+         */
+        std::string execute(std::vector<std::string> image, char on, char off);
+
+        /**
+         * @brief Transform a image to a string.
+         * Every letter is 4 char wide and 6 char height.
+         * Assume image is 0 1 based. So no convert is applied.
+         * @param image the image to convert
+         * @return std::string the string read
+         */
+        std::string execute(std::vector<std::string> image);
+
+      private:
+        std::unordered_map<std::bitset<24>, char> smearedToLetter;
+    };
 
 } // namespace op
 

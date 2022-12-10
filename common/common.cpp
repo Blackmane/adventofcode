@@ -152,6 +152,85 @@ namespace op
         }
         return direction / direction;
     }
+
+    OCR::OCR()
+    {
+        smearedToLetter = {
+            { std::bitset<24>(std::string("011010011001111110011001")), 'A' },
+            { std::bitset<24>(std::string("111010011110100110011110")), 'B' },
+            { std::bitset<24>(std::string("011010011000100010010110")), 'C' },
+            // { std::bitset<24>(std::string("d")), 'D' },
+            { std::bitset<24>(std::string("111110001110100010001111")), 'E' },
+            { std::bitset<24>(std::string("111110001110100010001000")), 'F' },
+            { std::bitset<24>(std::string("011010011000101110010111")), 'G' },
+            { std::bitset<24>(std::string("100110011111100110011001")), 'H' },
+            // { std::bitset<24>(std::string("i")), 'I' },
+            { std::bitset<24>(std::string("001100010001000110010110")), 'J' },
+            { std::bitset<24>(std::string("100110101100101010101001")), 'K' },
+            { std::bitset<24>(std::string("100010001000100010001111")), 'L' },
+            // { std::bitset<24>(std::string("m")), 'M' },
+            // { std::bitset<24>(std::string("n")), 'N' },
+            { std::bitset<24>(std::string("011010011001100110010110")), 'O' },
+            { std::bitset<24>(std::string("111010011001111010001000")), 'P' },
+            //        { std::bitset<24>(std::string("q")), 'Q' },
+            { std::bitset<24>(std::string("111010011001111010101001")), 'R' },
+            { std::bitset<24>(std::string("011110001000011000011110")), 'S' },
+            // { std::bitset<24>(std::string("t")), 'T' },
+            { std::bitset<24>(std::string("100110011001100110010110")), 'U' },
+            // { std::bitset<24>(std::string("v")), 'V' },
+            // { std::bitset<24>(std::string("w")), 'W' },
+            // { std::bitset<24>(std::string("x")), 'X' },
+            // { std::bitset<24>(std::string("y")), 'Y' },
+            { std::bitset<24>(std::string("111100010010010010001111")), 'Z' },
+        };
+    }
+
+    std::string OCR::execute(std::vector<std::string> image, char on, char off)
+    {
+        std::string result;
+        size_t idx = 0;
+        // Assume letter size is 4*6
+        size_t width = 4;
+        // size_t heigth = 6;
+
+        size_t totalWidth = image[0].size();
+        for (; idx < totalWidth; idx += width + 1) {
+            std::string smeared;
+            for (auto &&line : image) {
+                smeared.append(line.substr(idx, width));
+            }
+            std::replace(smeared.begin(), smeared.end(), on, '1');
+            std::replace(smeared.begin(), smeared.end(), off, '0');
+            auto it = smearedToLetter.find(std::bitset<24>(smeared));
+            if (it != smearedToLetter.end()) {
+                result.push_back(it->second);
+            }
+        }
+        return result;
+    }
+
+    std::string OCR::execute(std::vector<std::string> image)
+    {
+        std::string result;
+        size_t idx = 0;
+        // Assume letter size is 4*6
+        size_t width = 4;
+        // size_t heigth = 6;
+
+        size_t totalWidth = image[0].size();
+        for (; idx < totalWidth; idx += width + 1) {
+            std::string smeared;
+            for (auto &&line : image) {
+                smeared.append(line.substr(idx, width));
+            }
+            auto it = smearedToLetter.find(std::bitset<24>(smeared));
+            if (it != smearedToLetter.end()) {
+                result.push_back(it->second);
+            }
+        }
+        return result;
+    }
+
 } // namespace op
 
 namespace matrix
