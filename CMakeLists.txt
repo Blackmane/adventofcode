@@ -55,6 +55,9 @@ if (PRINT_TIMING)
     add_definitions(-DPRINT_TIMING)
 endif ()
 
+# Adding an option to test common lib
+option (ENABLE_COMMON_TESTING "Set to ON to compile common lib testing" OFF)
+
 # ===== ===== ===== Library ===== ===== =====
 
 add_subdirectory(common)

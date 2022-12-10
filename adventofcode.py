@@ -18,6 +18,7 @@ def parse():
                         help='just build the current day')
     parser.add_argument('-t', '--test', dest='test', action='store_true', help='run the tests of the current day')
     parser.add_argument('-T', '--timing', dest='timing', action='store_true', help='print execution time')
+    parser.add_argument('-C', '--common', dest='common', action='store_true', help='enable testing for common lib')
 
     return parser.parse_args()
 
@@ -36,6 +37,8 @@ def main():
         CMAKE_RUN.append('-DENABLE_TESTING=on')
     if args.timing:
         CMAKE_RUN.append('-DPRINT_TIMING=on')
+    if args.common:
+        CMAKE_RUN.append('-DENABLE_COMMON_TESTING=on')
     
     subprocess.check_call(CMAKE_RUN)
 
@@ -44,12 +47,20 @@ def main():
 
     sub_path = '%s/%s' % (args.year, args.day)
 
+    print("All compiled.\n\n")
+    # Run common test
+    if args.common:
+        print("> RUN tests: common lib")
+        subprocess.check_call(['./%s/common/bin/test_common' % (build_dir)])
+
     # Run test
     if args.test:
+        print("> RUN tests: %s/%s" % (args.year, args.day))
         subprocess.check_call(['./%s/%s/bin/test_%s' % (build_dir, sub_path, args.day)])
 
     # Run
     if not args.no_run:
+        print("> RUN %s/%s" % (args.year, args.day))
         subprocess.check_call(['./%s/%s/bin/%s' % (build_dir, sub_path, args.day), '%s/input.txt' % sub_path])
 
 
