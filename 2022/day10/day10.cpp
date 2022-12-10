@@ -66,20 +66,23 @@ uint64_t execute(std::vector<int64_t> &values)
     return result;
 }
 
+const char ON = '1';
+const char OFF = '0';
+
 void setPixel(std::vector<std::string> &draw, uint64_t cycle, int64_t reg)
 {
     int64_t index = cycle - 1;
     int line = index / 40;
     int pos = index % 40;
     if (reg - 1 <= pos && pos <= reg + 1) {
-        draw[line][pos] = '#';
+        draw[line][pos] = ON;
     }
 }
 
 std::vector<std::string> execute2(std::vector<int64_t> &values)
 {
     std::vector<std::string> draw;
-    std::string emptyLine(40, ' ');
+    std::string emptyLine(40, OFF);
     for (int i = 0; i < 6; ++i) {
         draw.push_back(emptyLine);
     }
@@ -114,9 +117,7 @@ std::string process2(std::string file)
 {
     std::vector<int64_t> values;
     parse::read<int64_t, std::vector<int64_t> *>(file, '\n', &getValue, &insert, &values);
-    std::vector<std::string> draw = execute2(values);
-    for (auto &&line : draw) {
-        std::cout << line << std::endl;
-    }
-    return "0";
+    std::vector<std::string> result = execute2(values);
+    op::OCR ocr;
+    return ocr.execute(result);
 }

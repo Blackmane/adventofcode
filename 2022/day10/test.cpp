@@ -40,6 +40,6 @@ TEST_CASE("Test day10", "[day10]")
 
     SECTION("Problem 2")
     {
-        TESTING(1, process2, "0")
+        TESTING(1, process2, "")
     }
 }
