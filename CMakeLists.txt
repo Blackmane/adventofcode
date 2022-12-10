@@ -39,13 +39,20 @@ set(DAY "" CACHE STRING "Day to compile")
 if ( NOT DEFINED YEAR OR NOT DEFINED DAY )
     message("INVALID YEAR ${YEAR} or DAY ${DAY}")
     return()
-endif()
+endif ()
 
 # Adding an option to switch on or off compilation of tests
 option (ENABLE_TESTING "Set to ON to perform unit tests" OFF)
 
 if (ENABLE_TESTING)
     enable_testing()
+endif ()
+
+# Adding an option to switch on or off the print of the execution time
+option (PRINT_TIMING "Set to ON to print the execution time" OFF)
+
+if (PRINT_TIMING)
+    add_definitions(-DPRINT_TIMING)
 endif ()
 
 # ===== ===== ===== Library ===== ===== =====

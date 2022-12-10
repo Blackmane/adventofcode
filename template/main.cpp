@@ -17,6 +17,10 @@
 #include "$DAY.h"
 #include <iostream>
 
+#ifdef PRINT_TIMING
+#    include <chrono>
+#endif
+
 // ===== ===== ===== Main ===== ===== ===== 
 int main (int argc, char *argv[]) {
     if (argc < 2) {
@@ -28,12 +32,27 @@ int main (int argc, char *argv[]) {
 
     // Part 1
     std::cout << "Part1" << std::endl;
+#ifdef PRINT_TIMING
+    auto begin1 = std::chrono::steady_clock::now();
+#endif
     std::cout << process1(inputFilename) << std::endl;
-    
+#ifdef PRINT_TIMING
+    auto end1 = std::chrono::steady_clock::now();
+    std::cout << "Part1 execution = " << std::chrono::duration_cast<std::chrono::microseconds>(end1 - begin1).count()
+              << "[µs]" << std::endl;
+#endif
+
     // Part 2
     std::cout << "Part2" << std::endl;
+#ifdef PRINT_TIMING
+    auto begin2 = std::chrono::steady_clock::now();
+#endif
     std::cout << process2(inputFilename) << std::endl;
+#ifdef PRINT_TIMING
+    auto end2 = std::chrono::steady_clock::now();
+    std::cout << "Part2 execution = " << std::chrono::duration_cast<std::chrono::microseconds>(end2 - begin2).count()
+              << "[µs]" << std::endl;
+#endif
 
     return 0;
 }
-

@@ -17,6 +17,7 @@ def parse():
     parser.add_argument('-b', '--build', '--no-run', dest='no_run', action='store_true',
                         help='just build the current day')
     parser.add_argument('-t', '--test', dest='test', action='store_true', help='run the tests of the current day')
+    parser.add_argument('-T', '--timing', dest='timing', action='store_true', help='print execution time')
 
     return parser.parse_args()
 
@@ -29,12 +30,14 @@ def main():
         return
 
     # Cmake
+    CMAKE_RUN = ['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day, 
+                                '-DCMAKE_BUILD_TYPE=Release']
     if args.test:
-        subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day,
-                                '-DENABLE_TESTING=on', '-DCMAKE_BUILD_TYPE=Release'])
-    else:
-        subprocess.check_call(['cmake', '-S', '.', '-B', build_dir, '-DYEAR=%s' % args.year, '-DDAY=%s' % args.day, 
-                                '-DCMAKE_BUILD_TYPE=Release'])
+        CMAKE_RUN.append('-DENABLE_TESTING=on')
+    if args.timing:
+        CMAKE_RUN.append('-DPRINT_TIMING=on')
+    
+    subprocess.check_call(CMAKE_RUN)
 
     # Build
     subprocess.check_call(['cmake', '--build', build_dir])
