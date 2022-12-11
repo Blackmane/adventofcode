@@ -1,0 +1,11 @@
+add_executable (day11 main.cpp day11.cpp)
+target_link_libraries(day11 PRIVATE $<TARGET_OBJECTS:COMMON_objs> )
+target_include_directories(day11 PRIVATE ${CMAKE_SOURCE_DIR}/common)
+
+if (ENABLE_TESTING)
+    add_executable(test_day11 $<TARGET_OBJECTS:MAIN_objs> test.cpp day11.cpp)
+    target_link_libraries(test_day11 PRIVATE $<TARGET_OBJECTS:COMMON_objs> )
+    target_include_directories(test_day11 PRIVATE ${CMAKE_SOURCE_DIR}/common)
+    add_test(NAME day11_test COMMAND test_day11)
+endif ()
+
