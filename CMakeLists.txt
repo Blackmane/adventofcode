@@ -49,11 +49,7 @@ if (ENABLE_TESTING)
 endif ()
 
 # Adding an option to switch on or off the print of the execution time
-option (PRINT_TIMING "Set to ON to print the execution time" OFF)
-
-if (PRINT_TIMING)
-    add_definitions(-DPRINT_TIMING)
-endif ()
+option (ENABLE_PRINT_TIMING "Set to ON to print the execution time" OFF)
 
 # Adding an option to test common lib
 option (ENABLE_COMMON_TESTING "Set to ON to compile common lib testing" OFF)

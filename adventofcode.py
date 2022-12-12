@@ -17,7 +17,7 @@ def parse():
     parser.add_argument('-b', '--build', '--no-run', dest='no_run', action='store_true',
                         help='just build the current day')
     parser.add_argument('-t', '--test', dest='test', action='store_true', help='run the tests of the current day')
-    parser.add_argument('-T', '--timing', dest='timing', action='store_true', help='print execution time')
+    parser.add_argument('-e', '--timing', dest='timing', action='store_true', help='print execution time')
     parser.add_argument('-C', '--common', dest='common', action='store_true', help='enable testing for common lib')
 
     return parser.parse_args()
@@ -36,7 +36,9 @@ def main():
     if args.test:
         CMAKE_RUN.append('-DENABLE_TESTING=on')
     if args.timing:
-        CMAKE_RUN.append('-DPRINT_TIMING=on')
+        CMAKE_RUN.append('-DENABLE_PRINT_TIMING=on')
+    else:
+        CMAKE_RUN.append('-DENABLE_PRINT_TIMING=off')
     if args.common:
         CMAKE_RUN.append('-DENABLE_COMMON_TESTING=on')
     
