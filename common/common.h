@@ -82,6 +82,13 @@ namespace parse
     void push_back(std::vector<std::string> *list, std::string part);
 
     /**
+     * Apply the push back to the vector only if the part is not empty
+     * @param list
+     * @param part string to push back
+     */
+    void push_back_notempty(std::vector<std::string> *list, std::string part);
+
+    /**
      * Apply the push back of a string to the vector of integer
      * @param list
      * @param part string to convert to integer and push back
@@ -94,6 +101,13 @@ namespace parse
      * @param list the structure where to save the file
      */
     void read_all(std::string &inputFilename, std::vector<std::string> *list);
+
+    /**
+     * Read the entire file, excluding empty line, and store it in a vector of strings
+     * @param inputFilename the path to the file
+     * @param list the structure where to save the file
+     */
+    void read_all_notempty(std::string &inputFilename, std::vector<std::string> *list);
 
     /**
      * Read the entire file as is and store it in a set of strings

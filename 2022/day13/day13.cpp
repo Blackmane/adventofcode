@@ -23,7 +23,13 @@ struct Node {
     uint64_t value = 0;
     bool isLeaf = false;
 
-    Node(){};
+    static Node getLeaf(uint64_t leafValue)
+    {
+        Node node;
+        node.isLeaf = true;
+        node.value = leafValue;
+        return node;
+    }
 };
 
 std::pair<Node, size_t> getNode(std::string line)
@@ -49,10 +55,8 @@ std::pair<Node, size_t> getNode(std::string line)
                         break;
                     }
                 }
-                Node value;
-                value.isLeaf = true;
-                value.value = std::stoull(line.substr(i, j - i));
-                root.subnodes.push_back(value);
+                auto value = std::stoull(line.substr(i, j - i));
+                root.subnodes.push_back(Node::getLeaf(value));
                 i = j - 1;
                 break;
             }
@@ -61,28 +65,21 @@ std::pair<Node, size_t> getNode(std::string line)
     return std::make_pair(root, i);
 }
 
+// Return (isValid, isRightOrder)
+// isValid = false means they are equal (and `isRightOrder` is not a valid result)
 std::pair<bool, bool> rightOrder(Node left, Node right)
 {
     if (left.isLeaf && right.isLeaf) {
-        if (left.value < right.value) {
-            return std::make_pair(true, true);
+        if (left.value == right.value) {
+            return std::make_pair(false, false);
         }
-        if (left.value > right.value) {
-            return std::make_pair(true, false);
-        }
-        return std::make_pair(false, false);
+        return std::make_pair(true, left.value < right.value);
     }
     if (left.isLeaf) {
-        Node node;
-        node.isLeaf = true;
-        node.value = left.value;
-        left.subnodes.push_back(node);
+        left.subnodes.push_back(Node::getLeaf(left.value));
     }
     if (right.isLeaf) {
-        Node node;
-        node.isLeaf = true;
-        node.value = right.value;
-        right.subnodes.push_back(node);
+        right.subnodes.push_back(Node::getLeaf(right.value));
     }
 
     auto ln = left.subnodes.size();
@@ -94,34 +91,22 @@ std::pair<bool, bool> rightOrder(Node left, Node right)
         }
     }
 
-    if (ln < rn) {
-        return std::make_pair(true, true);
+    if (ln == rn) {
+        return std::make_pair(false, false);
     }
-    if (ln > rn) {
-        return std::make_pair(true, false);
-    }
-    return std::make_pair(false, false);
-}
-
-bool rightOrder(const std::string &left, const std::string &right)
-{
-    auto leftNode = getNode(left);
-    auto rightNode = getNode(right);
-    auto result = rightOrder(leftNode.first, rightNode.first);
-    if (!result.first) {
-        return true;
-    } else {
-        return result.second;
-    }
+    return std::make_pair(true, ln < rn);
 }
 
 uint64_t findSolution1(std::vector<std::string> &list)
 {
     uint64_t count = 0;
     uint64_t index = 0;
-    for (int i = 0, n = list.size(); i < n; i = i + 3) {
+    for (int i = 0, n = list.size(); i < n; i = i + 2) {
         index++;
-        if (rightOrder(list[i], list[i + 1])) {
+        auto leftNode = getNode(list[i]);
+        auto rightNode = getNode(list[i + 1]);
+        auto result = rightOrder(leftNode.first, rightNode.first);
+        if (result.second) {
             count += index;
         }
     }
@@ -132,9 +117,7 @@ uint64_t findSolution2(std::vector<std::string> &list)
 {
     std::vector<Node> nodes;
     for (int i = 0, n = list.size(); i < n; ++i) {
-        if (list[i] != "") {
-            nodes.push_back(getNode(list[i]).first);
-        }
+        nodes.push_back(getNode(list[i]).first);
     }
     auto two = getNode("[[2]]").first;
     auto six = getNode("[[6]]").first;
@@ -154,7 +137,7 @@ uint64_t findSolution2(std::vector<std::string> &list)
 std::string process1(std::string file)
 {
     std::vector<std::string> list;
-    parse::read_all(file, &list);
+    parse::read_all_notempty(file, &list);
     auto result = findSolution1(list);
     return std::to_string(result);
 }
@@ -162,7 +145,7 @@ std::string process1(std::string file)
 std::string process2(std::string file)
 {
     std::vector<std::string> list;
-    parse::read_all(file, &list);
+    parse::read_all_notempty(file, &list);
     auto result = findSolution2(list);
     return std::to_string(result);
 }

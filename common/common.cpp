@@ -26,6 +26,13 @@ namespace parse
         list->push_back(part);
     }
 
+    void push_back_notempty(std::vector<std::string> *list, std::string part)
+    {
+        if (part != "") {
+            list->push_back(part);
+        }
+    }
+
     void push_back_integer(std::vector<uint64_t> *list, std::string part)
     {
         list->push_back(std::stoi(part));
@@ -34,6 +41,11 @@ namespace parse
     void read_all(std::string &inputFilename, std::vector<std::string> *list)
     {
         read<std::vector<std::string> *>(inputFilename, '\n', push_back, list);
+    }
+
+    void read_all_notempty(std::string &inputFilename, std::vector<std::string> *list)
+    {
+        read<std::vector<std::string> *>(inputFilename, '\n', push_back_notempty, list);
     }
 
     void emplace(std::set<std::string> *set, std::string part)
