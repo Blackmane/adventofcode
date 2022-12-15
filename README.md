@@ -8,35 +8,74 @@ https://adventofcode.com/
 All the operation are centralized by `adventofcode.py` script.
 
 ```bash
-usage: adventofcode.py [-h] [-i] [-b] [-t] [-e] [-C] YEAR DAY
+usage: adventofcode.py [-h] {common,init,build,run,all} ...
 
 Advent of Code utility application
 
 positional arguments:
-  YEAR                  current year of the AoC, is a directory name
-  DAY                   current day of the AoC, is a directory name, subdirectory of YEAR
+  {common,init,build,run,all}
+    common              run tests for common lib
+    init                init the current day directory
+    build               just build the current day
+    run                 run the current day
+    all                 run all the day of a year
 
 optional arguments:
   -h, --help            show this help message and exit
-  -i, --init            init the current day directory
-  -b, --build, --no-run
-                        just build the current day
-  -t, --test            run the tests of the current day
-  -e, --timing          print execution time
-  -C, --common          enable testing for common lib
+
 ```
 You can print this help message with the command `adventofcode.py -h`.
 
 ## Generate a day
 
-With this code `python3 adventofcode.py -i 2021 day01` you can generate the 2021/day01 directory and init it from the template.
+```
+usage: adventofcode.py init [-h] YEAR DAY
+
+positional arguments:
+  YEAR        current year of the AoC, is a directory name
+  DAY         current day of the AoC, is a directory name, subdirectory of YEAR
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+With this code `python3 adventofcode.py init 2021 day01` you can generate the 2021/day01 directory and init it from the template.
 
 ## How to run test and code
 
-You can run test with `-t` flag: `python3 adventofcode.py -t 2021 day01`. This command run the solution too.
-You can add the flag `-b` to build only without run the code.
+```
+usage: adventofcode.py run [-h] [-t] [-e] YEAR DAY
 
-You can run test for the common lib too, using the flag `-C`. At this time, you must specify the day and the year. So the command is like `python3 adventofcode.py -C 2021 day01` and run the solution too.
+positional arguments:
+  YEAR          current year of the AoC, is a directory name
+  DAY           current day of the AoC, is a directory name, subdirectory of YEAR
+
+optional arguments:
+  -h, --help    show this help message and exit
+  -t, --test    run the tests of the current day
+  -e, --timing  print execution time of the current day
+```
+
+You can run test with `-t` flag: `python3 adventofcode.py run -t 2021 day01`. This command run the solution too.
+With `-e` flag it enable the timing and print time elapsed.
+
+Is possible to build witout run the code with the command `adventofcode.py build 2021 day01`. Use the same flags of the `run` command.
+```
+usage: adventofcode.py build [-h] [-t] [-e] YEAR DAY
+adventofcode.py build: error: the following arguments are required: YEAR, DAY
+```
+
+## Test common lib
+
+```
+usage: adventofcode.py common [-h]
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+You can run test for the common lib using the command `python3 adventofcode.py common`.
+
 
 ## Informations
 

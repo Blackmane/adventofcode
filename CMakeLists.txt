@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.11)
 
 # Project name and a few useful settings. Other commands can pick up the results
 project(adventofcode
-        VERSION 2.0
+        VERSION 3.0
         DESCRIPTION "Advent of code"
         )
 
@@ -36,17 +36,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(YEAR "" CACHE STRING "AoC year")
 set(DAY "" CACHE STRING "Day to compile")
 
-if ( NOT DEFINED YEAR OR NOT DEFINED DAY )
-    message("INVALID YEAR ${YEAR} or DAY ${DAY}")
-    return()
-endif ()
-
 # Adding an option to switch on or off compilation of tests
 option (ENABLE_TESTING "Set to ON to perform unit tests" OFF)
-
-if (ENABLE_TESTING)
-    enable_testing()
-endif ()
 
 # Adding an option to switch on or off the print of the execution time
 option (ENABLE_PRINT_TIMING "Set to ON to print the execution time" OFF)
@@ -54,15 +45,17 @@ option (ENABLE_PRINT_TIMING "Set to ON to print the execution time" OFF)
 # Adding an option to test common lib
 option (ENABLE_COMMON_TESTING "Set to ON to compile common lib testing" OFF)
 
+if (ENABLE_TESTING OR ENABLE_COMMON_TESTING)
+    enable_testing()
+endif ()
+
 # ===== ===== ===== Library ===== ===== =====
 
 add_subdirectory(common)
 
 # ===== ===== ===== Code ===== ===== =====
 
-add_subdirectory(${YEAR}/${DAY})
-
-
-#add_executable (day01 day01.cpp )
-#target_compile_features(day01 PRIVATE cxx_std_11)
+if ( DEFINED YEAR AND DEFINED DAY )
+    add_subdirectory(${YEAR}/${DAY})
+endif ()
 
