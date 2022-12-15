@@ -17,6 +17,8 @@
 #include "$DAY.h"
 #include <iostream>
 
+using namespace $DAY;
+
 #ifdef PRINT_TIMING
 #    include <chrono>
 #endif
@@ -38,6 +40,7 @@ int main (int argc, char *argv[]) {
     std::cout << process1(inputFilename) << std::endl;
 #ifdef PRINT_TIMING
     auto end1 = std::chrono::steady_clock::now();
+    std::cout.imbue(std::locale(""));
     std::cout << "Part1 execution = " << std::chrono::duration_cast<std::chrono::microseconds>(end1 - begin1).count()
               << "[µs]" << std::endl;
 #endif

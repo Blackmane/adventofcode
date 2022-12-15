@@ -19,6 +19,8 @@
 #include "$DAY.h"
 #include <string>
 
+using namespace $DAY;
+
 // @formatter:off
 
 void tester(std::string inputFile, std::function<std::string(std::string)> process, std::string expected) {
