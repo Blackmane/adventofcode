@@ -146,7 +146,7 @@ uint64_t findSolution(std::vector<std::string> *instructions, bool max)
     return toUint(&solution);
 }
 
-std::string process1(std::string file)
+std::string day24::process1(std::string file)
 {
     std::vector<std::string> instructions;
     parse::read_all(file, &instructions);
@@ -157,7 +157,7 @@ std::string process1(std::string file)
     return "0";
 }
 
-std::string process2(std::string file)
+std::string day24::process2(std::string file)
 {
     std::vector<std::string> instructions;
     parse::read_all(file, &instructions);
