@@ -145,14 +145,14 @@ uint64_t findSolution2(std::vector<Cube> *cubes)
     return count;
 }
 
-std::string process1(std::string file)
+std::string day22::process1(std::string file)
 {
     std::vector<Cube> cubes;
     parse::read<std::vector<Cube> *>(file, '\n', convertLine1, &cubes);
     return std::to_string(findSolution1(&cubes));
 }
 
-std::string process2(std::string file)
+std::string day22::process2(std::string file)
 {
     std::vector<Cube> cubes;
     parse::read<std::vector<Cube> *>(file, '\n', convertLine2, &cubes);
