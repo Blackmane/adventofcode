@@ -136,7 +136,7 @@ int64_t findSolution2(TargetArea *area)
     return count;
 }
 
-std::string process1(std::string file)
+std::string day17::process1(std::string file)
 {
     TargetArea area;
     parse::read<TargetArea *>(file, '\n', convertLine, &area);
@@ -144,7 +144,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day17::process2(std::string file)
 {
     TargetArea area;
     parse::read<TargetArea *>(file, '\n', convertLine, &area);
