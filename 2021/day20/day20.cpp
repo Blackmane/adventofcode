@@ -98,7 +98,7 @@ uint64_t findSolution(FloorMap *floorMap, int64_t n)
     return floorMap->lightPixels.size();
 }
 
-std::string process1(std::string file)
+std::string day20::process1(std::string file)
 {
     FloorMap floor;
     parse::read<FloorMap *>(file, '\n', convertInput, &floor);
@@ -106,7 +106,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day20::process2(std::string file)
 {
     FloorMap floor;
     parse::read<FloorMap *>(file, '\n', convertInput, &floor);

@@ -19,11 +19,13 @@
 #include "day20.h"
 #include <string>
 
+using namespace day20;
+
 // @formatter:off
 
 void tester(std::string inputFile, std::function<std::string(std::string)> process, std::string expected) {
     auto result = process(inputFile);
-    REQUIRE_THAT( result, Catch::Matchers::Equals( expected ) );
+    CHECK_THAT(result, Catch::Matchers::Equals(expected));
 }
 
 #define TESTING(ID, PROCESS, RESULT) SECTION ("Test "#ID) {tester("2021/day20/test"#ID".txt", PROCESS, RESULT);}
