@@ -262,7 +262,7 @@ uint64_t findSolution2(std::vector<uint8_t> *packet)
     return applyOperation(&last);
 }
 
-std::string process1(std::string file)
+std::string day16::process1(std::string file)
 {
     std::vector<uint8_t> packet;
     parse::read<std::vector<uint8_t> *>(file, '\n', convertLine, &packet);
@@ -270,7 +270,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day16::process2(std::string file)
 {
     std::vector<uint8_t> packet;
     parse::read<std::vector<uint8_t> *>(file, '\n', convertLine, &packet);
