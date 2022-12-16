@@ -60,7 +60,7 @@ std::string findSolution1(std::vector<std::uint64_t> *fishes, uint64_t days)
     return std::to_string(sum);
 }
 
-std::string process1(std::string file)
+std::string day06::process1(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
@@ -70,7 +70,7 @@ std::string process1(std::string file)
     return result;
 }
 
-std::string process2(std::string file)
+std::string day06::process2(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
