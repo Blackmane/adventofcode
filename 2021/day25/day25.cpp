@@ -15,7 +15,6 @@
  ****************************************************************************/
 
 #include "day25.h"
-
 #include "common.h"
 
 uint64_t findSolution(std::vector<std::string> *map)
@@ -62,7 +61,7 @@ uint64_t findSolution(std::vector<std::string> *map)
     return count;
 }
 
-std::string process1(std::string file)
+std::string day25::process1(std::string file)
 {
     std::vector<std::string> map;
     parse::read_all(file, &map);
@@ -70,7 +69,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day25::process2(std::string file)
 {
     return "0";
 }
