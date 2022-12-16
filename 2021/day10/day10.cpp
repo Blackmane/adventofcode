@@ -143,14 +143,14 @@ void insert(uint64_t value, std::vector<uint64_t> *valueList)
     }
 }
 
-std::string process1(std::string file)
+std::string day10::process1(std::string file)
 {
     uint64_t value = 0;
     parse::read<uint64_t, uint64_t *>(file, '\n', convertInput1, sum, &value);
     return std::to_string(value);
 }
 
-std::string process2(std::string file)
+std::string day10::process2(std::string file)
 {
     std::vector<uint64_t> valueList;
     parse::read<uint64_t, std::vector<uint64_t> *>(file, '\n', convertInput2, insert, &valueList);
