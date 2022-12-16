@@ -17,6 +17,9 @@
 #include "catch.hpp"
 #include "common.h"
 #include "day01.h"
+#include <string>
+
+using namespace day01;
 
 // @formatter:off
 
@@ -25,19 +28,16 @@ void tester(std::string inputFile, std::function<std::string(std::string)> proce
     CHECK_THAT( result, Catch::Matchers::Equals( expected ) );
 }
 
+#define TESTING(ID, PROCESS, RESULT) SECTION ("Test "#ID) {tester("2021/day01/test"#ID".txt", PROCESS, RESULT);}
 
 TEST_CASE( "Test day01", "[day01]" ) {
 
     SECTION ("Problem 1") {
-        SECTION ("Test 1") {
-            tester("2021/day01/test1.txt", process1, "7");
-        }
+        TESTING(1, process1, "7")
     }
 
     SECTION ("Problem 2") {
-        SECTION ("Test 1") {
-            tester("2021/day01/test1.txt", process2, "5");
-        }
+        TESTING(1, process2, "5")
     }
 
 }

@@ -44,7 +44,7 @@ std::string findSolution2(std::vector<uint64_t> *values)
     return std::to_string(count);
 }
 
-std::string process1(std::string file)
+std::string day01::process1(std::string file)
 {
     std::vector<uint64_t> valueList;
     parse::read_all_integers(file, &valueList);
@@ -53,7 +53,7 @@ std::string process1(std::string file)
     return result;
 }
 
-std::string process2(std::string file)
+std::string day01::process2(std::string file)
 {
     std::vector<uint64_t> valueList;
     parse::read_all_integers(file, &valueList);
