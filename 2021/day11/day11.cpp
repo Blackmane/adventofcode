@@ -131,14 +131,14 @@ void insert(OctopusMap *omap, std::string line)
     omap->emplace_back(values);
 }
 
-std::string process1(std::string file)
+std::string day11::process1(std::string file)
 {
     OctopusMap omap;
     parse::read<OctopusMap *>(file, '\n', insert, &omap);
     return std::to_string(iterate(&omap, 100));
 }
 
-std::string process2(std::string file)
+std::string day11::process2(std::string file)
 {
     OctopusMap omap;
     parse::read<OctopusMap *>(file, '\n', insert, &omap);
