@@ -135,7 +135,7 @@ std::string findSolution2(std::vector<std::string> *values)
     return std::to_string(oxigenRate * co2Rate);
 }
 
-std::string process1(std::string file)
+std::string day03::process1(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
@@ -144,7 +144,7 @@ std::string process1(std::string file)
     return result;
 }
 
-std::string process2(std::string file)
+std::string day03::process2(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
