@@ -19,6 +19,8 @@
 #include "day12.h"
 #include <string>
 
+using namespace day12;
+
 // @formatter:off
 
 void tester(std::string inputFile, std::function<std::string(std::string)> process, std::string expected) {
@@ -26,35 +28,24 @@ void tester(std::string inputFile, std::function<std::string(std::string)> proce
     CHECK_THAT( result, Catch::Matchers::Equals( expected ) );
 }
 
+#define TESTING(ID, PROCESS, RESULT)                           \
+    SECTION("Test " #ID)                                       \
+    {                                                          \
+        tester("2021/day12/test" #ID ".txt", PROCESS, RESULT); \
+    }
 
 TEST_CASE( "Test day12", "[day12]" ) {
-
-    SECTION ("Problem 1") {
-        SECTION ("Test 1") {
-            tester("2021/day12/test1.txt", process1, "10");
-        }
-
-        SECTION ("Test 2") {
-            tester("2021/day12/test2.txt", process1, "19");
-        }
-
-        SECTION ("Test 3") {
-            tester("2021/day12/test3.txt", process1, "226");
-        }
+    SECTION("Problem 1")
+    {
+        TESTING(1, process1, "10");
+        TESTING(2, process1, "19");
+        TESTING(3, process1, "226");
     }
 
-    SECTION ("Problem 2") {
-        SECTION ("Test 1") {
-            tester("2021/day12/test1.txt", process2, "36");
-        }
-
-        SECTION ("Test 2") {
-            tester("2021/day12/test2.txt", process2, "103");
-        }
-
-        SECTION ("Test 3") {
-            tester("2021/day12/test3.txt", process2, "3509");
-        }
+    SECTION("Problem 2")
+    {
+        TESTING(1, process2, "36");
+        TESTING(2, process2, "103");
+        TESTING(3, process2, "3509");
     }
-
 }

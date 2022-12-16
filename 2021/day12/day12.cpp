@@ -164,7 +164,7 @@ uint64_t findSolution2(Graph *graph)
     return count;
 }
 
-std::string process1(std::string file)
+std::string day12::process1(std::string file)
 {
     Graph graph;
     parse::read<Graph *>(file, '\n', convertInput, &graph);
@@ -172,7 +172,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day12::process2(std::string file)
 {
     Graph graph;
     parse::read<Graph *>(file, '\n', convertInput, &graph);
