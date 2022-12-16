@@ -125,7 +125,7 @@ uint64_t findSolution2(Polymer *polymer, size_t n)
     return differenceMaxMin(&occurrences);
 }
 
-std::string process1(std::string file)
+std::string day14::process1(std::string file)
 {
     Polymer polymer;
     parse::read<Polymer *>(file, '\n', convertInput, &polymer);
@@ -133,7 +133,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day14::process2(std::string file)
 {
     Polymer polymer;
     parse::read<Polymer *>(file, '\n', convertInput, &polymer);
