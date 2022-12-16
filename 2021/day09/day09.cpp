@@ -120,7 +120,6 @@ std::string findSolution2(std::vector<std::vector<int>> *list)
             if (j < m - 1 && list->at(i)[j + 1] <= cur) {
                 continue;
             }
-            println(cur);
             basinSizes.emplace_back(basinSize(list, i, j));
         }
     }
@@ -128,14 +127,14 @@ std::string findSolution2(std::vector<std::vector<int>> *list)
     return std::to_string(basinSizes[0] * basinSizes[1] * basinSizes[2]);
 }
 
-std::string process1(std::string file)
+std::string day09::process1(std::string file)
 {
     std::vector<std::vector<int>> list;
     parse::read<std::vector<std::vector<int>> *>(file, '\n', insert, &list);
     return findSolution1(&list);
 }
 
-std::string process2(std::string file)
+std::string day09::process2(std::string file)
 {
     std::vector<std::vector<int>> list;
     parse::read<std::vector<std::vector<int>> *>(file, '\n', insert, &list);
