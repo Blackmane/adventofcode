@@ -308,14 +308,14 @@ void sum(uint64_t value, uint64_t *total)
     *total = value + *total;
 }
 
-std::string process1(std::string file)
+std::string day08::process1(std::string file)
 {
     uint64_t value = 0;
     parse::read<uint64_t, uint64_t *>(file, '\n', convertInput1, sum, &value);
     return std::to_string(value);
 }
 
-std::string process2(std::string file)
+std::string day08::process2(std::string file)
 {
     uint64_t value = 0;
     parse::read<uint64_t, uint64_t *>(file, '\n', convertInput2, sum, &value);
