@@ -156,7 +156,7 @@ std::string findSolution2(std::vector<std::string> *numbers, std::list<board> *b
     return std::to_string(0);
 }
 
-std::string process1(std::string file)
+std::string day04::process1(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
@@ -168,7 +168,7 @@ std::string process1(std::string file)
     return result;
 }
 
-std::string process2(std::string file)
+std::string day04::process2(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
