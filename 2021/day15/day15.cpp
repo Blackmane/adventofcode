@@ -97,7 +97,7 @@ void extend(Map *map)
     }
 }
 
-std::string process1(std::string file)
+std::string day15::process1(std::string file)
 {
     Map map;
     parse::read<Map *>(file, '\n', convertInput, &map);
@@ -105,7 +105,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day15::process2(std::string file)
 {
     Map map;
     parse::read<Map *>(file, '\n', convertInput, &map);
