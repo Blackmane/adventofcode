@@ -84,7 +84,7 @@ std::string findSolution2(std::vector<std::string> *coordinates)
     return std::to_string(count);
 }
 
-std::string process1(std::string file)
+std::string day05::process1(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
@@ -92,7 +92,7 @@ std::string process1(std::string file)
     return result;
 }
 
-std::string process2(std::string file)
+std::string day05::process2(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
