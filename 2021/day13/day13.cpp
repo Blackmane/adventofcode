@@ -147,7 +147,7 @@ std::string findSolution2(Input *input)
     return "";
 }
 
-std::string process1(std::string file)
+std::string day13::process1(std::string file)
 {
     Input input;
     parse::read<Input *>(file, '\n', convertInput, &input);
@@ -155,7 +155,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day13::process2(std::string file)
 {
     Input input;
     parse::read<Input *>(file, '\n', convertInput, &input);
