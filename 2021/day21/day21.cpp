@@ -142,7 +142,7 @@ uint64_t findSolution2(Game *game, uint64_t total)
     return oneWin > twoWin ? oneWin : twoWin;
 }
 
-std::string process1(std::string file)
+std::string day21::process1(std::string file)
 {
     Game game;
     parse::read<Game *>(file, '\n', convertInput, &game);
@@ -150,7 +150,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day21::process2(std::string file)
 {
     Game game;
     parse::read<Game *>(file, '\n', convertInput, &game);
