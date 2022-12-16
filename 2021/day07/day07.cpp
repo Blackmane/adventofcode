@@ -33,7 +33,7 @@ struct whitespaces : std::ctype<char> {
     whitespaces(std::size_t refs = 0) : ctype(make_table(), false, refs) {}
 };
 
-std::string process1(std::string file)
+std::string day07::process1(std::string file)
 {
     std::ifstream in(file);
     in.imbue(std::locale(in.getloc(), new whitespaces));
@@ -51,7 +51,7 @@ std::string process1(std::string file)
     return std::to_string(solution);
 }
 
-std::string process2(std::string file)
+std::string day07::process2(std::string file)
 {
     std::ifstream in(file);
     in.imbue(std::locale(in.getloc(), new whitespaces));
