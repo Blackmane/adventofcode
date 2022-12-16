@@ -15,26 +15,30 @@
  ****************************************************************************/
 
 #include "common.h"
-#include <stdint.h>
-#include <string>
 
 #include <memory>
+#include <stdint.h>
+#include <string>
 #include <vector>
 
-/**
- * Run the first problem
- * @param file input file
- * @return result
- */
-std::string process1(std::string file);
+namespace day18
+{
 
-/**
- * Run the second problem
- * @param file input file
- * @return result
- */
-std::string process2(std::string file);
+    /**
+     * Run the first problem
+     * @param file input file
+     * @return result
+     */
+    std::string process1(std::string file);
 
+    /**
+     * Run the second problem
+     * @param file input file
+     * @return result
+     */
+    std::string process2(std::string file);
+
+} // namespace day18
 
 struct Node {
     Node *parent = nullptr;

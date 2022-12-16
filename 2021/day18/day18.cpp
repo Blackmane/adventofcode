@@ -295,7 +295,7 @@ uint64_t findSolution2(std::vector<std::string> *input)
     return maxValue;
 }
 
-std::string process1(std::string file)
+std::string day18::process1(std::string file)
 {
     std::unique_ptr<TreeList> treeList = std::make_unique<TreeList>();
     parse::read<TreeList *>(file, '\n', convertLine, treeList.get());
@@ -303,7 +303,7 @@ std::string process1(std::string file)
     return std::to_string(res);
 }
 
-std::string process2(std::string file)
+std::string day18::process2(std::string file)
 {
     std::vector<std::string> input;
     parse::read_all(file, &input);
