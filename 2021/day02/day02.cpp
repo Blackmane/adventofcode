@@ -15,7 +15,9 @@
  ****************************************************************************/
 
 #include "day02.h"
+
 #include "common.h"
+
 #include <iostream>
 
 std::string findSolution1(std::vector<std::string> *values)
@@ -66,7 +68,7 @@ std::string findSolution2(std::vector<std::string> *values)
     return std::to_string(horizontal * depth);
 }
 
-std::string process1(std::string file)
+std::string day02::process1(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
@@ -75,7 +77,7 @@ std::string process1(std::string file)
     return result;
 }
 
-std::string process2(std::string file)
+std::string day02::process2(std::string file)
 {
     std::vector<std::string> valueList;
     parse::read_all(file, &valueList);
