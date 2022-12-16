@@ -50,9 +50,9 @@ void insert(Map *map, std::string line)
 }
 
 struct ValveC {
-    size_t name;
+    size_t id;
     uint64_t rate;
-    std::vector<size_t> nexts;
+    std::vector<size_t> nears;
 };
 
 typedef std::vector<ValveC> MapC;
@@ -71,12 +71,13 @@ MapC convertMap(Map &map)
     }
     MapC mapc;
     mapc.reserve(i);
+    ValveC valve;
     for (auto &&v : map) {
-        ValveC valve;
-        valve.name = convert[v.first];
+        valve.id = convert[v.first];
         valve.rate = v.second.rate;
+        valve.nears.clear();
         for (auto &&next : v.second.nexts) {
-            valve.nexts.push_back(convert[next]);
+            valve.nears.push_back(convert[next]);
         }
         mapc.push_back(valve);
     }
@@ -90,23 +91,17 @@ struct Explore {
     uint64_t pressure = 0;
 };
 
-size_t pos(size_t i, size_t j, size_t n)
+inline size_t pos(const size_t &i, const size_t &j, const size_t &n)
 {
-    if (i < j) {
-        return i * n + j;
-    }
-    return j * n + i;
+    return i * n + j;
 }
 
-uint64_t findSolution(MapC &map)
+void initMatrix(MapC &map, std::vector<uint8_t> &adjacencyMatrix, size_t n)
 {
-    auto n = map.size();
-    std::vector<uint8_t> adjacencyMatrix(n * n, UINT8_MAX);
-
     // floyd-warshall
     for (auto &&v : map) {
-        auto i = v.name;
-        for (auto &&next : v.nexts) {
+        auto i = v.id;
+        for (auto &&next : v.nears) {
             auto j = next;
             adjacencyMatrix[pos(i, j, n)] = 1;
             adjacencyMatrix[pos(j, i, n)] = 1;
@@ -114,80 +109,29 @@ uint64_t findSolution(MapC &map)
     }
     for (size_t k = 0; k < n; ++k) {
         for (size_t i = 0; i < n; ++i) {
-            for (size_t j = 0; j < n; ++j) {
+            for (size_t j = i; j < n; ++j) {
                 auto through_k = adjacencyMatrix[pos(i, k, n)] + adjacencyMatrix[pos(k, j, n)];
-                if (through_k < adjacencyMatrix[pos(i, j, n)]) {
-                    adjacencyMatrix[pos(i, j, n)] = through_k;
-                    adjacencyMatrix[pos(j, i, n)] = through_k;
+                size_t p = i * n + j;
+                if (through_k < adjacencyMatrix[p]) {
+                    adjacencyMatrix[p] = through_k;
+                    adjacencyMatrix[j * n + i] = through_k;
                 }
             }
         }
     }
-    // Remove from to same node
+    // Remove from-to the same node
     for (size_t j = 0; j < n; ++j) {
-        // adjacencyMatrix[pos(i, j, n)] = 0;
-        adjacencyMatrix[pos(j, j, n)] = UINT8_MAX;
+        adjacencyMatrix[j * n + j] = UINT8_MAX;
     }
-
-    std::vector<size_t> costOrder;
-    costOrder.reserve(n);
-    for (size_t i = 0; i < n; ++i) {
-        if (map[i].rate > 0) {
-            costOrder.push_back(i);
-        }
-    }
-    std::sort(costOrder.begin(), costOrder.end(), [&map](size_t l, size_t r) { return map[l].rate > map[r].rate; });
-
-    Explore eNext;
-    eNext.entering = 0;
-    eNext.time = 30;
-    uint64_t maxPressure = 0;
-    std::vector<Explore> queue;
-    queue.reserve(n);
-    queue.push_back(eNext);
-    while (!queue.empty()) {
-        auto cur = queue.back();
-        queue.pop_back();
-        uint8_t time = cur.time;
-        cur.explored.set(cur.entering);
-
-        auto curValve = map[cur.entering];
-        if (curValve.rate > 0) {
-            time -= 1;
-            cur.pressure += time * curValve.rate;
-            if (cur.pressure > maxPressure) {
-                maxPressure = cur.pressure;
-            }
-        }
-
-        if (time > 0) {
-            for (auto idx : costOrder) {
-                auto &valve = map[idx];
-                if (valve.name != cur.entering) {
-                    if (!cur.explored.test(valve.name)) {
-                        auto cost = adjacencyMatrix[pos(cur.entering, valve.name, n)];
-                        if (cost < UINT8_MAX && time > cost) {
-                            eNext.entering = valve.name;
-                            eNext.explored = cur.explored;
-                            eNext.time = time - cost;
-                            eNext.pressure = cur.pressure;
-                            queue.push_back(eNext);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return maxPressure;
 }
 
-uint64_t runSolution(MapC &map, std::vector<uint8_t> &adjacencyMatrix, size_t n, std::set<size_t> &valves)
+uint64_t runSolution(uint8_t maxTime, MapC &map, std::vector<uint8_t> &adjacencyMatrix, size_t n,
+                     std::vector<size_t> &valves)
 {
     uint64_t maxPressure = 0;
     Explore eNext;
     eNext.entering = 0;
-    eNext.time = 26;
+    eNext.time = maxTime;
     std::vector<Explore> queue;
     queue.reserve(n);
     queue.push_back(eNext);
@@ -197,7 +141,7 @@ uint64_t runSolution(MapC &map, std::vector<uint8_t> &adjacencyMatrix, size_t n,
         uint8_t time = cur.time;
         cur.explored.set(cur.entering);
 
-        auto curValve = map[cur.entering];
+        auto &curValve = map[cur.entering];
         if (curValve.rate > 0) {
             time -= 1;
             cur.pressure += time * curValve.rate;
@@ -208,16 +152,14 @@ uint64_t runSolution(MapC &map, std::vector<uint8_t> &adjacencyMatrix, size_t n,
         if (time > 0) {
             for (auto idx : valves) {
                 auto &valve = map[idx];
-                if (valve.name != cur.entering) {
-                    if (!cur.explored.test(valve.name)) {
-                        auto cost = adjacencyMatrix[pos(cur.entering, valve.name, n)];
-                        if (cost < UINT8_MAX && time > cost) {
-                            eNext.entering = valve.name;
-                            eNext.explored = cur.explored;
-                            eNext.time = time - cost;
-                            eNext.pressure = cur.pressure;
-                            queue.push_back(eNext);
-                        }
+                if (valve.id != cur.entering && !cur.explored.test(valve.id)) {
+                    auto cost = adjacencyMatrix[pos(cur.entering, valve.id, n)];
+                    if (cost < UINT8_MAX && time > cost) {
+                        eNext.entering = valve.id;
+                        eNext.explored = cur.explored;
+                        eNext.time = time - cost;
+                        eNext.pressure = cur.pressure;
+                        queue.push_back(eNext);
                     }
                 }
             }
@@ -226,54 +168,57 @@ uint64_t runSolution(MapC &map, std::vector<uint8_t> &adjacencyMatrix, size_t n,
     return maxPressure;
 }
 
+uint64_t findSolution(MapC &map)
+{
+    auto n = map.size();
+    std::vector<uint8_t> adjacencyMatrix(n * n, UINT8_MAX);
+    initMatrix(map, adjacencyMatrix, n);
+
+    std::vector<size_t> costOrder;
+    costOrder.reserve(n);
+    for (size_t i = 0; i < n; ++i) {
+        if (map[i].rate > 0) {
+            costOrder.push_back(i);
+        }
+    }
+    std::sort(costOrder.begin(), costOrder.end(), [&map](size_t l, size_t r) { return map[l].rate > map[r].rate; });
+
+    return runSolution(30, map, adjacencyMatrix, n, costOrder);
+}
+
 uint64_t findSolution2(MapC &map)
 {
     auto n = map.size();
     std::vector<uint8_t> adjacencyMatrix(n * n, UINT8_MAX);
+    initMatrix(map, adjacencyMatrix, n);
 
-    // floyd-warshall
-    for (auto &&v : map) {
-        auto i = v.name;
-        for (auto &&next : v.nexts) {
-            auto j = next;
-            adjacencyMatrix[pos(i, j, n)] = 1;
+    std::vector<size_t> costOrder;
+    costOrder.reserve(n);
+    for (size_t i = 0; i < n; ++i) {
+        if (map[i].rate > 0) {
+            costOrder.push_back(i);
         }
     }
-    for (size_t k = 0; k < n; ++k) {
-        for (size_t i = 0; i < n; ++i) {
-            for (size_t j = 0; j < n; ++j) {
-                auto through_k = adjacencyMatrix[pos(i, k, n)] + adjacencyMatrix[pos(k, j, n)];
-                if (through_k < adjacencyMatrix[pos(i, j, n)]) {
-                    adjacencyMatrix[pos(i, j, n)] = through_k;
-                }
-            }
-        }
-    }
-
-    std::set<size_t> valveOfInterest;
-    for (auto &&v : map) {
-        if (v.rate > 0) {
-            valveOfInterest.insert(v.name);
-        }
-    }
+    std::sort(costOrder.begin(), costOrder.end(), [&map](size_t l, size_t r) { return map[l].rate > map[r].rate; });
 
     uint64_t maxPressure = 0;
-    for (int x = 0, nx = std::pow(2, valveOfInterest.size() - 1); x < nx; ++x) {
-        std::set<size_t> splita;
-        std::set<size_t> splitb;
-        splita.insert(0);
-        splitb.insert(0);
+    for (int x = 0, nx = std::pow(2, costOrder.size() - 1); x < nx; ++x) {
+        std::vector<size_t> splita;
+        std::vector<size_t> splitb;
+        splita.push_back(0);
+        splitb.push_back(0);
         int k = 0;
-        for (auto c : valveOfInterest) {
+        for (auto c : costOrder) {
             auto pos = 1 << k;
             if ((x & pos) != 0) {
-                splita.insert(c);
+                splita.push_back(c);
             } else {
-                splitb.insert(c);
+                splitb.push_back(c);
             }
             k++;
         }
-        auto pressure = runSolution(map, adjacencyMatrix, n, splita) + runSolution(map, adjacencyMatrix, n, splitb);
+        auto pressure =
+            runSolution(26, map, adjacencyMatrix, n, splita) + runSolution(26, map, adjacencyMatrix, n, splitb);
         if (pressure > maxPressure) {
             maxPressure = pressure;
         }
