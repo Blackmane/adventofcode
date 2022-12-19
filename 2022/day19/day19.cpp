@@ -18,7 +18,9 @@
 
 #include "common.h"
 
-typedef std::array<uint64_t, 8> Blueprint;
+#include <unordered_set>
+
+typedef std::array<uint16_t, 8> Blueprint;
 
 constexpr size_t ORE_ORE = 0;
 constexpr size_t CLY_ORE = 1;
@@ -27,63 +29,102 @@ constexpr size_t OBS_CLY = 3;
 constexpr size_t GEO_ORE = 4;
 constexpr size_t GEO_OBS = 5;
 
-constexpr size_t TIME = 0;
-constexpr size_t R_ORE = 1;
-constexpr size_t R_CLY = 2;
-constexpr size_t R_OBS = 3;
-constexpr size_t R_GEO = 4;
-constexpr size_t T_ORE = 5;
-constexpr size_t T_CLY = 6;
-constexpr size_t T_OBS = 7;
-constexpr size_t T_GEO = 8;
-
 struct State {
-    std::array<uint64_t, 9> s;
+    uint16_t TIME = 0;
+    uint16_t R_ORE = 1;
+    uint16_t R_CLY = 0;
+    uint16_t R_OBS = 0;
+    uint16_t R_GEO = 0;
+    uint16_t T_ORE = 0;
+    uint16_t T_CLY = 0;
+    uint16_t T_OBS = 0;
+    uint16_t T_GEO = 0;
+
+    bool operator<(const State &b) const
+    {
+        return TIME < b.TIME && R_ORE < b.R_ORE && R_CLY < b.R_CLY && R_OBS < b.R_OBS && R_GEO < b.R_GEO &&
+               T_ORE < b.T_ORE && T_CLY < b.T_CLY && T_OBS < b.T_OBS && T_GEO < b.T_GEO;
+
+        return TIME < b.TIME;
+    }
+
+    bool operator==(const State &b) const
+    {
+        return TIME == b.TIME && R_ORE == b.R_ORE && R_CLY == b.R_CLY && R_OBS == b.R_OBS && R_GEO == b.R_GEO &&
+               T_ORE == b.T_ORE && T_CLY == b.T_CLY && T_OBS == b.T_OBS && T_GEO == b.T_GEO;
+    }
+
     inline void product()
     {
-        s[T_ORE] += s[R_ORE];
-        s[T_CLY] += s[R_CLY];
-        s[T_OBS] += s[R_OBS];
-        s[T_GEO] += s[R_GEO];
+        T_ORE += R_ORE;
+        T_CLY += R_CLY;
+        T_OBS += R_OBS;
+        T_GEO += R_GEO;
     }
 
-    bool canBuildGEO(const Blueprint &blueprint)
+    inline bool canBuildGEO(const Blueprint &blueprint) const
     {
-        return s[T_ORE] >= blueprint[GEO_ORE] && s[T_OBS] >= blueprint[GEO_OBS];
+        return T_ORE >= blueprint[GEO_ORE] && T_OBS >= blueprint[GEO_OBS];
     }
-    bool canBuildOBS(const Blueprint &blueprint)
+    inline bool canBuildOBS(const Blueprint &blueprint) const
     {
-        return s[T_ORE] >= blueprint[OBS_ORE] && s[T_CLY] >= blueprint[OBS_CLY];
+        return T_ORE >= blueprint[OBS_ORE] && T_CLY >= blueprint[OBS_CLY];
     }
-    bool canBuildCLY(const Blueprint &blueprint)
+    inline bool canBuildCLY(const Blueprint &blueprint) const
     {
-        return s[T_ORE] >= blueprint[CLY_ORE];
+        return T_ORE >= blueprint[CLY_ORE];
     }
-    bool canBuildORE(const Blueprint &blueprint)
+    inline bool canBuildORE(const Blueprint &blueprint) const
     {
-        return s[T_ORE] >= blueprint[ORE_ORE];
+        return T_ORE >= blueprint[ORE_ORE];
     }
-    void buildGEO(const Blueprint &blueprint)
+    inline void buildGEO(const Blueprint &blueprint)
     {
-        s[R_GEO]++;
-        s[T_ORE] -= blueprint[GEO_ORE];
-        s[T_OBS] -= blueprint[GEO_OBS];
+        R_GEO++;
+        T_ORE -= blueprint[GEO_ORE];
+        T_OBS -= blueprint[GEO_OBS];
     }
-    void buildOBS(const Blueprint &blueprint)
+    inline void buildOBS(const Blueprint &blueprint)
     {
-        s[R_OBS]++;
-        s[T_ORE] -= blueprint[OBS_ORE];
-        s[T_CLY] -= blueprint[OBS_CLY];
+        R_OBS++;
+        T_ORE -= blueprint[OBS_ORE];
+        T_CLY -= blueprint[OBS_CLY];
     }
-    void buildCLY(const Blueprint &blueprint)
+    inline void buildCLY(const Blueprint &blueprint)
     {
-        s[R_CLY]++;
-        s[T_ORE] -= blueprint[CLY_ORE];
+        R_CLY++;
+        T_ORE -= blueprint[CLY_ORE];
     }
-    void buildORE(const Blueprint &blueprint)
+    inline void buildORE(const Blueprint &blueprint)
     {
-        s[R_ORE]++;
-        s[T_ORE] -= blueprint[ORE_ORE];
+        R_ORE++;
+        T_ORE -= blueprint[ORE_ORE];
+    }
+};
+
+class StateHash
+{
+  public:
+    size_t operator()(const State &state) const
+    {
+        size_t result = state.TIME;
+        result = result << 6;
+        result += state.R_ORE;
+        result = result << 6;
+        result += state.R_CLY;
+        result = result << 6;
+        result += state.R_OBS;
+        result = result << 6;
+        result += state.R_GEO;
+        result = result << 6;
+        result += state.T_ORE;
+        result = result << 6;
+        result += state.T_CLY;
+        result = result << 6;
+        result += state.T_OBS;
+        result = result << 6;
+        result += state.T_GEO;
+        return result;
     }
 };
 
@@ -110,64 +151,78 @@ void parser(std::vector<Blueprint> *blueprints, std::string line)
     blueprints->push_back(blueprint);
 }
 
-#define BUILD(TYPE)                      \
-    nextState = state;                   \
-    nextState.product();                 \
-    if (nextState.s[T_GEO] > maxGeode) { \
-        maxGeode = nextState.s[T_GEO];   \
-    }                                    \
-    if (nextState.s[TIME] < max_time) {  \
-        TYPE(blueprint);                 \
-        states.push_back(nextState);     \
+#define BUILD(TYPE)                             \
+    State nextState = state;                    \
+    nextState.product();                        \
+    if (nextState.T_GEO > maxGeode) {           \
+        maxGeode = nextState.T_GEO;             \
+    }                                           \
+    if (nextState.TIME < max_time) {            \
+        TYPE(blueprint);                        \
+        states.push_back(std::move(nextState)); \
     }
 
-uint64_t getGeodes(const Blueprint &blueprint, const uint64_t max_time)
+uint16_t getGeodes(const Blueprint &blueprint, const uint16_t max_time)
 {
-    uint64_t maxGeode = 0;
+    uint16_t maxGeode = 0;
     State initialState;
-    initialState.s = { 0, 1, 0, 0, 0, 0, 0, 0, 0 };
 
-    uint64_t MAX_R_ORE =
+    uint16_t MAX_R_ORE =
         std::max(std::max(blueprint[GEO_ORE], blueprint[OBS_ORE]), std::max(blueprint[CLY_ORE], blueprint[ORE_ORE]));
-    uint64_t MAX_R_CLY = blueprint[OBS_CLY];
-    uint64_t MAX_R_OBS = blueprint[GEO_OBS];
+    uint16_t MAX_R_CLY = blueprint[OBS_CLY];
+    uint16_t MAX_R_OBS = blueprint[GEO_OBS];
 
-    State nextState;
     std::vector<State> states;
-    states.reserve(max_time);
+    states.reserve(4 * max_time);
     states.push_back(initialState);
+    std::unordered_set<State, StateHash> calculated;
+    State state;
     while (!states.empty()) {
-        State state = states.back();
+        state = states.back();
         states.pop_back();
-        state.s[TIME]++;
+
+        // Memoize
+        auto it = calculated.find(state);
+        if (it != calculated.end()) {
+            continue;
+        }
+        calculated.insert(state);
+
+        auto remaning = max_time - state.TIME - 1;
+        if (state.T_GEO + state.TIME * state.R_GEO + (remaning * (remaning + 1)) / 2 < maxGeode) {
+            // If I built a GEOID robot every turn, I will not exceed the current maximum
+            continue;
+        }
+
+        state.TIME++;
         // What to build
         if (state.canBuildGEO(blueprint)) {
             BUILD(nextState.buildGEO);
         } else {
             int done = 0;
             // Take a decision
-            if (state.s[R_OBS] < MAX_R_OBS && state.canBuildOBS(blueprint)) {
+            if (state.R_OBS < MAX_R_OBS && state.canBuildOBS(blueprint)) {
                 BUILD(nextState.buildOBS);
                 done++;
             }
-            if (state.s[R_CLY] < MAX_R_CLY && state.canBuildCLY(blueprint)) {
+            if (state.R_CLY < MAX_R_CLY && state.canBuildCLY(blueprint)) {
                 BUILD(nextState.buildCLY);
                 done++;
             }
-            if (state.s[R_ORE] < MAX_R_ORE && state.canBuildORE(blueprint)) {
+            if (state.R_ORE < MAX_R_ORE && state.canBuildORE(blueprint)) {
                 BUILD(nextState.buildORE);
                 done++;
             }
             // Wait
-            nextState = state;
+            State nextState = state;
             nextState.product();
             // Update max
-            if (nextState.s[T_GEO] > maxGeode) {
-                maxGeode = nextState.s[T_GEO];
+            if (nextState.T_GEO > maxGeode) {
+                maxGeode = nextState.T_GEO;
             }
             // No need to wait if I already can build all kind of robot
-            if (done < 3 && nextState.s[R_ORE] < MAX_R_ORE && nextState.s[TIME] < max_time) {
-                states.push_back(nextState);
+            if (done < 3 && nextState.R_ORE < MAX_R_ORE && nextState.TIME < max_time) {
+                states.push_back(std::move(nextState));
             }
         }
     }
@@ -175,24 +230,22 @@ uint64_t getGeodes(const Blueprint &blueprint, const uint64_t max_time)
     return maxGeode;
 }
 
-uint64_t getMaximisedGeode(const std::vector<Blueprint> &blueprints)
+uint16_t getMaximisedGeode(const std::vector<Blueprint> &blueprints)
 {
-    uint64_t count = 0;
-    uint64_t step = 1;
+    uint16_t count = 0;
+    uint16_t step = 1;
     for (auto &&blueprint : blueprints) {
         count += getGeodes(blueprint, 24) * step;
         step++;
-        println(count);
     }
     return count;
 }
 
-uint64_t getMultipliedGeode(const std::vector<Blueprint> &blueprints)
+uint16_t getMultipliedGeode(const std::vector<Blueprint> &blueprints)
 {
-    uint64_t count = 1;
+    uint16_t count = 1;
     for (size_t i = 0; i < 3; ++i) {
         count *= getGeodes(blueprints[i], 32);
-        println(count);
     }
     return count;
 }
