@@ -20,87 +20,12 @@
 
 #include <list>
 
-struct Node {
-    int64_t value;
-    bool moved = false;
-    Node(int v) : value(v){};
-
-    bool operator==(const Node &b) const
-    {
-        return value == b.value;
-    }
-};
-
-void push_back_integer(std::list<Node> *list, std::string part)
+void push_back_integer(std::list<int64_t> *list, std::string part)
 {
-    list->push_back(Node(std::stoi(part)));
+    list->push_back(std::stoi(part));
 }
 
-void shuffle(std::list<Node> &list)
-{
-    int n = list.size();
-    for (auto it = list.begin(); it != list.end();) {
-        if (!it->moved) {
-            auto curNode = *it;
-            curNode.moved = true;
-            auto eresable = it;
-            ++it;
-            list.erase(eresable);
-
-            auto pos = it;
-            int m = 0;
-            if (curNode.value >= 0) {
-                m = curNode.value % (n - 1);
-            } else {
-                m = (curNode.value % (n - 1)) + n - 1;
-            }
-            for (int i = 0; i < m; i++) {
-                if (pos == list.end()) {
-                    pos = list.begin();
-                }
-                pos++;
-            }
-            if (pos == list.end()) {
-                pos = list.begin();
-            }
-            list.insert(pos, curNode);
-        } else {
-            it++;
-        }
-    }
-}
-
-int64_t calcResult(const std::list<Node> &list)
-{
-    int i = 0;
-    for (auto &&node : list) {
-        if (node.value == 0) {
-            break;
-        }
-        i++;
-    }
-    int n = list.size();
-    int thresholdA = (1000 + i) % n;
-    int thresholdB = (2000 + i) % n;
-    int thresholdC = (3000 + i) % n;
-    int64_t count = 0;
-    i = 0;
-    for (auto &&node : list) {
-        if (i == thresholdA || i == thresholdB || i == thresholdC) {
-            count += node.value;
-        }
-        i++;
-    }
-    return count;
-}
-
-int64_t getSolution(std::list<Node> &list)
-{
-    shuffle(list);
-    return calcResult(list);
-}
-
-void shuffle2(std::list<Node> &list, std::vector<std::_List_iterator<Node>> &order)
+void shuffle(std::list<int64_t> &list, std::vector<std::_List_iterator<int64_t>> &order)
 {
     int n = list.size();
     for (int j = 0; j < n; j++) {
@@ -108,11 +33,9 @@ void shuffle2(std::list<Node> &list, std::vector<std::_List_iterator<Node>> &ord
         auto eresable = order[j];
         auto pos = ++order[j];
         list.erase(eresable);
-        int m = 0;
-        if (curNode.value >= 0) {
-            m = curNode.value % (n - 1);
-        } else {
-            m = (curNode.value % (n - 1)) + n - 1;
+        int m = curNode % (n - 1);
+        if (m < 0) {
+            m = m + n - 1;
         }
         for (int i = 0; i < m; i++) {
             if (pos == list.end()) {
@@ -127,16 +50,40 @@ void shuffle2(std::list<Node> &list, std::vector<std::_List_iterator<Node>> &ord
     }
 }
 
-int64_t getSolution2(std::list<Node> &list, int64_t key)
+int64_t calcResult(const std::list<int64_t> &list)
 {
-    std::vector<std::_List_iterator<Node>> order;
+    int i = 0;
+    for (auto &&node : list) {
+        if (node == 0) {
+            break;
+        }
+        i++;
+    }
+    int n = list.size();
+    int thresholdA = (1000 + i) % n;
+    int thresholdB = (2000 + i) % n;
+    int thresholdC = (3000 + i) % n;
+    int64_t count = 0;
+    i = 0;
+    for (auto &&node : list) {
+        if (i == thresholdA || i == thresholdB || i == thresholdC) {
+            count += node;
+        }
+        i++;
+    }
+    return count;
+}
+
+int64_t getSolution(std::list<int64_t> &list, int64_t key, int steps)
+{
+    std::vector<std::_List_iterator<int64_t>> order;
     for (auto it = list.begin(); it != list.end(); it++) {
-        it->value *= key;
+        *it *= key;
         order.push_back(it);
     }
 
-    for (int j = 0; j < 10; j++) {
-        shuffle2(list, order);
+    for (int j = 0; j < steps; j++) {
+        shuffle(list, order);
     }
 
     return calcResult(list);
@@ -144,16 +91,16 @@ int64_t getSolution2(std::list<Node> &list, int64_t key)
 
 std::string day20::process1(std::string file)
 {
-    std::list<Node> list;
-    parse::read<std::list<Node> *>(file, '\n', push_back_integer, &list);
-    auto result = getSolution(list);
+    std::list<int64_t> list;
+    parse::read<std::list<int64_t> *>(file, '\n', push_back_integer, &list);
+    auto result = getSolution(list, 1, 1);
     return std::to_string(result);
 }
 
 std::string day20::process2(std::string file)
 {
-    std::list<Node> list;
-    parse::read<std::list<Node> *>(file, '\n', push_back_integer, &list);
-    auto result = getSolution2(list, 811589153);
+    std::list<int64_t> list;
+    parse::read<std::list<int64_t> *>(file, '\n', push_back_integer, &list);
+    auto result = getSolution(list, 811589153, 10);
     return std::to_string(result);
 }
