@@ -18,7 +18,7 @@
 #include "common.h"
 #include <algorithm>
 
-std::string process1(std::string file)
+std::string day01::process1(std::string file)
 {
     uint64_t max = 0;
     uint64_t current = 0;
@@ -41,7 +41,7 @@ std::string process1(std::string file)
     return std::to_string(max);
 }
 
-std::string process2(std::string file)
+std::string day01::process2(std::string file)
 {
     std::vector<uint64_t> list;
     uint64_t current = 0;
@@ -52,7 +52,6 @@ std::string process2(std::string file)
         if (part.size() > 0) {
             current += std::stoull(part);
         } else {
-            std::cout << current << std::endl;
             list.push_back(current);
             current = 0;
         }
