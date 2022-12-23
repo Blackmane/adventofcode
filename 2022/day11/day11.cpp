@@ -143,7 +143,7 @@ uint64_t Monkeys::getValue()
     return inspected[n - 1] * inspected[n - 2];
 }
 
-std::string process1(std::string file)
+std::string day11::process1(std::string file)
 {
     Monkeys monkeys(file);
     monkeys.inspect(20, true);
@@ -151,7 +151,7 @@ std::string process1(std::string file)
     return std::to_string(result);
 }
 
-std::string process2(std::string file)
+std::string day11::process2(std::string file)
 {
     Monkeys monkeys(file);
     monkeys.inspect(10000, false);
