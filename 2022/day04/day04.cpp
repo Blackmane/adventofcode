@@ -53,14 +53,14 @@ void add(uint64_t value, uint64_t *sum)
     *sum += value;
 }
 
-std::string process1(std::string file)
+std::string day04::process1(std::string file)
 {
     uint64_t count = 0;
     parse::read<uint64_t, uint64_t *>(file, '\n', &checkRange1, &add, &count);
     return std::to_string(count);
 }
 
-std::string process2(std::string file)
+std::string day04::process2(std::string file)
 {
     uint64_t count = 0;
     parse::read<uint64_t, uint64_t *>(file, '\n', &checkRange2, &add, &count);
