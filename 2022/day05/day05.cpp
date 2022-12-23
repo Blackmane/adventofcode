@@ -42,14 +42,14 @@ class Cargo
     std::vector<Move> moves;
 };
 
-std::string process1(std::string file)
+std::string day05::process1(std::string file)
 {
     auto cargo = Cargo(file);
     cargo.applyMoves1();
     return cargo.getResult();
 }
 
-std::string process2(std::string file)
+std::string day05::process2(std::string file)
 {
     auto cargo = Cargo(file);
     cargo.applyMoves2();
