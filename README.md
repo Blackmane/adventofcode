@@ -29,14 +29,15 @@ You can print this help message with the command `adventofcode.py -h`.
 ## Generate a day
 
 ```
-usage: adventofcode.py init [-h] YEAR DAY
+usage: adventofcode.py init [-h] [-o] YEAR DAY
 
 positional arguments:
-  YEAR        current year of the AoC, is a directory name
-  DAY         current day of the AoC, is a directory name, subdirectory of YEAR
+  YEAR             current year of the AoC, is a directory name
+  DAY              current day of the AoC, is a directory name, subdirectory of YEAR
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help       show this help message and exit
+  -o, --overwrite  if files already exists, overwrite them
 ```
 
 With this code `python3 adventofcode.py init 2021 day01` you can generate the 2021/day01 directory and init it from the template.
@@ -62,7 +63,15 @@ With `-e` flag it enable the timing and print time elapsed.
 Is possible to build witout run the code with the command `adventofcode.py build 2021 day01`. Use the same flags of the `run` command.
 ```
 usage: adventofcode.py build [-h] [-t] [-e] YEAR DAY
-adventofcode.py build: error: the following arguments are required: YEAR, DAY
+
+positional arguments:
+  YEAR          current year of the AoC, is a directory name
+  DAY           current day of the AoC, is a directory name, subdirectory of YEAR
+
+optional arguments:
+  -h, --help    show this help message and exit
+  -t, --test    build the tests of the current day
+  -e, --timing  enable execution time of the current day
 ```
 
 ## Test common lib

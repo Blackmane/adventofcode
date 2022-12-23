@@ -6,7 +6,7 @@ from datetime import date
 from string import Template
 
 
-def init(path, year, day, template_path):
+def init(path, year, day, template_path, overwrite):
     fullpath = os.path.join(path, day)
 
     response = input("Create %s ? (Y)\n>" % fullpath)
@@ -46,19 +46,22 @@ def init(path, year, day, template_path):
     ]
 
     for file in files:
-        file_from = file[0]
-        file_to = file[1]
-        print("Open: " + template_path + '/' + file_from)
-        with open(template_path + '/' + file_from, 'r') as f:
-            src = Template(f.read())
-            result = src.substitute(subs)
-            print("Creation: " + fullpath + "/" + file_to)
-            filecpp = open(fullpath + "/" + file_to, "w")
-            filecpp.write(result)
-            print("Created")
+        file_from = os.path.join(template_path, file[0])
+        file_to = os.path.join(fullpath, file[1])
+        if not overwrite and os.path.exists(file_to) and os.path.getsize(file_to) > 0:
+            print("Already exists: " + file_to)
+        else:
+            print("Open: " + file_from)
+            with open(file_from, 'r') as f:
+                src = Template(f.read())
+                result = src.substitute(subs)
+                print("Creation: " + file_to)
+                filecpp = open(file_to, "w")
+                filecpp.write(result)
+                print("Created")
 
 
-def fromCurrentDir(year, day):
+def fromCurrentDir(year, day, overwrite):
     current_directory = os.path.abspath(os.getcwd())
     cur_path = os.path.join(current_directory, year)
-    init(cur_path, year, day, current_directory + '/template')
+    init(cur_path, year, day, current_directory + '/template', overwrite)

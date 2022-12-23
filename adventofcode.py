@@ -10,7 +10,7 @@ build_dir = 'build'
 
 def init(args):
     # Init the directory
-    scripts.init.fromCurrentDir(args.year, args.day)
+    scripts.init.fromCurrentDir(args.year, args.day, args.overwrite)
     return
 
 
@@ -90,6 +90,8 @@ def parse():
                              help='current year of the AoC, is a directory name')
     parser_init.add_argument('day', metavar='DAY', type=str,
                              help='current day of the AoC, is a directory name, subdirectory of YEAR')
+    parser_init.add_argument('-o', '--overwrite', dest='overwrite',
+                              action='store_true', help='if files already exists, overwrite them')
     parser_init.set_defaults(func=init)
 
     # build command
@@ -128,7 +130,10 @@ def parse():
 
 def main():
     args = parse()
-    args.func(args)
+    if "func" in args:
+        args.func(args)
+    else:
+        print("No operation choice.")
 
 
 if __name__ == "__main__":
