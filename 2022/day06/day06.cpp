@@ -57,12 +57,12 @@ std::string execute(std::string file, uint64_t windowSize)
     return "0";
 }
 
-std::string process1(std::string file)
+std::string day06::process1(std::string file)
 {
     return execute(file, 4);
 }
 
-std::string process2(std::string file)
+std::string day06::process2(std::string file)
 {
     return execute(file, 14);
 }
