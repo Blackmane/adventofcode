@@ -75,6 +75,28 @@ namespace parse
     }
 
     /**
+     * Read a file, line by line and remember the number of line
+     * @tparam S structure where to save the file
+     * @param inputFilename
+     * @param delimiter
+     * @param insert
+     * @param structure
+     */
+    template<class S>
+    void read_lineof(std::string inputFilename, char delimiter,
+                     std::function<void(S, const std::string &, const uint64_t)> insert, S structure)
+    {
+        std::ifstream source;
+        source.open(inputFilename, std::ifstream::in);
+        std::string part;
+        uint64_t count = 0;
+        while (std::getline(source, part, delimiter)) {
+            insert(structure, part, count);
+            count++;
+        }
+    }
+
+    /**
      * Apply the push back to the vector
      * @param list
      * @param part string to push back
