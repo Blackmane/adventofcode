@@ -149,7 +149,7 @@ uint64_t runSolution(uint8_t maxTime, MapC &map, std::vector<uint8_t> &adjacency
                 maxPressure = cur.pressure;
             }
         }
-        if (time > 0) {
+        if (time > 2) {
             for (auto idx : valves) {
                 auto &valve = map[idx];
                 if (valve.id != cur.entering && !cur.explored.test(valve.id)) {
