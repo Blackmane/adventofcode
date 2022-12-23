@@ -140,7 +140,7 @@ uint64_t flowSand2(Rocks &rocks)
     return count;
 }
 
-std::string process1(std::string file)
+std::string day14::process1(std::string file)
 {
     Rocks rocks;
     parse::read<Rocks *>(file, '\n', &insert, &rocks);
@@ -148,7 +148,7 @@ std::string process1(std::string file)
     return std::to_string(result);
 }
 
-std::string process2(std::string file)
+std::string day14::process2(std::string file)
 {
     Rocks rocks;
     parse::read<Rocks *>(file, '\n', &insert, &rocks);

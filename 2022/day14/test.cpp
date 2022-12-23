@@ -17,8 +17,9 @@
 #include "catch.hpp"
 #include "common.h"
 #include "day14.h"
-
 #include <string>
+
+using namespace day14;
 
 // @formatter:off
 
