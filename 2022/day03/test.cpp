@@ -19,6 +19,8 @@
 #include "day03.h"
 #include <string>
 
+using namespace day03;
+
 // @formatter:off
 
 void tester(std::string inputFile, std::function<std::string(std::string)> process, std::string expected) {
