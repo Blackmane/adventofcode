@@ -105,7 +105,7 @@ std::vector<std::string> execute2(std::vector<int64_t> &values)
     return draw;
 }
 
-std::string process1(std::string file)
+std::string day10::process1(std::string file)
 {
     std::vector<int64_t> values;
     parse::read<int64_t, std::vector<int64_t> *>(file, '\n', &getValue, &insert, &values);
@@ -113,7 +113,7 @@ std::string process1(std::string file)
     return std::to_string(result);
 }
 
-std::string process2(std::string file)
+std::string day10::process2(std::string file)
 {
     std::vector<int64_t> values;
     parse::read<int64_t, std::vector<int64_t> *>(file, '\n', &getValue, &insert, &values);
