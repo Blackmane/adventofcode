@@ -122,7 +122,7 @@ uint64_t maxScenic(std::vector<std::string> &forest)
     return max;
 }
 
-std::string process1(std::string file)
+std::string day08::process1(std::string file)
 {
     std::vector<std::string> forest;
     parse::read<std::vector<std::string> *>(file, '\n', &insert, &forest);
@@ -130,7 +130,7 @@ std::string process1(std::string file)
     return std::to_string(result);
 }
 
-std::string process2(std::string file)
+std::string day08::process2(std::string file)
 {
     std::vector<std::string> forest;
     parse::read<std::vector<std::string> *>(file, '\n', &insert, &forest);
