@@ -17,16 +17,21 @@
 #include <stdint.h>
 #include <string>
 
-/**
- * Run the first problem
- * @param file input file
- * @return result
- */
-std::string process1(std::string file);
+namespace day07
+{
 
-/**
- * Run the second problem
- * @param file input file
- * @return result
- */
-std::string process2(std::string file);
+    /**
+     * Run the first problem
+     * @param file input file
+     * @return result
+     */
+    std::string process1(std::string file);
+
+    /**
+     * Run the second problem
+     * @param file input file
+     * @return result
+     */
+    std::string process2(std::string file);
+
+} // namespace day07
