@@ -134,7 +134,7 @@ uint64_t findSolution2(std::vector<std::string> &list)
     return minTwo * minSix;
 }
 
-std::string process1(std::string file)
+std::string day13::process1(std::string file)
 {
     std::vector<std::string> list;
     parse::read_all_notempty(file, &list);
@@ -142,7 +142,7 @@ std::string process1(std::string file)
     return std::to_string(result);
 }
 
-std::string process2(std::string file)
+std::string day13::process2(std::string file)
 {
     std::vector<std::string> list;
     parse::read_all_notempty(file, &list);

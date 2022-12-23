@@ -17,6 +17,8 @@
 #include "day13.h"
 #include <iostream>
 
+using namespace day13;
+
 #ifdef PRINT_TIMING
 #    include <chrono>
 #endif
