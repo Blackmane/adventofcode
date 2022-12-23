@@ -125,12 +125,12 @@ std::string execute1(std::string file, uint64_t size)
     return std::to_string(result);
 }
 
-std::string test1(std::string file)
+std::string day15::test1(std::string file)
 {
     return execute1(file, 10);
 }
 
-std::string process1(std::string file)
+std::string day15::process1(std::string file)
 {
     return execute1(file, 2000000);
 }
@@ -143,12 +143,12 @@ std::string execute2(std::string file, uint64_t size)
     return std::to_string(result);
 }
 
-std::string test2(std::string file)
+std::string day15::test2(std::string file)
 {
     return execute2(file, 20);
 }
 
-std::string process2(std::string file)
+std::string day15::process2(std::string file)
 {
     return execute2(file, 4000000);
 }
