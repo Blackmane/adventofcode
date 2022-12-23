@@ -3,6 +3,7 @@
 import argparse
 import scripts.init
 import subprocess
+import os
 
 build_dir = 'build'
 
@@ -60,6 +61,10 @@ def run(args):
 
     # Run
     print("> RUN %s/%s" % (args.year, args.day))
+    filePath = '%s/input.txt' % sub_path
+    if not os.path.exists(filePath) or not os.path.getsize(filePath) > 0:
+        print("ERROR: Input file '%s' not found or empty. Check it." % filePath)
+        return
     subprocess.check_call(
         ['./%s/%s/bin/%s' % (build_dir, sub_path, args.day), '%s/input.txt' % sub_path])
 
