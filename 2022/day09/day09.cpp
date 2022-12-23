@@ -63,7 +63,7 @@ uint64_t execute(std::vector<std::string> &list, int64_t len)
     return tailVisited.size();
 }
 
-std::string process1(std::string file)
+std::string day09::process1(std::string file)
 {
     std::vector<std::string> list;
     parse::read_all(file, &list);
@@ -71,7 +71,7 @@ std::string process1(std::string file)
     return std::to_string(result);
 }
 
-std::string process2(std::string file)
+std::string day09::process2(std::string file)
 {
     std::vector<std::string> list;
     parse::read_all(file, &list);
