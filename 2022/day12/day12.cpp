@@ -79,7 +79,7 @@ uint64_t dijkstra(std::vector<std::string> *map, bool startFromA = false)
     return 0;
 }
 
-std::string process1(std::string file)
+std::string day12::process1(std::string file)
 {
     std::vector<std::string> map;
     parse::read_all(file, &map);
@@ -87,7 +87,7 @@ std::string process1(std::string file)
     return std::to_string(result);
 }
 
-std::string process2(std::string file)
+std::string day12::process2(std::string file)
 {
     std::vector<std::string> map;
     parse::read_all(file, &map);
