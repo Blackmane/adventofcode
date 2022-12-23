@@ -57,16 +57,16 @@ void insert(uint64_t value, uint64_t* sum) {
     *sum += value;
 }
 
-std::string process1(std::string file) {
+std::string day02::process1(std::string file)
+{
     uint64_t count = 0;
-    parse::read<uint64_t, uint64_t*>(file, '\n', &converter1, &insert, &count);
+    parse::read<uint64_t, uint64_t *>(file, '\n', &converter1, &insert, &count);
     return std::to_string(count);
 }
 
-
-std::string process2(std::string file) {
+std::string day02::process2(std::string file)
+{
     uint64_t count = 0;
     parse::read<uint64_t, uint64_t*>(file, '\n', &converter2, &insert, &count);
     return std::to_string(count);
 }
-
