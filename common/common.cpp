@@ -266,4 +266,32 @@ namespace matrix
         return n;
     }
 
+    std::vector<size_t> neighbours4(const size_t pos, const size_t width, const size_t maxLen)
+    {
+        std::vector<size_t> n;
+        size_t j = 0;
+        // Left
+        if (pos % width != 0) {
+            j = pos - 1;
+            n.push_back(j);
+        }
+        // Right
+        if (pos % width != width - 1) {
+            j = pos + 1;
+            n.push_back(j);
+        }
+        // Down
+        j = pos + width;
+        if (j < maxLen) {
+            n.push_back(j);
+        }
+        n.push_back(j);
+        // Up
+        if (pos >= width) {
+            j = pos - width;
+            n.push_back(j);
+        }
+        return n;
+    }
+
 } // namespace matrix

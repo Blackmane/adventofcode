@@ -285,4 +285,15 @@ namespace matrix
      */
     std::vector<std::pair<size_t, size_t>> neighbours4(size_t i, size_t j, size_t height, size_t width);
 
+    /**
+     * @brief return the list of orthogonal neighbours in case of 1-dimensional matrix.
+     * A 1-dimensional matrix is a 2-dimension matrix represented in a single vector.
+     *
+     * @param pos current position
+     * @param width horizontal length
+     * @param maxLen size() of the vector
+     * @return std::vector<size_t> the list of neighbours
+     */
+    std::vector<size_t> neighbours4(const size_t pos, const size_t width, const size_t maxLen);
+
 } // namespace matrix
