@@ -3,6 +3,7 @@
 import sys
 import os
 from datetime import date
+from pathlib import Path
 from string import Template
 
 
@@ -18,7 +19,8 @@ def init(path, year, day, template_path, overwrite):
 
     try:
         print("Creating dir: %s" % fullpath)
-        os.mkdir(fullpath)
+        path = Path(fullpath)
+        path.mkdir(parents=True, exist_ok=True)
     except FileNotFoundError as e:
         print("Error in path: %s" % e)
         exit(1)
