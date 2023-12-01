@@ -10,8 +10,7 @@ endif ()
 
 # Test Common
 if (ENABLE_COMMON_TESTING)
-    add_executable(test_common $<TARGET_OBJECTS:MAIN_objs> test_common.cpp)
-    target_link_libraries(test_common PRIVATE $<TARGET_OBJECTS:COMMON_objs> )
+    add_executable(test_common $<TARGET_OBJECTS:COMMON_objs> $<TARGET_OBJECTS:MAIN_objs> test_common.cpp)
     #target_include_directories(test_common PRIVATE ${CMAKE_SOURCE_DIR}/common)
     add_test(NAME common_test COMMAND test_common)
 endif ()
