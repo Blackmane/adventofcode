@@ -91,6 +91,17 @@ namespace parse
         return res;
     }
 
+    std::string filterDecimal(const std::string &line)
+    {
+        std::string result;
+        for (auto c : line) {
+            if (c >= '0' && c <= '9') {
+                result += c;
+            }
+        }
+        return result;
+    }
+
     std::vector<std::string> split(std::string input, char separator)
     {
         std::stringstream inputStream(input);

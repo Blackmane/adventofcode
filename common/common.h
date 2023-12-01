@@ -160,6 +160,13 @@ namespace parse
     std::vector<uint64_t> getIntegers(const std::string &line);
 
     /**
+     * From a string keep every digit and discard other chars
+     * @param line string to filter
+     * @return an list of digits
+     */
+    std::string filterDecimal(const std::string &line);
+
+    /**
      * Split a string input by a char separator
      * @param input string to split
      * @param separator
