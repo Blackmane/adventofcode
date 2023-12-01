@@ -51,4 +51,28 @@ TEST_CASE("Test common", "[common]")
         result = ocr.execute(input2);
         CHECK_THAT(result, Catch::Matchers::Equals(expected));
     }
+
+    SECTION("literalsToNumber")
+    {
+        std::vector<std::string> input = { "two1nine",         "eightwothree", "abcone2threexyz", "xtwone3four",
+                                           "4nineeightseven2", "zoneight234",  "7pqrstsixteen" };
+        std::vector<std::string> expected = { "219", "83", "123", "234", "49872", "1234", "76" };
+
+        CHECK(input.size() == expected.size());
+        for (int i = 0, n = input.size(); i < n; i++) {
+            CHECK(expected[i] == convert::literalsToNumber(input[i]));
+        }
+    }
+
+    SECTION("literalsToNumberOverlapping")
+    {
+        std::vector<std::string> input = { "two1nine",         "eightwothree", "abcone2threexyz", "xtwone3four",
+                                           "4nineeightseven2", "zoneight234",  "7pqrstsixteen" };
+        std::vector<std::string> expected = { "219", "823", "123", "2134", "49872", "18234", "76" };
+
+        CHECK(input.size() == expected.size());
+        for (int i = 0, n = input.size(); i < n; i++) {
+            CHECK(expected[i] == convert::literalsToNumber(input[i], true));
+        }
+    }
 }

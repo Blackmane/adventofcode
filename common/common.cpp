@@ -161,6 +161,62 @@ namespace convert
         return contains;
     }
 
+    std::string literalsToNumber(const std::string &s, bool overlapping)
+    {
+        std::vector<std::string> numbers = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        auto cleanParse = [&numbers](std::string &parse) {
+            auto isGoodParse = true;
+            while (parse.size() > 0 && isGoodParse) {
+                isGoodParse = std::any_of(numbers.begin(), numbers.end(), [parse](const std::string &number) {
+                    // Exists a string that fit the current parsing
+                    return number.rfind(parse, 0) == 0;
+                });
+                if (!isGoodParse) {
+                    int size = parse.size();
+                    if (size > 1) {
+                        parse = parse.substr(1, size - 1);
+                        assert(int(parse.size()) == size - 1);
+                    } else {
+                        parse = "";
+                    }
+                } else {
+                    // Good, continue
+                    break;
+                }
+            }
+        };
+
+        std::string result;
+        std::string parse;
+        for (auto c : s) {
+            if (c >= '0' && c <= '9') {
+                result += c;
+                parse = "";
+            } else {
+                // Char
+                parse += c;
+                cleanParse(parse);
+
+                // Check if it is already a complete number
+                for (int i = 0, n = numbers.size(); i < n; i++) {
+                    if (parse == numbers[i]) {
+                        result += ('1' + i);
+                        if (overlapping) {
+                            // Keep the parse to check for overlapping value
+                            parse = parse.substr(1, parse.size() - 1);
+                            cleanParse(parse);
+                        } else {
+                            // No overlapping are permitted, so consume the chars and go on
+                            parse = "";
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
 } // namespace convert
 
 namespace op

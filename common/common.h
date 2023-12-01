@@ -212,6 +212,16 @@ namespace convert
      */
     std::bitset<26> strToBitset(const std::string &s);
 
+    /**
+     * @brief Given a string, converts every number written as word to digit
+     * Keep all the digit already present
+     * @param s string to convert
+     * @param overlapping if true handle the case `eightwo` as 82, otherwise as just `8` (is `8wo` then `8`)
+     * @return a string of only digits
+     *
+     */
+    std::string literalsToNumber(const std::string &s, bool overlapping = false);
+
 } // namespace convert
 
 namespace op
