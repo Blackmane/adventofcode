@@ -303,6 +303,17 @@ namespace matrix
     std::vector<std::pair<size_t, size_t>> neighbours4(size_t i, size_t j, size_t height, size_t width);
 
     /**
+     * @brief return the list of orthogonal and diagonal neighbours
+     *
+     * @param i current vertical position
+     * @param j current horizontal position
+     * @param height vertical length
+     * @param width horizontal length
+     * @return std::vector<std::pair<size_t, size_t>> the list of neighbours
+     */
+    std::vector<std::pair<size_t, size_t>> neighbours8(size_t i, size_t j, size_t height, size_t width);
+
+    /**
      * @brief return the list of orthogonal neighbours in case of 1-dimensional matrix.
      * A 1-dimensional matrix is a 2-dimension matrix represented in a single vector.
      *
@@ -312,5 +323,20 @@ namespace matrix
      * @return std::vector<size_t> the list of neighbours
      */
     std::vector<size_t> neighbours4(const size_t pos, const size_t width, const size_t maxLen);
+
+    /**
+     * @brief
+     *
+     * @param size_t from_i starting vertical position
+     * @param size_t from_j starting horizontal position
+     * @param size_t to_i ending vertical position
+     * @param size_t to_j ending horizontal position
+     * @param size_t height vertical length
+     * @param size_t width horizontal length
+     * @param bool excludeInside if true consider only external position
+     * @return std::vector<size_t> the list of neighbours
+     */
+    std::vector<std::pair<size_t, size_t>> neighboursArea(size_t from_i, size_t from_j, size_t to_i, size_t to_j,
+                                                          size_t height, size_t width, bool excludeInside = true);
 
 } // namespace matrix

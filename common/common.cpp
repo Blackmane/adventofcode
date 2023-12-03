@@ -333,6 +333,38 @@ namespace matrix
         return n;
     }
 
+    std::vector<std::pair<size_t, size_t>> neighbours8(size_t i, size_t j, size_t height, size_t width)
+    {
+        std::vector<std::pair<size_t, size_t>> n;
+        // Ortho
+        if (i > 0) {
+            n.push_back(std::make_pair(i - 1, j));
+        }
+        if (i < height - 1) {
+            n.push_back(std::make_pair(i + 1, j));
+        }
+        if (j > 0) {
+            n.push_back(std::make_pair(i, j - 1));
+        }
+        if (j < width - 1) {
+            n.push_back(std::make_pair(i, j + 1));
+        }
+        // Diagonals
+        if (i > 0 && j > 0) {
+            n.push_back(std::make_pair(i - 1, j - 1));
+        }
+        if (i > 0 && j < width - 1) {
+            n.push_back(std::make_pair(i - 1, j + 1));
+        }
+        if (i < width - 1 && j > 0) {
+            n.push_back(std::make_pair(i + 1, j - 1));
+        }
+        if (i < width - 1 && j < width - 1) {
+            n.push_back(std::make_pair(i + 1, j + 1));
+        }
+        return n;
+    }
+
     std::vector<size_t> neighbours4(const size_t pos, const size_t width, const size_t maxLen)
     {
         std::vector<size_t> n;
@@ -359,6 +391,55 @@ namespace matrix
             n.push_back(j);
         }
         return n;
+    }
+
+    std::vector<std::pair<size_t, size_t>> neighboursArea(size_t from_i, size_t from_j, size_t to_i, size_t to_j,
+                                                          size_t height, size_t width, bool excludeInside)
+    {
+        std::set<std::pair<size_t, size_t>> found;
+        for (size_t i = std::min(from_i, to_i), n = std::max(from_i, to_i); i <= n; i++) {
+            for (size_t j = std::min(from_j, to_j), m = std::max(from_j, to_j); j <= m; j++) {
+                // Ortho
+                if (i > 0) {
+                    found.insert(std::make_pair(i - 1, j));
+                }
+                if (i < height - 1) {
+                    found.insert(std::make_pair(i + 1, j));
+                }
+                if (j > 0) {
+                    found.insert(std::make_pair(i, j - 1));
+                }
+                if (j < width - 1) {
+                    found.insert(std::make_pair(i, j + 1));
+                }
+                // Diagonals
+                if (i > 0 && j > 0) {
+                    found.insert(std::make_pair(i - 1, j - 1));
+                }
+                if (i > 0 && j < width - 1) {
+                    found.insert(std::make_pair(i - 1, j + 1));
+                }
+                if (i < width - 1 && j > 0) {
+                    found.insert(std::make_pair(i + 1, j - 1));
+                }
+                if (i < width - 1 && j < width - 1) {
+                    found.insert(std::make_pair(i + 1, j + 1));
+                }
+            }
+        }
+        if (excludeInside) {
+            for (size_t i = std::min(from_i, to_i), n = std::max(from_i, to_i); i <= n; i++) {
+                for (size_t j = std::min(from_j, to_j), m = std::max(from_j, to_j); j <= m; j++) {
+                    found.erase(std::make_pair(i, j));
+                }
+            }
+        }
+        std::vector<std::pair<size_t, size_t>> neighborhood;
+        for (auto &&neighbour : found) {
+            neighborhood.push_back(neighbour);
+        }
+
+        return neighborhood;
     }
 
 } // namespace matrix
