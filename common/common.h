@@ -287,6 +287,20 @@ namespace op
         std::unordered_map<std::bitset<24>, char> smearedToLetter;
     };
 
+    /**
+     * A range has a starting value and a length
+     */
+    struct Range {
+        uint64_t from = 0;
+        uint64_t len = 0;
+    };
+
+    /**
+     * @brief try to split range a in range b
+     * @return all the range
+     */
+    std::vector<Range> split(Range a, Range b);
+
 } // namespace op
 
 namespace matrix

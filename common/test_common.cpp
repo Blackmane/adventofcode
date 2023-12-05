@@ -75,4 +75,35 @@ TEST_CASE("Test common", "[common]")
             CHECK(expected[i] == convert::literalsToNumber(input[i], true));
         }
     }
+
+    SECTION("Range")
+    {
+        op::Range a = { 1, 10 };
+        op::Range b = { 8, 4 };
+        auto res = op::split(a, b);
+        CHECK(res[0].from == 1);
+        CHECK(res[0].len == 7);
+        CHECK(res[1].from == 8);
+        CHECK(res[1].len == 3);
+        a = { 1, 15 };
+        res = op::split(a, b);
+        CHECK(res[0].from == 1);
+        CHECK(res[0].len == 7);
+        CHECK(res[1].from == 8);
+        CHECK(res[1].len == 4);
+        CHECK(res[2].from == 12);
+        CHECK(res[2].len == 4);
+        a = { 3, 4 };
+        b = { 1, 10 };
+        res = op::split(a, b);
+        CHECK(res[0].from == 3);
+        CHECK(res[0].len == 4);
+        a = { 8, 4 };
+        b = { 1, 10 };
+        res = op::split(a, b);
+        CHECK(res[0].from == 8);
+        CHECK(res[0].len == 3);
+        CHECK(res[1].from == 11);
+        CHECK(res[1].len == 1);
+    }
 }

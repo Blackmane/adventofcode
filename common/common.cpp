@@ -310,6 +310,54 @@ namespace op
         return result;
     }
 
+    std::vector<Range> split(Range a, Range b)
+    {
+        std::vector<Range> result;
+        auto aLast = a.from + a.len - 1;
+        auto bLast = b.from + b.len - 1;
+
+        if (a.from >= b.from && a.from <= bLast) {
+            // a start in b
+            if (bLast >= aLast) {
+                // Entirely contained
+                Range first = { a.from, a.len };
+                result.push_back(first);
+            } else {
+                auto delta = a.from - b.from;
+                auto len = b.len - delta;
+                Range first = { a.from, len };
+                Range second = { bLast + 1, a.len - len };
+                result.push_back(first);
+                result.push_back(second);
+            }
+            return result;
+        }
+        if (b.from >= a.from && b.from <= aLast) {
+            // b start in a
+            auto delta = b.from - a.from;
+
+            Range first = { a.from, delta };
+            result.push_back(first);
+
+            if (bLast < aLast) {
+                Range second = b;
+                result.push_back(second);
+
+                auto lenRes = a.len - delta - b.len;
+                Range third = { bLast + 1, lenRes };
+                result.push_back(third);
+            } else {
+                auto lenRes = a.len - delta;
+                Range second = { b.from, lenRes };
+                result.push_back(second);
+            }
+
+            return result;
+        }
+        // Empty, not found overlaps
+        return result;
+    }
+
 } // namespace op
 
 namespace matrix
