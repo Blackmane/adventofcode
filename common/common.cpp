@@ -175,7 +175,6 @@ namespace convert
                     int size = parse.size();
                     if (size > 1) {
                         parse = parse.substr(1, size - 1);
-                        assert(int(parse.size()) == size - 1);
                     } else {
                         parse = "";
                     }
