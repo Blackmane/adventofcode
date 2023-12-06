@@ -32,6 +32,31 @@ uint64_t countWinning(uint64_t time, uint64_t recordDistance)
     return (time + 1) - 2 * (firstTime);
 }
 
+uint64_t countWinningBinarySearch(uint64_t time, uint64_t recordDistance)
+{
+    auto calcDistance = [time](uint64_t timePress) { return timePress * (time - timePress); };
+    uint64_t firstTime = 0;
+
+    uint64_t timePressedFrom = 0;
+    uint64_t timePressedTo = time;
+    while (firstTime == 0) {
+        auto mid = (timePressedFrom + timePressedTo) / 2;
+
+        if (calcDistance(mid) > recordDistance) {
+            timePressedTo = mid;
+        } else {
+            if (calcDistance(mid + 1) > recordDistance) {
+                // Found
+                firstTime = mid + 1;
+            } else {
+                timePressedFrom = mid;
+            }
+        }
+    }
+
+    return (time + 1) - 2 * (firstTime);
+}
+
 std::string day06::process1(std::string file)
 {
     std::vector<std::string> list;
@@ -59,5 +84,5 @@ std::string day06::process2(std::string file)
     auto time = parse::getInteger(list[0]);
     auto distance = parse::getInteger(list[1]);
 
-    return std::to_string(countWinning(time, distance));
+    return std::to_string(countWinningBinarySearch(time, distance));
 }
