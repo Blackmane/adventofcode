@@ -106,4 +106,20 @@ TEST_CASE("Test common", "[common]")
         CHECK(res[1].from == 11);
         CHECK(res[1].len == 1);
     }
+
+    SECTION("GCD & LCM")
+    {
+        CHECK(op::greatestCommonDivisor(6, 6) == 6);
+        CHECK(op::greatestCommonDivisor(6, 12) == 6);
+        CHECK(op::greatestCommonDivisor(12, 6) == 6);
+        CHECK(op::greatestCommonDivisor(10, 12) == 2);
+
+        CHECK(op::leastCommonMultiple(10, 12) == 60);
+        CHECK(op::leastCommonMultiple(10, 5) == 10);
+
+        CHECK(op::leastCommonMultiple(10, 5) == 10);
+
+        CHECK(op::leastCommonMultiple({ 10, 5 }) == 10);
+        CHECK(op::leastCommonMultiple({ 10, 12, 14, 22 }) == 2 * 2 * 3 * 5 * 7 * 11);
+    }
 }

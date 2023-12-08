@@ -16,6 +16,8 @@
 
 #include "common.h"
 
+#include <algorithm>
+#include <numeric>
 #include <regex>
 #include <sstream>
 
@@ -355,6 +357,37 @@ namespace op
         }
         // Empty, not found overlaps
         return result;
+    }
+
+    uint64_t greatestCommonDivisor(uint64_t a, uint64_t b)
+    {
+        if (b > a) {
+            std::swap(a, b);
+        }
+        if (a % b == 0) {
+            return b;
+        }
+
+        // Euclidean algorithm
+        // called r the remainder of the division between a and b, the GCD between a and b is equal to the GCD between b
+        // and r.
+        while (b != 0) {
+            auto temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    uint64_t leastCommonMultiple(uint64_t a, uint64_t b)
+    {
+        return (a * b / greatestCommonDivisor(a, b));
+    }
+
+    uint64_t leastCommonMultiple(std::vector<uint64_t> numb)
+    {
+        return std::accumulate(numb.begin(), numb.end(), numb[0],
+                               [](uint64_t a, uint64_t b) { return leastCommonMultiple(a, b); });
     }
 
 } // namespace op

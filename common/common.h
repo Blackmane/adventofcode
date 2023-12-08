@@ -301,6 +301,10 @@ namespace op
      */
     std::vector<Range> split(Range a, Range b);
 
+    uint64_t greatestCommonDivisor(uint64_t a, uint64_t b);
+    uint64_t leastCommonMultiple(uint64_t a, uint64_t b);
+    uint64_t leastCommonMultiple(std::vector<uint64_t> numb);
+
 } // namespace op
 
 namespace matrix
