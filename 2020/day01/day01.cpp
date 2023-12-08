@@ -17,22 +17,22 @@
  *                                    \|     
  ****************************************************************************/
 
+#include "day01.h"
+
+#include "common.h"
 
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
-namespace day01 {
-
-
-// ===== ===== ===== Const ===== ===== ===== 
+// ===== ===== ===== Const ===== ===== =====
 const int64_t SUMVALUE = 2020;
 
-// ===== ===== ===== Utils ===== ===== ===== 
+// ===== ===== ===== Utils ===== ===== =====
 /*
     Find two number, a b, such that a+b = 2020.
-    The idea is: 
+    The idea is:
         if a == b then a = 1010 and b = 1010
         if a < b then a < 1010 and b > 1010
         if a > b then a > 1010 and b > 1010
@@ -40,14 +40,15 @@ const int64_t SUMVALUE = 2020;
         one value from subset of value lesser than 1010 with
         one value from subset of value greater than 1010
 */
-class ExpenseReport {
-public:
+class ExpenseReport
+{
+  public:
     explicit ExpenseReport(const std::string &filename);
-    int64_t solution ();
+    int64_t solution();
 
-private:
-    void readFileToVector(const std::string& filename);
-    
+  private:
+    void readFileToVector(const std::string &filename);
+
     const int64_t HalfValue = SUMVALUE / 2;
     std::vector<int64_t> lessHalf;
     std::vector<int64_t> greaterHalf;
@@ -56,23 +57,24 @@ private:
 
 /*
     Find three number, a b c, such that a+b+b = 2020.
-    The idea is the same. Possible ordered combinations are: 
+    The idea is the same. Possible ordered combinations are:
         if a > 1346 then b <= 673 and c <= 673
         if a <= 1346 & a > 673 then b <= 1346 and c <= 673
-        
+
     Then you don't need to check all possible combination, but just some:
         one value from the grater subset with two value from lesser subset
         two value from the mid subset with one value from lesser subset
         one value from the mid subset with two value from lesser subset
 */
-class ExpenseReportTriple {
-public:
+class ExpenseReportTriple
+{
+  public:
     explicit ExpenseReportTriple(const std::string &filename);
-    int64_t solution ();
+    int64_t solution();
 
-private:
-    void readFileToVector(const std::string& filename);
-    
+  private:
+    void readFileToVector(const std::string &filename);
+
     const int64_t FirstThirdValue = 673;
     const int64_t SecondThirdValue = 1346;
     std::vector<int64_t> lesserThird;
@@ -80,57 +82,23 @@ private:
     std::vector<int64_t> greaterThird;
 };
 
-} // namespace day01
+// ===== ===== ===== Implementations ===== ===== =====
 
-// ===== ===== ===== Main ===== ===== ===== 
-int main (int argc, char *argv[]) {
-    if (argc < 1) {
-        std::cout << "No input file" << std::endl;
-        return 1;
-    }
-	std::string inputFilename(argv[1]);
-
-    // Part 1
-    std::cout << "Part1" << std::endl;
-    day01::ExpenseReport report(inputFilename);
-    int64_t solution = report.solution();
-    if (solution != -1) {
-        std::cout << solution << std::endl;
-    } else {
-        std::cout << "No solution found!" << std::endl;
-    }
-    std::cout << std::endl;
-
-    // Part 2
-    std::cout << "Part2" << std::endl;
-    day01::ExpenseReportTriple reportTriple(inputFilename);
-    int64_t solutionTriple = reportTriple.solution();
-    if (solutionTriple != -1) {
-        std::cout << solutionTriple << std::endl << std::endl;
-    } else {
-        std::cout << "No solution found!" << std::endl << std::endl;
-    }
-
-	return 0;
-}
-
-
-// ===== ===== ===== Implementations ===== ===== ===== 
-
-day01::ExpenseReport::ExpenseReport(const std::string & filename) {
+ExpenseReport::ExpenseReport(const std::string &filename)
+{
     readFileToVector(filename);
 }
 
-void day01::ExpenseReport::readFileToVector(const std::string& filename) {
+void ExpenseReport::readFileToVector(const std::string &filename)
+{
     std::ifstream source;
     source.open(filename);
-    int64_t value =0;
+    int64_t value = 0;
     std::string line;
     while (std::getline(source, line)) {
         try {
             value = stol(line);
         } catch (const std::exception &e) {
-            std::cout << "Error convert string to int64_t: " << e.what() << std::endl;
             continue;
         }
         if (value == HalfValue) {
@@ -143,29 +111,25 @@ void day01::ExpenseReport::readFileToVector(const std::string& filename) {
     }
 }
 
-int64_t day01::ExpenseReport::solution() {
-    if (half >= 2) {
-        return 1010*1010;
-    }
-    for (auto lessit = std::begin(lessHalf); lessit != std::end(lessHalf); ++lessit) {
-        for (auto greatit = std::begin(greaterHalf); greatit != std::end(greaterHalf); ++greatit) {
-            if (*lessit + *greatit == SUMVALUE) {
-                int64_t l = *lessit;
-                int64_t g = *greatit;
-                std::cout << "Value: " << l << " + " << g << ";" << std::endl;
-                return *lessit * *greatit;
+int64_t ExpenseReport::solution()
+{
+    for (auto lesser : lessHalf) {
+        for (auto greater : greaterHalf) {
+            if (lesser + greater == SUMVALUE) {
+                return lesser * greater;
             }
         }
     }
-    return -1;
+    return 0;
 }
 
-
-day01::ExpenseReportTriple::ExpenseReportTriple(const std::string &filename) {
+ExpenseReportTriple::ExpenseReportTriple(const std::string &filename)
+{
     readFileToVector(filename);
 }
 
-void day01::ExpenseReportTriple::readFileToVector(const std::string& filename) {
+void ExpenseReportTriple::readFileToVector(const std::string &filename)
+{
     std::ifstream source;
     source.open(filename);
     int64_t value;
@@ -174,7 +138,6 @@ void day01::ExpenseReportTriple::readFileToVector(const std::string& filename) {
         try {
             value = stol(line);
         } catch (const std::exception &e) {
-            std::cout << "Error convert string to int64_t: " << e.what() << std::endl;
             continue;
         }
         if (value <= FirstThirdValue) {
@@ -187,33 +150,33 @@ void day01::ExpenseReportTriple::readFileToVector(const std::string& filename) {
     }
 }
 
-int64_t day01::ExpenseReportTriple::solution () {
+int64_t ExpenseReportTriple::solution()
+{
     // Iterate greater
-    for (auto greatit = std::begin(greaterThird); greatit != std::end(greaterThird); ++greatit) {
+    for (auto greater : greaterThird) {
         // Value *greatit >= 1346
         for (auto lessit = std::begin(lesserThird); lessit != std::end(lesserThird); ++lessit) {
             // Value *lessit <= 673
-            int64_t twoSum = *greatit + *lessit;
+            int64_t twoSum = greater + *lessit;
             if (twoSum < SUMVALUE) {
+                // TODO: lessit2 parte da lessit
                 for (auto lessit2 = lessit; lessit2 != std::end(lesserThird); ++lessit2) {
                     if (twoSum + *lessit2 == SUMVALUE) {
-                        std::cout << "Values: " << *greatit << " + " << *lessit << " + " << *lessit2 << ";" << std::endl;
-                        return *greatit * *lessit * *lessit2;
+                        return greater * (*lessit) * (*lessit2);
                     }
                 }
             }
         }
     }
-    
+
     // Iterate half
     for (auto halfit = std::begin(midThird); halfit != std::end(midThird); ++halfit) {
         for (auto halfit2 = halfit; halfit2 != std::end(midThird); ++halfit2) {
             int64_t twoSum = *halfit + *halfit2;
             if (twoSum < SUMVALUE) {
-                for (auto lessit = std::begin(lesserThird); lessit != std::end(lesserThird); ++lessit) {
-                    if (twoSum + *lessit == SUMVALUE) {
-                        std::cout << "Values: " << *halfit << " + " << *halfit2 << " + " << *lessit << ";" << std::endl;
-                        return *halfit * *halfit2 * *lessit;
+                for (auto lesser : lesserThird) {
+                    if (twoSum + lesser == SUMVALUE) {
+                        return (*halfit) * (*halfit2) * lesser;
                     }
                 }
             }
@@ -224,8 +187,7 @@ int64_t day01::ExpenseReportTriple::solution () {
             if (twoSum >= SecondThirdValue) {
                 for (auto lessit2 = lessit; lessit2 != std::end(lesserThird); ++lessit2) {
                     if (twoSum + *lessit2 == SUMVALUE) {
-                        std::cout << "Values: " << *halfit << " + " << *lessit << " + " << *lessit2 << ";" << std::endl;
-                        return *halfit * *lessit * *lessit2;
+                        return (*halfit) * (*lessit) * (*lessit2);
                     }
                 }
             }
@@ -233,5 +195,16 @@ int64_t day01::ExpenseReportTriple::solution () {
     }
 
     return -1;
+}
 
+std::string day01::process1(std::string file)
+{
+    ExpenseReport report(file);
+    return std::to_string(report.solution());
+}
+
+std::string day01::process2(std::string file)
+{
+    ExpenseReportTriple reportTriple(file);
+    return std::to_string(reportTriple.solution());
 }
