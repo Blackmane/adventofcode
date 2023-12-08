@@ -158,6 +158,12 @@ namespace parse
      * @return an ordered array of integers
      */
     std::vector<uint64_t> getIntegers(const std::string &line);
+    /**
+     * Get all the integers of the line
+     * @param line a string
+     * @return an ordered array of integers
+     */
+    std::vector<uint8_t> getSmallIntegers(const std::string &line);
 
     /**
      * From a string keep every digit and discard other chars
@@ -255,6 +261,19 @@ namespace op
      * @return int normalized direction
      */
     int normalizeDirection(int64_t direction);
+
+    enum class ThreeWayCompare { Lesser, Equal, Greater };
+
+    template<class T> ThreeWayCompare threeWayCompare(const T &a, const T &b)
+    {
+        if (a < b) {
+            return ThreeWayCompare::Lesser;
+        }
+        if (a == b) {
+            return ThreeWayCompare::Equal;
+        }
+        return ThreeWayCompare::Greater;
+    }
 
     class OCR
     {

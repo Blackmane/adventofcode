@@ -93,6 +93,22 @@ namespace parse
         return res;
     }
 
+    std::vector<uint8_t> getSmallIntegers(const std::string &line)
+    {
+        std::vector<uint8_t> res;
+        std::stringstream ss(line);
+        std::string word;
+        uint8_t number;
+        while (!ss.eof()) {
+            ss >> word;
+            if (std::stringstream(word) >> number) {
+                res.push_back(number);
+            }
+            word = "";
+        }
+        return res;
+    }
+
     std::string filterDecimal(const std::string &line)
     {
         std::string result;
