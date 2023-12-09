@@ -13,6 +13,7 @@
  *                                    /|
  *                                    \|
  ****************************************************************************/
+#pragma once
 
 #include <algorithm>
 #include <bitset>
@@ -21,6 +22,7 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -158,12 +160,22 @@ namespace parse
      * @return an ordered array of integers
      */
     std::vector<uint64_t> getIntegers(const std::string &line);
-    /**
-     * Get all the integers of the line
-     * @param line a string
-     * @return an ordered array of integers
-     */
-    std::vector<uint8_t> getSmallIntegers(const std::string &line);
+
+    template<class T> std::vector<T> getGenericIntegers(const std::string &line)
+    {
+        std::vector<T> res;
+        std::stringstream ss(line);
+        std::string word;
+        T number;
+        while (!ss.eof()) {
+            ss >> word;
+            if (std::stringstream(word) >> number) {
+                res.push_back(number);
+            }
+            word = "";
+        }
+        return res;
+    }
 
     /**
      * From a string keep every digit and discard other chars
