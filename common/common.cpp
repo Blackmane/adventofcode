@@ -390,6 +390,19 @@ namespace op
                                [](uint64_t a, uint64_t b) { return leastCommonMultiple(a, b); });
     }
 
+    std::string replaceAll(const std::string &line, char from, char to)
+    {
+        std::string result;
+        for (auto c : line) {
+            if (c == from) {
+                result.push_back(to);
+            } else {
+                result.push_back(c);
+            }
+        }
+        return result;
+    }
+
 } // namespace op
 
 namespace matrix

@@ -287,6 +287,11 @@ namespace op
         return ThreeWayCompare::Greater;
     }
 
+    /**
+     * @brief Replace every istance of `from` in `to`
+     */
+    std::string replaceAll(const std::string &line, char from, char to);
+
     class OCR
     {
       public:
