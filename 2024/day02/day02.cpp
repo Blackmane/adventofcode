@@ -36,11 +36,12 @@ bool safe(const std::vector<uint64_t> &values)
     return true;
 }
 
-bool safeOneLess(const std::vector<uint64_t> &values)
+bool safe2(const std::vector<uint64_t> &values)
 {
+    int n = values.size();
     int asc = 0;
     int desc = 0;
-    for (size_t i = 0, n = values.size(); i < n; i++) {
+    for (int i = 1; i < n; i++) {
         int64_t diff = values[i - 1] - values[i];
         if (diff < 0) {
             asc++;
@@ -54,55 +55,37 @@ bool safeOneLess(const std::vector<uint64_t> &values)
     }
 
     auto checker = [&](const std::vector<int> &indexes) {
-        for (size_t i = 1, n = indexes.size(); i < n; i++) {
+        for (size_t i = 1, m = indexes.size(); i < m; i++) {
             int64_t diff = values[indexes[i - 1]] - values[indexes[i]];
-            if (asc > desc) {
-                if (diff >= 0 || diff < -3) {
-                    return false;
-                }
-            } else {
-                if (diff <= 0 || diff > 3) {
-                    return false;
-                }
+            if (asc > desc && (diff >= 0 || diff < -3)) {
+                return false;
+            }
+            if (asc < desc && (diff <= 0 || diff > 3)) {
+                return false;
             }
         }
         return true;
     };
 
-    for (int k = 0, n = values.size(); k < n; k++) {
-        std::vector<int> indexes;
-        indexes.reserve(n);
-        for (int i = 0; i < n; i++) {
-            if (i != k) {
-                indexes.push_back(i);
-            }
-        }
-        if (checker(indexes)) {
-            return true;
-        }
-    }
-    return false;
-}
+    auto indexes = [&](int exclude) -> std::vector<int> {
+        std::vector<int> idxs;
+        idxs.reserve(n);
 
-bool safe2(const std::vector<uint64_t> &values)
-{
-    bool isSafe = true;
-    int64_t diff = values[0] - values[1];
-    for (size_t i = 1, count = values.size(); i < count; i++) {
-        int64_t curr_diff = values[i - 1] - values[i];
-        if (diff < 0) {
-            if (curr_diff >= 0 || curr_diff < -3) {
-                isSafe = false;
-            }
-        } else {
-            if (curr_diff <= 0 || curr_diff > 3) {
-                isSafe = false;
+        for (int i = 0; i < n; i++) {
+            if (i != exclude) {
+                idxs.push_back(i);
             }
         }
+        return idxs;
+    };
+
+    for (int i = 1; i < n; i++) {
+        int64_t curr_diff = values[i - 1] - values[i];
+        if ((asc > desc && (curr_diff >= 0 || curr_diff < -3)) || (asc < desc && (curr_diff <= 0 || curr_diff > 3))) {
+            return checker(indexes(i - 1)) || checker(indexes(i));
+        }
     }
-    if (!isSafe) {
-        return safeOneLess(values);
-    }
+
     return true;
 }
 
