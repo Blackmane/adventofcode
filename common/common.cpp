@@ -413,6 +413,48 @@ namespace op
         return result;
     }
 
+    void countingSort(std::vector<int64_t> &values, int64_t pow, std::array<int, 10> count)
+    {
+        for (size_t i = 1; i < count.size(); ++i) {
+            count[i] += count[i - 1];
+        }
+
+        std::vector<int> output(values.size(), 0);
+        for (auto it = values.rbegin(); it != values.rend(); ++it) {
+            int digit = (*it / pow) % 10;
+            output.at(--count[digit]) = *it;
+        }
+        std::copy(output.begin(), output.end(), values.begin());
+    }
+
+    void radixSort(std::vector<int64_t> &values)
+    {
+        auto maxVal = *std::max_element(values.begin(), values.end());
+        size_t digits = 0;
+        for (int pow = 1; maxVal / pow > 0; pow *= 10) {
+            digits++;
+        }
+
+        // For each digit
+        // The array contains the frequency for each possible value
+        std::vector<std::array<int, 10>> frequency(digits, { 0 });
+        for (auto val : values) {
+            int j = 0;
+            int64_t rest = val % 10;
+            while (val > 0) {
+                frequency[j][rest]++;
+                val /= 10;
+                rest = val % 10;
+                j++;
+            }
+        }
+
+        int64_t pow = 1;
+        for (size_t digit = 0; digit < digits; digit++, pow *= 10) {
+            countingSort(values, pow, frequency[digit]);
+        }
+    }
+
 } // namespace op
 
 namespace matrix

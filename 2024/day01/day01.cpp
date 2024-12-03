@@ -20,8 +20,8 @@
 
 std::string day01::process1(std::string file)
 {
-    std::vector<uint64_t> left;
-    std::vector<uint64_t> right;
+    std::vector<int64_t> left;
+    std::vector<int64_t> right;
     uint64_t result = 0;
     parse::read<uint64_t *>(
         file, '\n',
@@ -32,8 +32,8 @@ std::string day01::process1(std::string file)
         },
         &result);
 
-    std::sort(left.begin(), left.end());
-    std::sort(right.begin(), right.end());
+    op::radixSort(left);
+    op::radixSort(right);
     for (size_t i = 0, n = left.size(); i < n; i++) {
         result += abs(left[i] - right[i]);
     }
