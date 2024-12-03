@@ -20,55 +20,44 @@
 
 #include <regex>
 
+// Use both the approaches, one with std::regex and one with parse::Regex
 std::string day03::process1(std::string file)
 {
-    std::vector<std::string> lines;
-    parse::read_all(file, &lines);
-
-    std::regex exp("mul\\(\\d+,\\d+\\)");
+    std::regex exp{ "mul\\((\\d+),(\\d+)\\)" };
     std::smatch match;
 
     int64_t result = 0;
-    for (auto &&line : lines) {
-        std::string::const_iterator searchStart(line.cbegin());
-        while (std::regex_search(searchStart, line.cend(), match, exp)) {
-            auto part = std::string(match[0]).substr(4, match[0].length() - 4 - 1);
-            auto numbers = parse::split(part, ',');
-            auto values = parse::getIntegers(match[0]);
-            result += std::stoi(numbers[0]) * std::stoi(numbers[1]);
-            searchStart = match.suffix().first;
-        }
-    }
+    parse::read<int64_t *>(
+        file, '\n',
+        [&](int64_t *, const std::string &line) {
+            std::string::const_iterator searchStart(line.cbegin());
+            while (std::regex_search(searchStart, line.cend(), match, exp)) {
+                result += std::stoi(match[1]) * std::stoi(match[2]);
+                searchStart = match.suffix().first;
+            }
+        },
+        &result);
 
     return std::to_string(result);
 }
 
 std::string day03::process2(std::string file)
 {
-    std::vector<std::string> lines;
-    parse::read_all(file, &lines);
-
-    std::regex exp("mul\\(\\d+,\\d+\\)|do\\(\\)|don't\\(\\)");
-    std::smatch match;
+    parse::Regex r("mul\\((\\d+),(\\d+)\\)|do\\(\\)|don't\\(\\)");
 
     bool enabled = true;
     int64_t result = 0;
-    for (auto &&line : lines) {
-        std::string::const_iterator searchStart(line.cbegin());
-        while (std::regex_search(searchStart, line.cend(), match, exp)) {
-            if (match[0] == "do()") {
-                enabled = true;
-            } else if (match[0] == "don't()") {
-                enabled = false;
-            } else if (enabled) {
-                auto part = std::string(match[0]).substr(4, match[0].length() - 4 - 1);
-                auto numbers = parse::split(part, ',');
-                auto values = parse::getIntegers(match[0]);
-                result += std::stoi(numbers[0]) * std::stoi(numbers[1]);
-            }
-            searchStart = match.suffix().first;
+    auto apply = [&](std::smatch &match) {
+        if (match[0] == "do()") {
+            enabled = true;
+        } else if (match[0] == "don't()") {
+            enabled = false;
+        } else if (enabled) {
+            result += std::stoi(match[1]) * std::stoi(match[2]);
         }
-    }
+    };
+
+    parse::read<int64_t *>(file, '\n', [&](int64_t *, const std::string &line) { r.search(line, apply); }, &result);
 
     return std::to_string(result);
 }
