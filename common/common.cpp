@@ -45,6 +45,13 @@ namespace parse
         read<std::vector<std::string> *>(inputFilename, '\n', push_back, list);
     }
 
+    std::vector<std::string> read_all(std::string &inputFilename)
+    {
+        std::vector<std::string> result;
+        read<std::vector<std::string> *>(inputFilename, '\n', push_back, &result);
+        return result;
+    }
+
     void read_all_notempty(std::string &inputFilename, std::vector<std::string> *list)
     {
         read<std::vector<std::string> *>(inputFilename, '\n', push_back_notempty, list);

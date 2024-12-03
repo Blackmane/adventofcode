@@ -128,6 +128,12 @@ namespace parse
     void read_all(std::string &inputFilename, std::vector<std::string> *list);
 
     /**
+     * Read the entire file as is and return as vector of strings
+     * @param inputFilename the path to the file
+     */
+    std::vector<std::string> read_all(std::string &inputFilename);
+
+    /**
      * Read the entire file, excluding empty line, and store it in a vector of strings
      * @param inputFilename the path to the file
      * @param list the structure where to save the file
