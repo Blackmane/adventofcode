@@ -116,6 +116,16 @@ namespace parse
         return res;
     }
 
+    Regex::Regex(const std::string &expression) : exp(expression) {}
+    void Regex::search(const std::string &text, std::function<void(std::smatch &)> fun)
+    {
+        std::string::const_iterator searchStart(text.cbegin());
+        while (std::regex_search(searchStart, text.cend(), match, exp)) {
+            fun(match);
+            searchStart = match.suffix().first;
+        }
+    }
+
 } // namespace parse
 
 namespace convert

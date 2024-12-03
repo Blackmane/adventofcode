@@ -21,6 +21,7 @@
 #include <functional>
 #include <iostream>
 #include <map>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <string>
@@ -191,6 +192,23 @@ namespace parse
      * @return an vector of string separated from input
      */
     std::vector<std::string> split(std::string input, char separator);
+
+    /**
+     * Facility to apply regex
+     */
+    class Regex
+    {
+      public:
+        Regex(const std::string &expression);
+        /**
+         * Search the regex expression in text and over the result apply fun
+         */
+        void search(const std::string &text, std::function<void(std::smatch &)> fun);
+
+      private:
+        std::regex exp;
+        std::smatch match;
+    };
 
 } // namespace parse
 
