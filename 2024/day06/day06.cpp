@@ -18,12 +18,20 @@
 
 #include "common.h"
 
-std::pair<int, int> getStart(const std::vector<std::string> &map)
+#include <unordered_set>
+
+namespace
 {
-    int n = map.size();
-    int m = map[0].size();
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
+    typedef int16_t Indx;
+    std::vector<std::pair<int, int>> DIRS = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
+} // namespace
+
+std::pair<Indx, Indx> getStart(const std::vector<std::string> &map)
+{
+    Indx n = map.size();
+    Indx m = map[0].size();
+    for (Indx i = 0; i < n; i++) {
+        for (Indx j = 0; j < m; j++) {
             if (map[i][j] == '^') {
                 return { i, j };
             }
@@ -42,7 +50,6 @@ std::string day06::process1(std::string file)
     // Navigate
     map[posi][posj] = '.';
     int64_t count = 0;
-    std::vector<std::pair<int, int>> dirs = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
     int dir = 0;
     while (posi >= 0 && posi < n && posj >= 0 && posj < m) {
         switch (map[posi][posj]) {
@@ -51,62 +58,45 @@ std::string day06::process1(std::string file)
                 count++;
                 break;
             case '#':
-                posi -= dirs[dir].first;
-                posj -= dirs[dir].second;
+                posi -= DIRS[dir].first;
+                posj -= DIRS[dir].second;
                 dir = (dir + 1) % 4;
                 break;
-            case 'X':
             default:
                 break;
         }
-        posi += dirs[dir].first;
-        posj += dirs[dir].second;
+        posi += DIRS[dir].first;
+        posj += DIRS[dir].second;
     }
 
     return std::to_string(count);
 }
 
-bool isLoop(std::vector<std::string> map, int posi, int posj, int dir, std::unordered_map<int64_t, char> visited)
+inline uint32_t Key(Indx i, Indx j, Indx d)
 {
-    auto insert = [&](int i, int j, char d) {
-        int64_t key = i * 1024 + j % 1024;
-        visited.insert(std::make_pair(key, d));
-    };
-    auto contain = [&](int i, int j, char d) -> bool {
-        int64_t key = i * 1024 + j % 1024;
-        auto range = visited.equal_range(key);
-        for (auto it = range.first; it != range.second; it++) {
-            if (it->second == d) {
+    return i * 256 * 4 + j * 4 + d;
+}
+
+bool isLoop(const std::vector<std::string> &map, Indx posi, Indx posj, Indx dir)
+{
+    std::unordered_set<uint32_t> visited;
+    visited.reserve(6000);
+    Indx n = map.size();
+    Indx m = map[0].size();
+
+    while (posi >= 0 && posi < n && posj >= 0 && posj < m) {
+        if (map[posi][posj] == '#') {
+            posi -= DIRS[dir].first;
+            posj -= DIRS[dir].second;
+            dir = (dir + 1) % 4;
+        } else {
+            if (visited.find(Key(posi, posj, dir)) != visited.end()) {
                 return true;
             }
         }
-        return false;
-    };
-
-    int n = map.size();
-    int m = map[0].size();
-    std::vector<std::pair<int, int>> dirs = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
-    std::string dirsC = "^>v<";
-
-    while (posi >= 0 && posi < n && posj >= 0 && posj < m) {
-        switch (map[posi][posj]) {
-            case '.':
-                map[posi][posj] = 'X';
-                break;
-            case '#':
-                posi -= dirs[dir].first;
-                posj -= dirs[dir].second;
-                dir = (dir + 1) % 4;
-                break;
-            default:
-                if (contain(posi, posj, dirsC[dir])) {
-                    return true;
-                }
-                break;
-        }
-        insert(posi, posj, dirsC[dir]);
-        posi += dirs[dir].first;
-        posj += dirs[dir].second;
+        visited.insert(Key(posi, posj, dir));
+        posi += DIRS[dir].first;
+        posj += DIRS[dir].second;
     }
 
     return false;
@@ -114,22 +104,38 @@ bool isLoop(std::vector<std::string> map, int posi, int posj, int dir, std::unor
 
 std::string day06::process2(std::string file)
 {
-    std::set<std::pair<int, int>> found;
     auto map = parse::read_all(file);
-    int n = map.size();
-    int m = map[0].size();
+    Indx n = map.size();
+    Indx m = map[0].size();
 
     auto [posi, posj] = getStart(map);
+    auto iposi = posi;
+    auto iposj = posj;
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            if (map[i][j] == '.') {
-                map[i][j] = '#';
-                if (isLoop(map, posi, posj, 0, {})) {
-                    found.insert({ i, j });
-                }
-                map[i][j] = '.';
+    std::vector<std::pair<int, int>> dirs = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
+    int dir = 0;
+
+    std::set<std::pair<Indx, Indx>> valid;
+    while (posi >= 0 && posi < n && posj >= 0 && posj < m) {
+        if (map[posi][posj] == '#') {
+            posi -= dirs[dir].first;
+            posj -= dirs[dir].second;
+            dir = (dir + 1) % 4;
+        } else {
+            valid.insert({ posi, posj });
+        }
+        posi += dirs[dir].first;
+        posj += dirs[dir].second;
+    }
+
+    std::set<std::pair<Indx, Indx>> found;
+    for (auto [i, j] : valid) {
+        if (map[i][j] == '.') {
+            map[i][j] = '#';
+            if (isLoop(map, iposi, iposj, 0)) {
+                found.insert({ i, j });
             }
+            map[i][j] = '.';
         }
     }
 
