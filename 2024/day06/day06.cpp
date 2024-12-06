@@ -72,31 +72,27 @@ std::string day06::process1(std::string file)
     return std::to_string(count);
 }
 
-inline uint32_t Key(Indx i, Indx j, Indx d)
-{
-    return i * 256 * 4 + j * 4 + d;
-}
-
 bool isLoop(const std::vector<std::string> &map, Indx posi, Indx posj, Indx dir)
 {
-    std::unordered_set<uint32_t> visited;
-    visited.reserve(6000);
     Indx n = map.size();
     Indx m = map[0].size();
+    int64_t maxSteps = n * m;
 
+    int64_t steps = 0;
     while (posi >= 0 && posi < n && posj >= 0 && posj < m) {
         if (map[posi][posj] == '#') {
             posi -= DIRS[dir].first;
             posj -= DIRS[dir].second;
             dir = (dir + 1) % 4;
         } else {
-            if (visited.find(Key(posi, posj, dir)) != visited.end()) {
+            // pigeonhole principle
+            if (steps >= maxSteps) {
                 return true;
             }
         }
-        visited.insert(Key(posi, posj, dir));
         posi += DIRS[dir].first;
         posj += DIRS[dir].second;
+        steps++;
     }
 
     return false;
