@@ -367,6 +367,11 @@ namespace op
 
     void radixSort(std::vector<int64_t> &values);
 
+    /**
+     * Return the number of digits in value
+     */
+    int digits(int64_t value);
+
 } // namespace op
 
 namespace matrix

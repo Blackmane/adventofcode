@@ -462,6 +462,20 @@ namespace op
         }
     }
 
+    int digits(int64_t value)
+    {
+        value = std::abs(value);
+        if (value < 10) {
+            return 1;
+        }
+        int n = 0;
+        while (value) {
+            value /= 10;
+            n++;
+        }
+        return n;
+    }
+
 } // namespace op
 
 namespace matrix
