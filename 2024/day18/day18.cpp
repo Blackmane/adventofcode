@@ -34,29 +34,70 @@ struct Node {
     }
 };
 
-int minPathMap(const std::vector<std::vector<bool>> &memory, int n, int m)
+int minPathBFS(const std::vector<std::vector<bool>> &memory, int n, int m)
 {
     const int i = 0;
     const int j = 0;
     const int end_i = n - 1;
     const int end_j = m - 1;
 
-    auto cmp = [](Node a, Node b) { return a.cost > b.cost; };
-    std::priority_queue<Node, std::deque<Node>, decltype(cmp)> queue(cmp);
-    queue.push({ i, j, 0 });
+    std::queue<Node> nexts;
+    nexts.push({ i, j, 0 });
 
     std::unordered_set<int> visited;
     visited.reserve(n * m);
 
     auto addByte = [&](int cost, int pos_i, int pos_j) {
         if (pos_i >= 0 && pos_i < n && pos_j >= 0 && pos_j < m && !memory[pos_i][pos_j]) {
-            queue.push({ pos_i, pos_j, cost });
+            nexts.push({ pos_i, pos_j, cost });
         }
     };
 
-    while (!queue.empty()) {
-        auto cur = queue.top();
-        queue.pop();
+    while (!nexts.empty()) {
+        auto cur = nexts.front();
+        nexts.pop();
+
+        if (cur.i == end_i && cur.j == end_j) {
+            //  Found
+            return cur.cost;
+        }
+
+        auto hash = cur.hash();
+        if (visited.find(hash) != visited.end()) {
+            continue;
+        }
+        visited.insert(hash);
+
+        addByte(cur.cost + 1, cur.i - 1, cur.j);
+        addByte(cur.cost + 1, cur.i, cur.j + 1);
+        addByte(cur.cost + 1, cur.i + 1, cur.j);
+        addByte(cur.cost + 1, cur.i, cur.j - 1);
+    }
+    return 0;
+}
+
+int minPathDFS(const std::vector<std::vector<bool>> &memory, int n, int m)
+{
+    const int i = 0;
+    const int j = 0;
+    const int end_i = n - 1;
+    const int end_j = m - 1;
+
+    std::vector<Node> nexts;
+    nexts.push_back({ i, j, 0 });
+
+    std::unordered_set<int> visited;
+    visited.reserve(n * m);
+
+    auto addByte = [&](int cost, int pos_i, int pos_j) {
+        if (pos_i >= 0 && pos_i < n && pos_j >= 0 && pos_j < m && !memory[pos_i][pos_j]) {
+            nexts.push_back({ pos_i, pos_j, cost });
+        }
+    };
+
+    while (!nexts.empty()) {
+        auto cur = nexts.back();
+        nexts.pop_back();
 
         if (cur.i == end_i && cur.j == end_j) {
             //  Found
@@ -99,7 +140,7 @@ std::string day18::process1(std::string file)
         },
         count);
 
-    return std::to_string(minPathMap(memoryMap, 71, 71));
+    return std::to_string(minPathBFS(memoryMap, 71, 71));
 }
 
 std::string day18::process2(std::string file)
@@ -136,7 +177,7 @@ std::string day18::process2(std::string file)
             auto [x, y] = bytes[i];
             memoryMap[x][y] = true;
         }
-        auto result = minPathMap(memoryMap, 71, 71);
+        auto result = minPathDFS(memoryMap, 71, 71);
         if (result == 0) {
             to = mid;
         } else {
