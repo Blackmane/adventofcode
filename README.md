@@ -45,20 +45,22 @@ With this code `python3 adventofcode.py init 2021 day01` you can generate the 20
 ## How to run test and code
 
 ```
-usage: adventofcode.py run [-h] [-t] [-e] YEAR DAY
+usage: adventofcode.py run [-h] [-t] [-e] [-b] YEAR DAY
 
 positional arguments:
-  YEAR          current year of the AoC, is a directory name
-  DAY           current day of the AoC, is a directory name, subdirectory of YEAR
+  YEAR             current year of the AoC, is a directory name
+  DAY              current day of the AoC, is a directory name, subdirectory of YEAR
 
 optional arguments:
-  -h, --help    show this help message and exit
-  -t, --test    run the tests of the current day
-  -e, --timing  print execution time of the current day
+  -h, --help       show this help message and exit
+  -t, --test       run the tests of the current day
+  -e, --timing     print execution time of the current day
+  -b, --benchmark  print benchmark of the current day
 ```
 
 You can run test with `-t` flag: `python3 adventofcode.py run -t 2021 day01`. This command run the solution too.
 With `-e` flag it enable the timing and print time elapsed.
+The `-b` flag without `-t` flag do nothing.
 
 Is possible to build witout run the code with the command `adventofcode.py build 2021 day01`. Use the same flags of the `run` command.
 ```

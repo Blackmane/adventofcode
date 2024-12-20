@@ -56,8 +56,10 @@ def run(args):
     # Run test
     if args.test:
         print("> RUN tests: %s/%s" % (args.year, args.day))
-        subprocess.check_call(['./%s/%s/bin/test_%s' %
-                              (build_dir, sub_path, args.day)])
+        if not args.benchmark:
+            subprocess.check_call(['./%s/%s/bin/test_%s' % (build_dir, sub_path, args.day), 'Test %s' % args.day])
+        else:
+            subprocess.check_call(['./%s/%s/bin/test_%s' % (build_dir, sub_path, args.day)])
 
     # Run
     print("> RUN %s/%s" % (args.year, args.day))
@@ -117,6 +119,8 @@ def parse():
                             action='store_true', help='run the tests of the current day')
     parser_run.add_argument('-e', '--timing', dest='timing',
                             action='store_true', help='print execution time of the current day')
+    parser_run.add_argument('-b', '--benchmark', dest='benchmark',
+                            action='store_true', help='print benchmark of the current day')
     parser_run.set_defaults(func=run)
 
     # all command
