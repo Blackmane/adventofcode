@@ -3,7 +3,7 @@
  * @project advent of code
  *
  * @author  Niccolò Pieretti
- * @date    01 Dec 2024
+ * @date    20 Dec 2024
  *
  ****************************************************************************
  *
@@ -14,15 +14,13 @@
  *                                    \|
  ****************************************************************************/
 
+#define CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"
 #include "common.h"
 #include "day01.h"
-
 #include <string>
 
 using namespace day01;
-
-// @formatter:off
 
 void tester(std::string inputFile, std::function<std::string(std::string)> process, std::string expected)
 {
@@ -30,18 +28,30 @@ void tester(std::string inputFile, std::function<std::string(std::string)> proce
     CHECK_THAT(result, Catch::Matchers::Equals(expected));
 }
 
-#define TESTING(ID, PROCESS, RESULT)                           \
-    SECTION("Test " #ID)                                       \
-    {                                                          \
-        tester("2024/day01/test" #ID ".txt", PROCESS, RESULT); \
-    }
+#define TESTING(ID, PROCESS, RESULT) tester("2024/day01/test" #ID ".txt", PROCESS, RESULT)
 
 TEST_CASE("Test day01", "[day01]")
 {
-    SECTION("Problem 1"){ TESTING(1, process1, "11") }
+    SECTION("Problem 1")
+    {
+        TESTING(1, process1, "11");
+    }
 
     SECTION("Problem 2")
     {
-        TESTING(1, process2, "31")
+        TESTING(1, process2, "31");
     }
+}
+
+TEST_CASE("Benchmarks day01", "[day01]")
+{
+    BENCHMARK("Problem 1")
+    {
+        return process1("2024/day01/input.txt");
+    };
+
+    BENCHMARK("Problem 2")
+    {
+        return process2("2024/day01/input.txt");
+    };
 }

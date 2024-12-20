@@ -14,6 +14,7 @@
  *                                    \|
  ****************************************************************************/
 
+#define CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch.hpp"
 #include "common.h"
 #include "day18.h"
@@ -45,4 +46,16 @@ TEST_CASE("Test day18", "[day18]")
     // SECTION ("Problem 2") {
     //     TESTING(1, process2, "0")
     // }
+    SECTION("Benchmarks")
+    {
+        BENCHMARK("BENCHMARK problem 1")
+        {
+            return process1("2024/day18/input.txt");
+        };
+
+        BENCHMARK("BENCHMARK problem 2")
+        {
+            return process2("2024/day18/input.txt");
+        };
+    }
 }
