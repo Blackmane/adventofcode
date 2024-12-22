@@ -23,6 +23,16 @@
 
 namespace parse
 {
+    void read(std::string inputFilename, char delimiter, std::function<void(const std::string &)> insert)
+    {
+        std::ifstream source;
+        source.open(inputFilename, std::ifstream::in);
+        std::string part;
+        while (std::getline(source, part, delimiter)) {
+            insert(part);
+        }
+    }
+
     void push_back(std::vector<std::string> *list, std::string part)
     {
         list->push_back(part);

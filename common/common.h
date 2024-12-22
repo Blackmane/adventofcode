@@ -35,6 +35,17 @@
 
 namespace parse
 {
+
+    /**
+     * Read a file
+     * Useful with a lambda
+     * @param inputFilename
+     * @param delimiter
+     * @param insert
+     * @param structure
+     */
+    void read(std::string inputFilename, char delimiter, std::function<void(const std::string &)> insert);
+
     /**
      * Read a file
      * @tparam S structure where to save the file
