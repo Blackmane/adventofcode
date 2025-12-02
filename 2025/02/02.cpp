@@ -19,6 +19,7 @@
 #include "common.h"
 
 #include <cmath>
+#include <unordered_set>
 
 std::string day02::process1(std::string file)
 {
@@ -55,34 +56,33 @@ std::string day02::process1(std::string file)
     return std::to_string(sum);
 }
 
-uint64_t repeat(uint64_t num, int times)
-{
-    if (times <= 1) {
-        return 0;
-    }
+// Digits, Times -> multiplier
+std::map<std::pair<int, int>, uint64_t> prods = {
+    { { 1, 2 }, 11 },          { { 1, 3 }, 111 },     { { 1, 4 }, 1111 },     { { 1, 5 }, 11111 },
+    { { 1, 6 }, 111111 },      { { 1, 7 }, 1111111 }, { { 1, 8 }, 11111111 }, { { 1, 9 }, 111111111 },
+    { { 1, 10 }, 1111111111 }, { { 2, 2 }, 101 },     { { 2, 3 }, 10101 },    { { 2, 4 }, 1010101 },
+    { { 2, 5 }, 101010101 },   { { 3, 2 }, 1001 },    { { 3, 3 }, 1001001 },  { { 4, 2 }, 10001 },
+    { { 5, 2 }, 100001 }
+};
 
-    auto digits = op::digits(num);
-    uint64_t result = num;
-    for (int i = 0; i < times - 1; i++) {
-        result = result * std::pow(10, digits) + num;
-    }
-    return result;
-}
-
-uint64_t firstDigits(uint64_t num, int limit)
+uint64_t repeat(uint64_t num, int limit, int times)
 {
     auto digits = op::digits(num);
     for (; digits > limit; digits--) {
         num = num / 10;
     }
-    return num;
+
+    auto it = prods.find({ digits, times });
+    if (it == prods.end()) {
+        return 0;
+    }
+    return num * it->second;
 }
 
 std::string day02::process2(std::string file)
 {
     uint64_t sum = 0;
     parse::read(file, ',', [&](const std::string &line) {
-        std::set<uint64_t> found;
         auto parts = parse::split(line, '-');
         auto fromSize = parts[0].size();
         auto toSize = parts[1].size();
@@ -90,22 +90,31 @@ std::string day02::process2(std::string file)
         auto from = parse::getInteger(parts[0]);
         auto to = parse::getInteger(parts[1]);
 
+        std::unordered_set<uint64_t> found;
         for (int i = 1, n = toSize / 2; i <= n; i++) {
+            if (toSize % i != 0 && fromSize % i != 0) {
+                continue;
+            }
+
             auto sub0 = parts[0].substr(0, i);
             auto sub1 = parts[1].substr(0, toSize - fromSize + i);
             auto fromSub = parse::getInteger(sub0);
             auto toSub = parse::getInteger(sub1);
 
-            for (uint64_t cur = fromSub; cur <= toSub; cur++) {
-                auto digits = op::digits(cur);
-                for (int d = 1; d <= digits; d++) {
-                    uint64_t num = repeat(firstDigits(cur, d), toSize / d);
+            for (int d = 1; d <= i + 1; d++) {
+                for (uint64_t cur = fromSub; cur <= toSub; cur++) {
+                    uint64_t num = repeat(cur, d, toSize / d);
                     if (from <= num && num <= to) {
                         found.insert(num);
                     }
-                    num = repeat(firstDigits(cur, d), fromSize / d);
-                    if (from <= num && num <= to) {
-                        found.insert(num);
+                    if (toSize != fromSize) {
+                        num = repeat(cur, d, fromSize / d);
+                        if (from <= num && num <= to) {
+                            found.insert(num);
+                        }
+                    }
+                    if (num > to) {
+                        break;
                     }
                 }
             }
