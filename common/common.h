@@ -24,6 +24,7 @@
 #include <regex>
 #include <set>
 #include <sstream>
+#include <stdint.h>
 #include <string>
 #include <unordered_map>
 #include <vector>

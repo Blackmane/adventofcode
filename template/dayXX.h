@@ -17,7 +17,7 @@
 #include <stdint.h>
 #include <string>
 
-namespace $DAY
+namespace day$DAY
 {
 
     /**
