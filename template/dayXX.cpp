@@ -17,12 +17,12 @@
 #include "$DAY.h"
 #include "common.h"
 
-std::string day$DAY::process1(std::string file)
+std::string $DAY::process1(std::string file)
 {
     return "0";
 }
 
-std::string day$DAY::process2(std::string file)
+std::string $DAY::process2(std::string file)
 {
     return "0";
 }

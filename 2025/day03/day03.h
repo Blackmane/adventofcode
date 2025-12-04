@@ -1,9 +1,9 @@
 /**
- * @file    03.h
+ * @file    day03.h
  * @project advent of code
  *
  * @author  Niccolò Pieretti
- * @date    03 Dec 2025
+ * @date    04 Dec 2025
  *
  ****************************************************************************
  *
@@ -34,4 +34,4 @@ namespace day03
      */
     std::string process2(std::string file);
 
-} // namespace 03
+} // namespace day03

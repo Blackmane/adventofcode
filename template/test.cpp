@@ -20,7 +20,7 @@
 #include "$DAY.h"
 #include <string>
 
-using namespace day$DAY;
+using namespace $DAY;
 
 void tester(std::string inputFile, std::function<std::string(std::string)> process, std::string expected) {
     auto result = process(inputFile);

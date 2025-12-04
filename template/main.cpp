@@ -17,7 +17,7 @@
 #include "$DAY.h"
 #include <iostream>
 
-using namespace day$DAY;
+using namespace $DAY;
 
 #ifdef PRINT_TIMING
 #    include <chrono>

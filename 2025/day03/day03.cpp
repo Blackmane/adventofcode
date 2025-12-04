@@ -1,5 +1,5 @@
 /**
- * @file    03.cpp
+ * @file    day03.cpp
  * @project advent of code
  *
  * @author  Niccolò Pieretti
@@ -14,7 +14,7 @@
  *                                    \|
  ****************************************************************************/
 
-#include "03.h"
+#include "day03.h"
 
 #include "common.h"
 

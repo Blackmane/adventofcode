@@ -1,21 +1,20 @@
 /**
  * @file    main.cpp
  * @project advent of code
- *
+ * 
  * @author  Niccolò Pieretti
- * @date    03 Dec 2025
+ * @date    04 Dec 2025
  *
  ****************************************************************************
- *
- *             _  _   o   __  __   __    _  o   _   ,_    _
- *            / |/ |  |  /   /    /  \_|/ \_|  |/  /  |  |/
+ *                                              
+ *             _  _   o   __  __   __    _  o   _   ,_    _  
+ *            / |/ |  |  /   /    /  \_|/ \_|  |/  /  |  |/  
  *              |  |_/|_/\__/\___/\__/ |__/ |_/|__/   |_/|__/
- *                                    /|
- *                                    \|
+ *                                    /|                     
+ *                                    \|     
  ****************************************************************************/
 
-#include "03.h"
-
+#include "day03.h"
 #include <iostream>
 
 using namespace day03;
@@ -24,9 +23,8 @@ using namespace day03;
 #    include <chrono>
 #endif
 
-// ===== ===== ===== Main ===== ===== =====
-int main(int argc, char *argv[])
-{
+// ===== ===== ===== Main ===== ===== ===== 
+int main (int argc, char *argv[]) {
     if (argc < 2) {
         std::cout << "No input file" << std::endl;
         return 1;

@@ -3,7 +3,7 @@
  * @project advent of code
  * 
  * @author  Niccolò Pieretti
- * @date    01 Dec 2025
+ * @date    04 Dec 2025
  *
  ****************************************************************************
  *                                              
@@ -14,10 +14,10 @@
  *                                    \|     
  ****************************************************************************/
 
-#include "01.h"
+#include "day02.h"
 #include <iostream>
 
-using namespace day01;
+using namespace day02;
 
 #ifdef PRINT_TIMING
 #    include <chrono>

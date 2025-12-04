@@ -1,5 +1,5 @@
 /**
- * @file    01.cpp
+ * @file    day01.cpp
  * @project advent of code
  *
  * @author  Niccolò Pieretti
@@ -15,7 +15,6 @@
  ****************************************************************************/
 
 #include "01.h"
-
 #include "common.h"
 
 std::string day01::process1(std::string file)

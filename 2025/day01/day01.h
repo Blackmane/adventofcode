@@ -1,9 +1,9 @@
 /**
- * @file    02.h
+ * @file    day01.h
  * @project advent of code
  *
  * @author  Niccolò Pieretti
- * @date    02 Dec 2025
+ * @date    04 Dec 2025
  *
  ****************************************************************************
  *
@@ -17,7 +17,7 @@
 #include <stdint.h>
 #include <string>
 
-namespace day02
+namespace day01
 {
 
     /**
@@ -34,4 +34,4 @@ namespace day02
      */
     std::string process2(std::string file);
 
-} // namespace 02
+} // namespace day01
