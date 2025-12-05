@@ -366,6 +366,9 @@ namespace op
     struct Range {
         uint64_t from = 0;
         uint64_t len = 0;
+
+        /// Build a range from it's limits (inclusive)
+        static Range buildFromLimits(uint64_t from, uint64_t to);
     };
 
     /**

@@ -338,6 +338,11 @@ namespace op
         return result;
     }
 
+    Range Range::buildFromLimits(uint64_t from, uint64_t to)
+    {
+        return Range{ from, to - from + 1 };
+    }
+
     std::vector<Range> split(Range a, Range b)
     {
         std::vector<Range> result;
@@ -347,39 +352,26 @@ namespace op
         if (a.from >= b.from && a.from <= bLast) {
             // a start in b
             if (bLast >= aLast) {
-                // Entirely contained
-                Range first = { a.from, a.len };
-                result.push_back(first);
+                // a entirely contained in b
+                result.push_back(a);
             } else {
-                auto delta = a.from - b.from;
-                auto len = b.len - delta;
-                Range first = { a.from, len };
-                Range second = { bLast + 1, a.len - len };
-                result.push_back(first);
-                result.push_back(second);
+                // Overlap
+                result.push_back(Range::buildFromLimits(a.from, bLast));
+                result.push_back(Range::buildFromLimits(bLast + 1, aLast));
             }
             return result;
         }
         if (b.from >= a.from && b.from <= aLast) {
             // b start in a
-            auto delta = b.from - a.from;
-
-            Range first = { a.from, delta };
-            result.push_back(first);
-
+            result.push_back(Range::buildFromLimits(a.from, b.from - 1));
             if (bLast < aLast) {
-                Range second = b;
-                result.push_back(second);
-
-                auto lenRes = a.len - delta - b.len;
-                Range third = { bLast + 1, lenRes };
-                result.push_back(third);
+                // b entirely contained in a
+                result.push_back(b);
+                result.push_back(Range::buildFromLimits(bLast + 1, aLast));
             } else {
-                auto lenRes = a.len - delta;
-                Range second = { b.from, lenRes };
-                result.push_back(second);
+                // Overlap
+                result.push_back(Range::buildFromLimits(b.from, aLast));
             }
-
             return result;
         }
         // Empty, not found overlaps
@@ -388,7 +380,6 @@ namespace op
 
     std::vector<Range> splitMerge(Range a, Range b)
     {
-        auto getLen = [](uint64_t from, uint64_t to) -> uint64_t { return to - from + 1; };
         std::vector<Range> result;
         auto insert = [&](Range left, Range center, Range right) {
             if (left.len > 0) {
@@ -406,30 +397,30 @@ namespace op
 
         if (a.from >= b.from && a.from <= bLast) {
             // a start in b
-            Range left = { b.from, getLen(b.from, a.from - 1) };
+            Range left = Range::buildFromLimits(b.from, a.from - 1);
             if (bLast >= aLast) {
                 // a entirely contained in b
-                Range right = { aLast + 1, getLen(aLast + 1, bLast) };
+                Range right = Range::buildFromLimits(aLast + 1, bLast);
                 insert(left, a, right);
             } else {
                 // Overlap
-                Range overlap = { a.from, getLen(a.from, bLast) };
-                Range right = { bLast + 1, getLen(bLast + 1, aLast) };
+                Range overlap = Range::buildFromLimits(a.from, bLast);
+                Range right = Range::buildFromLimits(bLast + 1, aLast);
                 insert(left, overlap, right);
             }
             return result;
         }
         if (b.from >= a.from && b.from <= aLast) {
             // b start in a
-            Range left = { a.from, getLen(a.from, b.from - 1) };
+            Range left = Range::buildFromLimits(a.from, b.from - 1);
             if (bLast < aLast) {
                 // b entirely contained in a
-                Range right = { bLast + 1, getLen(bLast + 1, aLast) };
+                Range right = Range::buildFromLimits(bLast + 1, aLast);
                 insert(left, b, right);
             } else {
                 // Overlap
-                Range overlap = { b.from, getLen(b.from, aLast) };
-                Range right = { aLast + 1, getLen(aLast + 1, bLast) };
+                Range overlap = Range::buildFromLimits(b.from, aLast);
+                Range right = Range::buildFromLimits(aLast + 1, bLast);
                 insert(left, overlap, right);
             }
             return result;
@@ -440,7 +431,6 @@ namespace op
 
     std::optional<Range> merge(Range a, Range b)
     {
-        auto getLen = [](uint64_t from, uint64_t to) -> uint64_t { return to - from + 1; };
         auto aLast = a.from + a.len - 1;
         auto bLast = b.from + b.len - 1;
 
@@ -451,7 +441,7 @@ namespace op
                 return b;
             } else {
                 // Overlap
-                return Range{ b.from, getLen(b.from, aLast) };
+                return Range::buildFromLimits(b.from, aLast);
             }
         }
         if (b.from >= a.from && b.from <= aLast) {
@@ -461,7 +451,7 @@ namespace op
                 return a;
             } else {
                 // Overlap
-                return Range{ a.from, getLen(a.from, bLast) };
+                return Range::buildFromLimits(a.from, bLast);
             }
         }
         // Empty, not found overlaps
