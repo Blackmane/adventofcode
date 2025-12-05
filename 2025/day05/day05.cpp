@@ -97,3 +97,35 @@ std::string day05::process2(std::string file)
 
     return std::to_string(count);
 }
+
+// Solution without ranges
+// std::string day05::process2(std::string file)
+// {
+//     std::set<std::pair<uint64_t, uint64_t>> ids;
+//     bool done = false;
+
+//     parse::read(file, '\n', [&](const std::string &line) {
+//         if (line.empty() || done) {
+//             done = true;
+//             return;
+//         }
+//         auto parts = parse::split(line, '-');
+//         auto from = parse::getInteger(parts[0]);
+//         auto to = parse::getInteger(parts[1]);
+//         ids.insert({ from, to });
+//     });
+
+//     uint64_t count = 0;
+//     uint64_t max = 0;
+//     for (auto [from, to] : ids) {
+//         if (from <= max && max < to) {
+//             count += to - max;
+//             max = to;
+//         } else if (max < from) {
+//             count += to - from + 1;
+//             max = to;
+//         }
+//     }
+
+//     return std::to_string(count);
+// }
