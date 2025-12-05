@@ -82,7 +82,7 @@ namespace parse
         read<std::vector<uint64_t> *>(inputFilename, '\n', push_back_integer, list);
     }
 
-    uint64_t getInteger(std::string &line)
+    uint64_t getInteger(const std::string &line)
     {
         uint64_t res = 0;
         const std::regex base_regex("(\\d+)");
@@ -386,6 +386,57 @@ namespace op
         return result;
     }
 
+    std::vector<Range> splitMerge(Range a, Range b)
+    {
+        auto getLen = [](uint64_t from, uint64_t to) -> uint64_t { return to - from + 1; };
+        std::vector<Range> result;
+        auto insert = [&](Range left, Range center, Range right) {
+            if (left.len > 0) {
+                result.push_back(left);
+            }
+            if (center.len > 0) {
+                result.push_back(center);
+            }
+            if (right.len > 0) {
+                result.push_back(right);
+            }
+        };
+        auto aLast = a.from + a.len - 1;
+        auto bLast = b.from + b.len - 1;
+
+        if (a.from >= b.from && a.from <= bLast) {
+            // a start in b
+            Range left = { b.from, getLen(b.from, a.from - 1) };
+            if (bLast >= aLast) {
+                // a entirely contained in b
+                Range right = { aLast + 1, getLen(aLast + 1, bLast) };
+                insert(left, a, right);
+            } else {
+                // Overlap
+                Range overlap = { a.from, getLen(a.from, bLast) };
+                Range right = { bLast + 1, getLen(bLast + 1, aLast) };
+                insert(left, overlap, right);
+            }
+            return result;
+        }
+        if (b.from >= a.from && b.from <= aLast) {
+            // b start in a
+            Range left = { a.from, getLen(a.from, b.from - 1) };
+            if (bLast < aLast) {
+                // b entirely contained in a
+                Range right = { bLast + 1, getLen(bLast + 1, aLast) };
+                insert(left, b, right);
+            } else {
+                // Overlap
+                Range overlap = { b.from, getLen(b.from, aLast) };
+                Range right = { aLast + 1, getLen(aLast + 1, bLast) };
+                insert(left, overlap, right);
+            }
+            return result;
+        }
+        // Empty, not found overlaps
+        return result;
+    }
     uint64_t greatestCommonDivisor(uint64_t a, uint64_t b)
     {
         if (b > a) {

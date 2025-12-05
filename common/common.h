@@ -171,7 +171,7 @@ namespace parse
      * @param line a string
      * @return the first integer
      */
-    uint64_t getInteger(std::string &line);
+    uint64_t getInteger(const std::string &line);
 
     /**
      * Get all the integers of the line
@@ -372,6 +372,11 @@ namespace op
      * @return all the range
      */
     std::vector<Range> split(Range a, Range b);
+
+    /**
+     * if intersects return all the splitted parts otherwise return empty list
+     */
+    std::vector<Range> splitMerge(Range a, Range b);
 
     uint64_t greatestCommonDivisor(uint64_t a, uint64_t b);
     uint64_t leastCommonMultiple(uint64_t a, uint64_t b);
