@@ -437,6 +437,37 @@ namespace op
         // Empty, not found overlaps
         return result;
     }
+
+    std::optional<Range> merge(Range a, Range b)
+    {
+        auto getLen = [](uint64_t from, uint64_t to) -> uint64_t { return to - from + 1; };
+        auto aLast = a.from + a.len - 1;
+        auto bLast = b.from + b.len - 1;
+
+        if (a.from >= b.from && a.from <= bLast) {
+            // a start in b
+            if (bLast >= aLast) {
+                // a entirely contained in b
+                return b;
+            } else {
+                // Overlap
+                return Range{ b.from, getLen(b.from, aLast) };
+            }
+        }
+        if (b.from >= a.from && b.from <= aLast) {
+            // b start in a
+            if (bLast < aLast) {
+                // b entirely contained in a
+                return a;
+            } else {
+                // Overlap
+                return Range{ a.from, getLen(a.from, bLast) };
+            }
+        }
+        // Empty, not found overlaps
+        return {};
+    }
+
     uint64_t greatestCommonDivisor(uint64_t a, uint64_t b)
     {
         if (b > a) {

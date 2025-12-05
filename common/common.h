@@ -21,6 +21,7 @@
 #include <functional>
 #include <iostream>
 #include <map>
+#include <optional>
 #include <regex>
 #include <set>
 #include <sstream>
@@ -377,6 +378,11 @@ namespace op
      * if intersects return all the splitted parts otherwise return empty list
      */
     std::vector<Range> splitMerge(Range a, Range b);
+
+    /**
+     * if intersects merge in a single range
+     */
+    std::optional<Range> merge(Range a, Range b);
 
     uint64_t greatestCommonDivisor(uint64_t a, uint64_t b);
     uint64_t leastCommonMultiple(uint64_t a, uint64_t b);

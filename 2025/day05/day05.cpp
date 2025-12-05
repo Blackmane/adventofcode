@@ -60,19 +60,15 @@ std::string day05::process2(std::string file)
     std::vector<op::Range> ids;
     bool done = false;
 
-    auto insert = [&](const std::string &line) {
-        auto parts = parse::split(line, '-');
-        auto from = parse::getInteger(parts[0]);
-        auto to = parse::getInteger(parts[1]);
-        ids.push_back({ from, to - from + 1 });
-    };
-
     parse::read(file, '\n', [&](const std::string &line) {
         if (line.empty() || done) {
             done = true;
             return;
         }
-        insert(line);
+        auto parts = parse::split(line, '-');
+        auto from = parse::getInteger(parts[0]);
+        auto to = parse::getInteger(parts[1]);
+        ids.push_back({ from, to - from + 1 });
     });
 
     uint64_t count = 0;
@@ -80,19 +76,22 @@ std::string day05::process2(std::string file)
     while (!ids.empty()) {
         auto range = ids.back();
         ids.pop_back();
-
-        std::vector<op::Range> to_add;
+        bool expanded = false;
 
         std::erase_if(ids, [&](op::Range x) {
-            std::vector<op::Range> res = splitMerge(x, range);
-            to_add.insert(to_add.end(), res.begin(), res.end());
-            return !res.empty();
+            auto res = op::merge(x, range);
+            if (res.has_value()) {
+                range = res.value();
+                expanded = true;
+                return true;
+            }
+            return false;
         });
 
-        if (to_add.empty()) {
-            count += range.len;
+        if (expanded) {
+            ids.push_back(range);
         } else {
-            ids.insert(ids.end(), to_add.begin(), to_add.end());
+            count += range.len;
         }
     }
 
