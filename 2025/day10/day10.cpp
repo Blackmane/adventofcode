@@ -124,6 +124,16 @@ std::vector<int> half(std::vector<int> joltages)
     return joltages;
 }
 
+uint64_t toKey(std::vector<int> joltages)
+{
+    uint64_t key = 0;
+    for (auto j : joltages) {
+        key = key << 1;
+        key += j % 2;
+    }
+    return key;
+}
+
 struct MachineJoltages {
     MachineJoltages(const std::string &line)
     {
@@ -146,6 +156,30 @@ struct MachineJoltages {
         // Thanks to
         // https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
 
+        // Pre calculate combinations based on odd even joltajes
+        std::map<uint64_t, std::vector<uint64_t>> oddEvenToConfs;
+        for (uint64_t conf = 0, last = std::pow(2, wirings.size()) - 1; conf <= last; conf++) {
+            std::vector<int> buttons(joltages.size(), 0);
+            int pos = 0;
+            auto curConf = conf;
+            while (curConf > 0) {
+                if (curConf % 2 == 1) {
+                    for (auto button : wirings[pos]) {
+                        buttons[button]++;
+                    }
+                }
+                curConf = curConf >> 1;
+                pos++;
+            }
+            auto key = toKey(buttons);
+            auto it = oddEvenToConfs.find(key);
+            if (it == oddEvenToConfs.end()) {
+                oddEvenToConfs.insert({ key, { conf } });
+            } else {
+                it->second.push_back(conf);
+            }
+        }
+
         std::map<std::vector<int>, uint64_t> calculated;
 
         std::function<uint64_t(std::vector<int>)> press = [&](std::vector<int> curJoltages) -> uint64_t {
@@ -159,11 +193,11 @@ struct MachineJoltages {
                 return it->second;
             }
 
-            uint64_t minClics = 100000; // High enough but not to much to overflow :*D
+            uint64_t minClics = 100000; // High enough but not so much to overflow :*D
 
             // Check each configuration
-            for (uint64_t conf = 0, last = std::pow(2, wirings.size()) - 1; conf <= last; conf++) {
-                // Ciclare i bit di conf
+            auto oddEvenKey = toKey(curJoltages);
+            for (int conf : oddEvenToConfs[oddEvenKey]) {
                 std::vector<int> newJoltajes = curJoltages;
                 uint64_t clicks = 0;
                 int pos = 0;
@@ -181,7 +215,7 @@ struct MachineJoltages {
                 bool isGood =
                     std::all_of(newJoltajes.begin(), newJoltajes.end(), [](int j) { return j >= 0 && j % 2 == 0; });
                 if (isGood) {
-                    auto curClicks = clicks + (2 * press(half(newJoltajes)));
+                    auto curClicks = clicks + 2 * press(half(newJoltajes));
                     if (curClicks < minClics) {
                         minClics = curClicks;
                     }
